@@ -1,0 +1,89 @@
+\documentclass{slides}
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+
+\begin{slide}
+
+Source : Le Mastermind en 10 leçons
+(Marco Meirovitz et Pierre Berloquin)
+
+ou bien sur CPAN :
+
+Games::Mastermind
+
+Games::Mastermind::Solver
+
+Games::Mastermind::Cracker
+
+Algorithm::Mastermind
+
+Wx::App::Mastermind
+
+\end{slide}
+\begin{slide}
+
+\begin{tabular}{|c|c|c|}
+\hline
+Phase  & Humain & Programme \\
+\hline
+Début  &        & \\
+  de   & 1--2 coups  & idem \\
+partie &        & \\
+\hline
+Milieu & la majeure & \\
+  de   & partie     & rien \\
+partie & du temps   & \\
+\hline
+ Fin   & quelques   & la majeure \\
+  de   & coups      & partie     \\
+partie &            & du temps   \\
+\hline
+\end{tabular}
+
+\end{slide}
+\begin{slide}
+
+\begin{center}
+Entropie
+\end{center}
+
+Clausius (1822--1888) : $ \frac{Q}{T} $
+
+Boltzmann (1844--1906) : nombre de micro-états pour un macro-état donné
+
+Shannon (1916--2001) : $- \sum_i p_i \times Log_2(p_i)$
+
+\end{slide}
+\begin{slide}
+\begin{tabular}{|c|c|}
+\hline
+Probabilité & Information obtenue \\
+\hline
+& \\
+$\frac{1}{2}$ & 1 bit \\
+& \\
+\hline
+& \\
+$\frac{1}{4}$ & 2 bits \\
+& \\
+\hline
+& \\
+$\frac{1}{256}$ & 8 bits \\
+& \\
+\hline
+& \\
+$\frac{1}{3}$ & 1,58 bit \\
+& \\
+\hline
+& \\
+$p$ & $- Log_2(p)$ bit \\
+& \\
+\hline
+& \\
+$(p_i)_i$ & $- \sum_i p_i \times Log_2(p_i)$ bits \\
+& \\
+\hline
+\end{tabular}
+\end{slide}
+\end{document}

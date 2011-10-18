@@ -1,0 +1,19 @@
+-*- encoding: utf-8 -*-
+
+Ce  dépôt  contient un  programme  de  résolution  de Mastermind.   Le
+programme essaie autant  que faire se peut de  résoudre un problème en
+un nombre  réduit de tours de jeu.  Il ne cherche pas  à effectuer une
+recherche  exhaustive de  l'arbre  de jeu  pour  trouver la  stratégie
+optimale, il se contente  d'appliquer quelques règles heuristiques qui
+tendent à optimiser la quantité d'information obtenue.
+
+Ce programme est prévu pour s'étendre aux variantes plus élaborées que
+la variante de base  à 6 couleurs et 4 trous. Il  peut traiter plus de
+trous et plus de couleurs, du  moment que les règles sont semblables à
+celles de  la variante  de base. En  revanche, le programme  n'est pas
+prévu pour  traiter les règles exotiques, comme  celles du "Mastermind
+couleurs et formes" ou du "Mastermind à 4".
+
+Les termes  de licence  de ce  script sont les  mêmes termes  que pour
+Perl.
+

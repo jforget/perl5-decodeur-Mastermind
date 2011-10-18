@@ -1,0 +1,11 @@
+This  repository  hosts  a  Mastermind solver  program.   The  program
+attempts to use a reasonable number  of turns to solve the problem. It
+does not attempt to execute a complete search of the game tree to find
+the optimum strategy, it just uses some heuristics.
+
+The  program should  scale beyond  the usual  6-color  4-hole standard
+game. It  can deal with the  variants with rules similar  to the basic
+rules. It cannot deal with  rules variants, such as "Grand Mastermind"
+(with colors and shapes), 4-player mastermind and the like.
+
+This script is licensed under the same terms as perl.
