@@ -1,0 +1,59 @@
+#!/usr/bin/perl
+# -*- encoding: utf-8 -*-
+#
+# Décodeur mastermind
+#
+# Copyright 2011 Jean Forget
+
+die "Le programme n'est pas prêt pour l'instant, revenez un peu plus tard\n";
+
+
+__END__
+
+=encoding utf8
+
+=head1 NOM
+
+decode-mm -- un programme pour jouer au Mastermind en tant que décodeur
+
+=head1 UTILISATION
+
+À écrire
+
+=head1 PARAMÈTRES D'APPEL
+
+À écrire
+
+=head1 DESCRIPTION
+
+À écrire
+
+=head1 CONFIGURATION ET ENVIRONNEMENT
+
+Néant.
+
+=head1 DÉPENDANCES
+
+À écrire
+
+=head1 INCOMPATIBILITÉS
+
+Aucune incompatibilité identifiée.
+
+=head1 BOGUES ET LIMITES
+
+Pour l'instant, aucun n'a été identifié.
+
+=head1 AUTEUR
+
+Jean Forget, JFORGET (à) cpan.org
+
+=head1 LICENCE ET COPYRIGHT
+
+(C) Jean Forget, 2011, tous droits réservés.
+
+Les termes de licence de ce script sont les mêmes termes que pour
+Perl : GNU General Public License (GPL) et Artistic License.
+
+
+
