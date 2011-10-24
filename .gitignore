@@ -3,3 +3,5 @@
 *.dvi
 *.log
 *.pdf
+*.html
+*.tmp
