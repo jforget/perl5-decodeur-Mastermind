@@ -204,9 +204,73 @@ moins importante si le codeur est un humain.
 
 =head2 Début de partie
 
+Le  livre de  Jean Tricot  et Marco  Meirovitz analyse  les différents
+coups de départ pour le jeu à 4 trous et 6 couleurs et pour le jeu à 4
+trous  et 7  couleurs.  Pour  le jeu  à  4 trous  et  6 couleurs,  les
+propositions  "ABCD"   et  "ABCC"  sont   quasiment  équivalentes.  En
+revanche, pour  le jeu à 4 trous  et 7 couleurs, c'est  le code "ABCD"
+qui  est  le  meilleur.   Donc,  par  extrapolation  pifométrique,  je
+considère que la meilleure tactique  pour le début de partie lorsqu'il
+y a  beaucoup de couleurs consiste  à jouer "ABCD",  puis "EFGH", puis
+"IJKL" et  ainsi de  suite. Et s'il  n'y a  pas assez de  couleurs, on
+boucle. Par exemple,  pour le jeu à 4 trous et  6 couleurs, le premier
+coup  est  "ABCD",  le  deuxième  est "EFAB",  c'est-à-dire  les  deux
+dernières couleurs  "E" et "F", puis  on reprend au début  avec "A" et
+"B" pour compléter le code.
+
+Tout  au long  du début  de partie,  si l'on  tombe sur  un  nombre de
+marques à zéro, on supprime  carrément de la liste des couleurs celles
+qui apparaissent dans la proposition. Cela accélérera l'interlude.
+
 =head2 Interlude
 
+Dans l'interlude,  le programme construit  la liste de tous  les codes
+compatibles avec les coups joués pendant le début de partie.  La liste
+est construite progressivement avec des  codes incomplets à 1, puis 2,
+puis 3 pions, avant d'arriver aux codes complets à 4 pions.
+
+À chaque  étape, on  compare le code  incomplet avec  les propositions
+jouées dans le début de partie,  pour voir si les résultats (nombre de
+marques noires et nombre de marques blanches) correspondent.  On garde
+à l'esprit que le code est incomplet et qu'en le ajoutant une couleur,
+on peut :
+
+=over 4
+
+=item * obtenir une marque noire supplémentaire,
+
+=item * obtenir une marque blanche supplémentaire,
+
+=item * remplacer une marque blanche par une marque noire.
+
+=back
+
+Pour un code à trois couleurs  et un vide, le nombre de marques noires
+doit  donc être  le nombre  final, ou  bien le  nombre final  moins 1.
+Quant à  tester les  marques blanches, il  est préférable de  faire la
+somme noirs+blancs. Ainsi, le nombre  de marques noires et blanches du
+code à trois couleurs et un  vide doit être le nombre final de marques
+noires et blanches, ou bien ce nombre moins 1.
+
+Pour  un code  à deux  couleurs et  deux vides,  le nombre  de marques
+noires  doit être compris  entre le  nombre final  et le  nombre final
+moins 2.  Idem pour la somme marques noires + marques blanches.
+
+Et pour  un code  à une seule  couleur  et  trois vides, le  nombre de
+marques noires  doit être compris entre  le nombre final  et le nombre
+final moins 3.  Et encore une fois, c'est pareil pour le nombre cumulé
+de marques noires et blanches.
+
+Ainsi, en commençant  par déterminer les codes à un  seul pion, puis à
+deux pions, puis 3 puis 4, on ne parcourt pas l'arbre entier des codes
+possibles, on  l'élague au fur  et à mesure,  ce qui permet  de perdre
+moins de temps.
+
+À terminer
+
 =head2 Fin de partie
+
+À écrire
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
