@@ -266,7 +266,34 @@ deux pions, puis 3 puis 4, on ne parcourt pas l'arbre entier des codes
 possibles, on  l'élague au fur  et à mesure,  ce qui permet  de perdre
 moins de temps.
 
-À terminer
+Exemples : l'un  des coups joués était C<ABCD>,  noté C<X> (une marque
+noire). Le code C<AE..> obtient  une note C<X> et est donc compatible.
+Le  code C<AD..>  obtient une  note  C<XO> est  est incompatible.   En
+effet,  quelles  que  soient  les  couleurs placées  en  troisième  et
+quatrième positions,  on ne  pourra pas revenir  à une note  C<X>.  Le
+code C<CE..> obtient une note C<O> et est compatible. Bien qu'il y ait
+une marque blanche en trop, cette marque pourra être remplacée par une
+marque  noire, lorsque l'on  testera C<CEC.>  puis C<CECC>  et C<CECE>
+(entre autres).
+
+Maintenant, supposons que le coup C<ABCD> ait reçu la note C<XOO> (une
+marque noire et deux blanches). Le code C<AE..> reçoit la note C<X> et
+est compatible.  En effet, il reste  deux trous à remplir  et ces deux
+trous  peuvent  fournir  les  deux marques  blanches  manquantes.   En
+revanche, le code  C<EF..> reçoit une note nulle  et est incompatible.
+En effet,  ce n'est pas  les deux trous  à remplir qui  permettront de
+fournir les trois marques manquantes.
+
+Une fois  la liste  des codes construite,  le programme  évalue chaque
+code avec  chaque autre, pour stocker  la note dans  un hachage indexé
+par ces deux codes. Comme cela sera montré dans la suite, le programme
+aura besoin de toutes ces notes  au moins une fois, mais assez souvent
+plusieurs fois. À cause de cette étape, on souhaite avoir une liste de
+codes  suffisamment  petite.   Il   aurait  été  possible  de  stocker
+plusieurs centaines de codes possible dans la liste, mais pour l'étape
+présente,  cela  aurait  impliqué  une  boucle avec  des  dizaines  de
+milliers  d'itérations.   On préfère  donc,  autant  que possible,  se
+limiter à quelques dizaines de codes possibles.
 
 =head2 Fin de partie
 
