@@ -142,8 +142,8 @@ et il ne  reste plus que quelques codes compatibles avec  ce qui a été
 joué jusque-là.   Le décodeur est  capable d'énumérer la liste  de ces
 codes. Son but est alors de  minimiser le nombre de coups à jouer pour
 obtenir le  résultat, donc de  choisir dans la  liste le code  le plus
-discriminant.  Exemple,  les  codes  restants  sont :  ABCD,  ABDC  et
-BACD. Si le décodeur joue ABCD, le codeur répondra :
+discriminant.  Exemple, les codes  restants sont : C<ABCD>, C<ABDC> et
+C<BACD>. Si le décodeur joue C<ABCD>, le codeur répondra :
 
 =over 4
 
@@ -165,9 +165,9 @@ Si en revanche, le décodeur joue BACD, le codeur répondra :
 
 =back
 
-On voit donc que BACD mène à  un gain en deux coups maximum, alors que
-dans  un tiers des  cas, ABCD  conduit à  une fin  de partie  en trois
-coups.
+On voit donc  que C<BACD> mène à un gain en  deux coups maximum, alors
+que dans  un tiers  des cas, C<ABCD>  conduit à  une fin de  partie en
+trois coups.
 
 Dans le  cas de mon  programme, le milieu  de partie n'existe  pas. Le
 programme est capable de mémoriser  une liste de plusieurs dizaines de
@@ -175,29 +175,13 @@ codes autorisés, ce  que ne peut pas faire un  humain normal.  Donc, à
 l'issue  du  début  de   partie,  pendant  un  interlude  (de  "inter"
 signifiant "entre" et "lude" signifiant "jeu") le programme établit la
 liste  des codes  compatibles avec  ce qui  a déjà  été joué,  puis il
-entame la fin de la partie. Un coup de la fin de la partie prend alors
-l'allure suivante :
-
-=over 4
-
-=item *  Le programme choisit le  code le plus  discriminant parmi les
-codes restants,
-
-=item * Le programme joue ce code,
-
-=item * Si la note est "XXXX", fin de la partie
-
-=item *  Sinon, le  programme reçoit  la note du  codeur et  filtre la
-liste des  codes restants pour  éliminer les codes  incompatibles avec
-cette note.
-
-=back
+entame la fin de la partie.
 
 Une autre différence entre mon programme et le jeu avec un humain.  Le
 programme  considère   que  tous  les   codes  secrets  ont   la  même
 probabilité.  Ainsi que le signalent  les auteurs, si le codeur est un
 humain, il  évitera inconsciemment certaines  combinaisons de couleurs
-et  en priviligiera  d'autres. Également,  les codes  monochromes sont
+et  en privilégiera  d'autres. Également,  les codes  monochromes sont
 censés survenir 6 fois sur 1296, ou 1 fois sur 216 si le codeur est un
 programme correctement  codé, alors  que la proportion  sera nettement
 moins importante si le codeur est un humain.
@@ -206,17 +190,17 @@ moins importante si le codeur est un humain.
 
 Le  livre de  Jean Tricot  et Marco  Meirovitz analyse  les différents
 coups de départ pour le jeu à 4 trous et 6 couleurs et pour le jeu à 4
-trous  et 7  couleurs.  Pour  le jeu  à  4 trous  et  6 couleurs,  les
-propositions  "ABCD"   et  "ABCC"  sont   quasiment  équivalentes.  En
-revanche, pour  le jeu à 4 trous  et 7 couleurs, c'est  le code "ABCD"
+trous  et 7  couleurs.   Pour le  jeu à  4  trous et  6 couleurs,  les
+propositions  C<ABCD>  et  C<ABCC>  sont quasiment  équivalentes.   En
+revanche, pour le  jeu à 4 trous et 7 couleurs,  c'est le code C<ABCD>
 qui  est  le  meilleur.   Donc,  par  extrapolation  pifométrique,  je
 considère que la meilleure tactique  pour le début de partie lorsqu'il
-y a  beaucoup de couleurs consiste  à jouer "ABCD",  puis "EFGH", puis
-"IJKL" et  ainsi de  suite. Et s'il  n'y a  pas assez de  couleurs, on
+y a beaucoup de couleurs  consiste à jouer C<ABCD>, puis C<EFGH>, puis
+C<IJKL> et  ainsi de suite.  Et s'il n'y  a pas assez de  couleurs, on
 boucle. Par exemple,  pour le jeu à 4 trous et  6 couleurs, le premier
-coup  est  "ABCD",  le  deuxième  est "EFAB",  c'est-à-dire  les  deux
-dernières couleurs  "E" et "F", puis  on reprend au début  avec "A" et
-"B" pour compléter le code.
+coup  est C<ABCD>,  le  deuxième est  C<EFAB>,  c'est-à-dire les  deux
+dernières couleurs C<E> et C<F>, puis on reprend au début avec C<A> et
+C<B> pour compléter le code.
 
 Tout  au long  du début  de partie,  si l'on  tombe sur  un  nombre de
 marques à zéro, on supprime  carrément de la liste des couleurs celles
@@ -297,7 +281,61 @@ limiter à quelques dizaines de codes possibles.
 
 =head2 Fin de partie
 
-À écrire
+Un coup de la fin de la partie prend l'allure suivante :
+
+=over 4
+
+=item *  Le programme choisit le  code le plus  discriminant parmi les
+codes restants,
+
+=item * Le programme joue ce code,
+
+=item * Si la note est C<XXXX>, fin de la partie
+
+=item *  Sinon, le  programme reçoit  la note du  codeur et  filtre la
+liste des  codes restants pour  éliminer les codes  incompatibles avec
+cette note.
+
+=back
+
+L'action de jouer un code et l'action de filtrer les codes restants ne
+présentent pas de mystère. Le choix du code le plus discriminant parmi
+les  codes restants  est plus  intéressant. Il  y  principalement deux
+méthodes. Celle que j'ai connue la première pendant les années 1980 et
+qui est  mentionnée dans  le livre de  Jean Tricot et  Marco Meirovitz
+repose sur  l'entropie de Shannon. La  seconde, dont j'ai  eu vent fin
+2011 en  lisant la doc  de C<Algorithm::Mastermind> a été  décrite par
+Donald Knuth et utilise le minimax.
+
+=head3 L'entropie de Shannon
+
+Au début, l'entropie a été un concept en physique, plus précisément en
+thermodynamique.   L'entropie   a    été   introduite   par   Clausius
+(1822--1888),  puis  développée  par  Ludwig  Boltzmann  (1844--1906).
+Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
+étudier le codage  optimal d'un message transmis par  un canal avec ou
+sans parasites. Jean Tricot et Marco Meirovitz ont appliqué ce concept
+au  Mastermind,  mais  sans  vraiment  donner de  détails.  Voici  une
+explication de  la notion  d'entropie mathématique. Cela  ne constitue
+pas un cours de mathématiques en  bonne et due forme, c'est plutôt une
+présentation   de  mathématiques   expérimentales   faisant  appel   à
+l'intuition plutôt qu'au raisonnement.
+
+Laissons de côté le Mastermind et prenons un autre jeu sur le principe
+des  questions-réponses, le  jeu consistant  à deviner  un  nombre. Le
+codeur choisit secrètement un nombre entre 1 et 100 et le décodeur lui
+propose un  nombre, par exemple 50.  Le codeur doit  alors répondre si
+c'est  ce nombre,  ou bien  un nombre  plus petit,  ou bien  encore un
+nombre plus  grand. Maintenant, modifions légèrement les  règles de ce
+jeu. D'une  part, le  nombre à deviner  est dans  l'intervalle 0..255,
+d'autre part les questions sont en format libre.
+
+Le décodeur commence par la question : « Le nombre se trouve-t-il dans
+l'intervalle 0..127 ou dans l'intervalle  128..255 ? » Dans un cas sur
+deux, il  apprendra que le bit  de poids fort  est 0, dans un  cas sur
+deux il apprendra que c'est 1.
+
+À compléter.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
