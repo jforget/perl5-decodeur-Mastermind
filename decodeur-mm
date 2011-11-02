@@ -340,7 +340,101 @@ d'autre part les questions sont en format libre.
 Le décodeur commence par la question : « Le nombre se trouve-t-il dans
 l'intervalle 0..127 ou dans l'intervalle  128..255 ? » Dans un cas sur
 deux, il  apprendra que le bit  de poids fort  est 0, dans un  cas sur
-deux il apprendra que c'est 1.
+deux il apprendra  que c'est 1. Avec les  deux réponses de probabilité
+1/2, le décodeur gagnera donc 1 bit.
+
+Supposons  maintenant que  sa première  question  soit :  « Le  nombre
+est-il pair  ou impair ? ». Là  encore l'une ou l'autre  réponse a une
+probabilité de  1/2 et l'une ou  l'autre fait gagner un  bit, sauf que
+c'est le bit de poids faible.
+
+Et maintenant, le  décodeur commence la partie par la  question : « Le
+nombre se  trouve-t-il dans l'intervalle  0..63 ? ». S'il  obtient une
+réponse affirmative, il aura gagné deux bits. Mais cette réponse a une
+probabilité de 1/4. Ou bien alors,  il pourrait même commencer par : «
+Est-ce 23 ? » et cette réponse, de probabilité 1/256 lui ferait gagner
+8 bits d'un seul coup.
+
+Et  s'il demande  maintenant :  « Le  nombre est-il  dans l'intervalle
+0..84 ? », une réponse affirmative lui permet de connaître précisément
+le bit  de poids  fort et  d'avoir de fortes  présomptions sur  le bit
+suivant. En tout état  de cause le nombre commence par C<0>  et il y a
+de fortes chances qu'il commence par  C<00>. Il a donc gagné plus d'un
+bit,  mais  pas  tout-à-fait  2.  On  va dire  que  cette  réponse  de
+probabilité 1/3  lui a fait gagner  1,58 bit. On en  déduit le tableau
+suivant :
+
+  +------------+------------+
+  | probabilité| information|
+  |de la       |obtenue     |
+  |réponse     |            |
+  +------------+------------+
+  |    1/2     |   1 bit    |
+  +------------+------------+
+  |    1/4     |   2 bits   |
+  +------------+------------+
+  |    1/256   |   8 bits   |
+  +------------+------------+
+  |    1/3     | 1,58 bit   |
+  +------------+------------+
+  |    p_i     | -Log_2(p_i)|
+  +------------+------------+
+
+Une question peut  être considérée comme un éventail  de réponses plus
+ou  moins probables. Supposons  que la  première question  du décodeur
+soit  : «  Le  nombre  se trouve-t-il  dans  l'intervalle 0..63,  dans
+l'intervalle 64..127  ou dans l'intervalle  128..255 ? ».  La première
+réponse  lui fournit  2 bits  avec  une probabilité  1/4. La  deuxième
+réponse  lui fournit  aussi  2 bits  avec  une probabilité  1/4 et  la
+troisième  réponse lui  fournit 1  bit  avec une  probabilité 1/2.  Le
+décodeur récoltera en moyenne  1/4 x 2 + 1/4 x 2 + 1/2  x 1 = 1,5 bit.
+Plus généralement,  si les probabilités des  différentes réponses sont
+(p_i), alors la quantité d'information moyenne obtenue par la question
+est :
+
+  - sigma(p_i x Log2(p_i))
+
+Pour faire  pédant, signalons que  l'on peut utiliser  les logarithmes
+népériens dans la formule à la  place des logarithmes à base deux.  On
+ne peut plus parler de bits dans ce cas. L'unité est alors appelé le «
+shannon ». Cette unité de quantité d'information n'est jamais utilisée
+dans  la  réalité,  y  compris  pour  les  études  théoriques  sur  la
+transmission de l'information.
+
+Revenons au Mastermind. Une question consiste à jouer une proposition,
+C<ABCD>  ou  C<BACD> par  exemple.  La  réponse  est l'une  des  notes
+C<XXXX>, C<XXOO>, C<XXX.>, C<XOO> et ainsi de suite. La probabilité de
+chacune de ces  réponses est proportionnelle au nombre  de codes qui y
+correspondent.  On peut ainsi calculer l'entropie de la question.
+
+Reprenons  l'exemple du  début.  Les codes  restants  sont :  C<ABCD>,
+C<ABDC> et C<BACD>. Si le décodeur joue C<ABCD>, le codeur répondra :
+
+  +----------+----------+--------------+-------------+------------+
+  | Question | Réponses | Codes        | Probabilité | Entropie   |
+  +----------+----------+--------------+-------------+------------+
+  |   ABCD   |   XXXX   | ABCD         |    1/3      |            |
+  |          +----------+--------------+-------------+            |
+  |          |   XXOO   | ABDC et BACD |    2/3      |  0,92 bit  |
+  +----------+----------+--------------+-------------+------------+
+  |   BACD   |   XXXX   | BACD         |    1/3      |            |
+  |          +----------+--------------+-------------+            |
+  |          |   XXOO   | ABCD         |    1/3      |            |
+  |          +----------+--------------+-------------+            |
+  |          |   OOOO   | ABDC         |    1/3      |  1,58 bit  |
+  +----------+----------+--------------+-------------+------------+
+  |   ABDC   |   XXXX   | ABDC         |    1/3      |            |
+  |          +----------+--------------+-------------+            |
+  |          |   XXOO   | ABCD         |    1/3      |            |
+  |          +----------+--------------+-------------+            |
+  |          |   OOOO   | BACD         |    1/3      |  1,58 bit  |
+  +----------+----------+--------------+-------------+------------+
+
+On voit  donc que le code  C<BACD> et le code  C<ABDC> rapportent plus
+d'information que C<ABCD>.  C'est donc ce que le programme de décodage
+jouera.
+
+
 
 À compléter.
 
