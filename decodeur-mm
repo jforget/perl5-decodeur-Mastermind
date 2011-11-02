@@ -69,9 +69,11 @@ et le décodeur propose
 
   A B C D
 
-La note  se constitue  d'une marque noire  (pour "D") et  d'une marque
-blanche (pour  "C"). Mais  le décodeur ne  sait pas quelle  couleur ou
-quelle position a donné la marque noire ni la marque blanche.
+La  note se  constitue  d'une  marque noire  (pour  C<D> en  quatrième
+position) et d'une marque blanche (pour C<C> en première position dans
+le  code  et en  troisième  position  dans  la proposition).  Mais  le
+décodeur  ne sait pas  quelle couleur  ou quelle  position a  donné la
+marque noire ni la marque blanche.
 
 S'il y  a répétition de  couleur, un même  pion ne peut  donner qu'une
 seule   marque,   en  privilégiant   les   marques   noires  sur   les
@@ -80,17 +82,17 @@ blanches. Exemple :
   code secret   D A A D
   proposition   A B C D
 
-Le résultat sera une marque noire  et une marque blanche. Le "A" de la
-proposition, en position 1, peut être  apparié au "A" en position 2 du
+Le résultat sera une marque noire et une marque blanche. Le C<A> de la
+proposition, en position 1, peut être apparié au C<A> en position 2 du
 code secret  ou à celui  qui se trouve  en position 3.  Dans  les deux
 cas,  cela donne  une marque  blanche.   Mais cela  n'en donne  qu'une
-seule, le "A"  de la proposition ne pouvant  servir qu'une seule fois.
-Le "D" de la proposition, en position 4, peut être apparié avec le "D"
-en position 1 du code secret,  ce qui donnerait une marque blanche, ou
-avec le "D" en position 4  du code secret, ce qui donnerait une marque
-noire. Dans ce cas, c'est la  marque noire qui l'emporte sur la marque
-blanche.  Le résultat complet est  donc une marque noire et une marque
-blanche.
+seule, le C<A> de la  proposition ne pouvant servir qu'une seule fois.
+Le C<D>  de la proposition, en  position 4, peut être  apparié avec le
+C<D>  en  position 1  du  code secret,  ce  qui  donnerait une  marque
+blanche,  ou  avec le  C<D>  en  position 4  du  code  secret, ce  qui
+donnerait une  marque noire.  Dans ce cas,  c'est la marque  noire qui
+l'emporte sur  la marque  blanche.  Le résultat  complet est  donc une
+marque noire et une marque blanche.
 
 Si le codeur  est obligé de choisir ses quatre  couleurs parmi les six
 possibles, le  décodeur a le  droit d'insérer dans sa  proposition une
@@ -98,10 +100,10 @@ couleur  dont il sait  qu'elle est  invalide. Matériellement,  cela se
 traduit par une place laissée vide, sans pion de couleur.
 
 Dans le cas d'un texte en noir sur blanc (ce fichier POD ou un livre),
-on représente traditionnellement les marques noires avec un "X" et les
-marques   blanches  avec   un  "O".   Les  pions   de   couleurs  sont
+on représente  traditionnellement les marques  noires avec un  C<X> et
+les  marques  blanches avec  un  C<O>.   Les  pions de  couleurs  sont
 habituellement  représentés  par l'initiale  de  la  couleur, mais  je
-préfère ici utiliser  les lettres de "A" à  "F", puisque j'envisage de
+préfère ici utiliser les lettres de C<A> à C<F>, puisque j'envisage de
 permettre l'utilisation d'un nombre de couleurs allant jusqu'à 26.
 
 Il  existe des  variantes  du Mastermind.  Des variantes  élémentaires
