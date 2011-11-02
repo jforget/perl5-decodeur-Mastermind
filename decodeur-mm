@@ -128,14 +128,14 @@ début de partie, le milieu de partie et la fin de partie.
 
 Pendant le  début de partie, le  décodeur n'a aucune idée  sur le code
 secret à  trouver. Il joue donc  des propositions en  grande partie au
-hasard, de manière à "ratisser large".
+hasard, de manière à « ratisser large ».
 
 En milieu de  partie, le décodeur commence à  avoir quelques idées sur
 le code secret,  il formule des hypothèses et  les teste. Par exemple,
-il peut  formuler des  hypothèses comme :  "Le rouge est-il  répété ou
-n'apparaît-il qu'une  fois ?"  ou bien :  "La marque noire  du premier
+il peut  formuler des hypothèses comme  : « Le rouge  est-il répété ou
+n'apparaît-il qu'une fois  ? » ou bien : « La  marque noire du premier
 tour  correspond-elle au  bleu en  première  position ou  au jaune  en
-troisième ?".
+troisième ? ».
 
 En fin de partie, le décodeur  a des idées précises sur le code secret
 et il ne  reste plus que quelques codes compatibles avec  ce qui a été
@@ -147,21 +147,21 @@ C<BACD>. Si le décodeur joue C<ABCD>, le codeur répondra :
 
 =over 4
 
-=item * XXXX si le code secret est ABCD
+=item * C<XXXX> si le code secret est C<ABCD>
 
-=item * XXOO si le code secret est ABDC ou BACD.
+=item * C<XXOO> si le code secret est C<ABDC> ou C<BACD>.
 
 =back
 
-Si en revanche, le décodeur joue BACD, le codeur répondra :
+Si en revanche, le décodeur joue C<BACD>, le codeur répondra :
 
 =over 4
 
-=item * XXXX si le code secret est BACD,
+=item * C<XXXX> si le code secret est C<BACD>,
 
-=item * XXOO si le code secret est BADC,
+=item * C<XXOO> si le code secret est C<BADC>,
 
-=item * OOOO si le code secret est BACD.
+=item * C<OOOO> si le code secret est C<BACD>.
 
 =back
 
