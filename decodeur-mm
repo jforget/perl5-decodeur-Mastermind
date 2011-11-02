@@ -310,16 +310,23 @@ Donald Knuth et utilise le minimax.
 =head3 L'entropie de Shannon
 
 Au début, l'entropie a été un concept en physique, plus précisément en
-thermodynamique.   L'entropie   a    été   introduite   par   Clausius
-(1822--1888),  puis  développée  par  Ludwig  Boltzmann  (1844--1906).
+thermodynamique.    L'entropie   a   été   introduite   par   Clausius
+(1822--1888)  comme étant  le quotient  de la  quantité de  chaleur du
+système  considéré par  sa  température absolue.  Cette  notion a  été
+développée  par Ludwig  Boltzmann (1844--1906)  qui  l'a.décrite comme
+étant le  nombre de micro-états définissant le  macro-état du système.
 Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 étudier le codage  optimal d'un message transmis par  un canal avec ou
-sans parasites. Jean Tricot et Marco Meirovitz ont appliqué ce concept
-au  Mastermind,  mais  sans  vraiment  donner de  détails.  Voici  une
-explication de  la notion  d'entropie mathématique. Cela  ne constitue
-pas un cours de mathématiques en  bonne et due forme, c'est plutôt une
-présentation   de  mathématiques   expérimentales   faisant  appel   à
-l'intuition plutôt qu'au raisonnement.
+sans parasites. La formule qu'il donne est
+
+  - sigma(pi x Log2(pi))
+
+Jean Tricot et Marco Meirovitz  ont appliqué ce concept au Mastermind,
+mais sans  vraiment donner  de détails.  Voici  une explication  de la
+notion  d'entropie mathématique.  Cela ne  constitue pas  un  cours de
+mathématiques en bonne et due  forme, c'est plutôt une présentation de
+mathématiques expérimentales faisant  appel à l'intuition plutôt qu'au
+raisonnement.
 
 Laissons de côté le Mastermind et prenons un autre jeu sur le principe
 des  questions-réponses, le  jeu consistant  à deviner  un  nombre. Le
