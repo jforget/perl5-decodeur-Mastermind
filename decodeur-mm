@@ -436,9 +436,56 @@ On voit  donc que le code  C<BACD> et le code  C<ABDC> rapportent plus
 d'information que C<ABCD>.  C'est donc ce que le programme de décodage
 jouera.
 
+=head3 Le minimax de Knuth
 
+Ce  critère est  nettement plus  simple  (et beaucoup  moins rigolo  à
+expliquer). Lorsque  l'on recense  les différentes notes  obtenues pas
+les  codes possibles  restants,  on  se contente  de  retenir la  note
+correspondant au nombre maximal de codes possibles. Et le code à jouer
+est  celui pour  lequel ce  maximum est  le plus  petit. Avec  le même
+exemple que ci-dessus, on a :
 
-À compléter.
+  +----------+----------+--------------+--------+---------+
+  | Question | Réponses | Codes        | Nombre | Maximum |
+  +----------+----------+--------------+--------+---------+
+  |   ABCD   |   XXXX   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABDC et BACD |    2   |    2    |
+  +----------+----------+--------------+--------+---------+
+  |   BACD   |   XXXX   | BACD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   OOOO   | ABDC         |    1   |    1    |
+  +----------+----------+--------------+--------+---------+
+  |   ABDC   |   XXXX   | ABDC         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   OOOO   | BACD         |    1   |    1    |
+  +----------+----------+--------------+--------+---------+
+
+On voit que  comme avec l'entropie de Shannon, il  ne faut surtout pas
+jouer C<ABCD>, mais soit C<BACD>, soit C<ABDC>.
+
+Dans un cas aussi simple, ce  n'est pas étonnant que les deux critères
+aboutissent au même résultat. Dans un cas plus compliqué, cela ne sera
+pas toujours  le cas. Ainsi, en  annexe de leur livre,  Jean Tricot et
+Marco  Meirovitz analysent  le premier  coup  du jeu  à 4  trous et  6
+couleurs. Le  coup C<ABCD> possède  la meilleure entropie,  3,05 bits,
+mais pour  un nombre maximal de  312 codes avec la  note C<OO>, tandis
+que le coup C<ABCC> est meilleur  pour le critère de Knuth, la note la
+moins  bonne,  C<O>  donnant  276 possibilités  restantes,  alors  que
+l'entropie  de Shannon  pour C<ABCC>  est moins  bonne, 3,04  bits. Un
+centième de bit,  cela ne va pas chercher très  loin, mais le résultat
+est là, ces deux critères ne sont pas forcément en accord.
+
+Quel  est le meilleur  critère ?  Je ne  sais pas.  Je pense  que cela
+dépend des  circonstances et que l'entropie se  révèlera meilleure que
+le  minimax  dans certains  cas  tandis  que  le minimax  se  révèlera
+meilleur que l'entropie  dans d'autres cas. Notons que  l'on n'est pas
+obligé d'utiliser la  même méthode tout au long  d'une même partie. On
+peut jouer un coup avec le minimax et le suivant avec l'entropie.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
