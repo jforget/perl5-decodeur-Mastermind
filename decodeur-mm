@@ -5,10 +5,6 @@
 #
 # Copyright 2011 Jean Forget
 
-die "Le programme n'est pas prêt pour l'instant, revenez un peu plus tard\n";
-
-
-__END__
 
 =encoding utf8
 
@@ -22,7 +18,31 @@ decode-mm -- un programme pour jouer au Mastermind en tant que décodeur
 
 =head1 PARAMÈTRES D'APPEL
 
-À écrire
+=over 4
+
+=item * couleurs
+
+Nombre de  couleurs disponibles pour  le code et les  propositions. Ce
+nombre doit être compris entre 3  et 26. Les couleurs sont en fait les
+lettres de l'alphabet.  Donc, pour 3 couleurs, on  dispose de 'A', 'B'
+et 'C', tandis  que pour 26 couleurs on dispose  de toutes les lettres
+de 'A' à 'Z'.
+
+=item * trous
+
+Nombre de trous, c'est-à-dire longueur du code à découvrir et longueur
+des propositions. Ce nombre doit être compris entre 2 et 5.
+
+=item * reponse
+
+Code  secret à  découvrir. Mais  c'est  promis, le  programme ne  s'en
+servira  pas pour  effectuer  ses déductions.  Si  vous fournissez  ce
+paramètre, le programme l'utilisera  pour noter les propositions qu'il
+joue.  Si vous  ne  le  fournissez pas,  le  programme vous  affichera
+chacune des propositions qu'il joue et vous demandera à chaque fois de
+donner la note correspondante.
+
+=back
 
 =head1 DESCRIPTION
 
@@ -515,4 +535,40 @@ Les termes de licence de ce script sont les mêmes termes que pour Perl
 : GNU General Public License (GPL) et Artistic License.
 
 
+=cut
 
+use v5.10;
+use strict;
+use warnings;
+use Getopt::Long;
+
+my (@coul, $nb_coul, $nb_trous, $reponse);
+GetOptions("couleurs=i" => \$nb_coul,
+           "trous=i"    => \$nb_trous,
+           "reponse=s"  => \$reponse,
+  ) or die "Problème avec les options";
+
+$nb_coul  //= 6;
+$nb_trous //= 4;
+$reponse  //= '';
+die "Nombre de trous de 2 à 5"
+  unless $nb_trous >= 2 && $nb_trous <= 5;
+die "Nombre de couleurs de 3 à 26"
+  unless $nb_coul >= 3 && $nb_coul <= 26;
+
+@coul = ('A'..'Z')[0..$nb_coul-1];
+say join ' ', @coul;
+
+$reponse = uc $reponse;
+
+if ($reponse ne '') {
+  die "Réponse '$reponse' trop courte ($nb_trous trous)"
+    unless length($reponse) >= $nb_trous;
+  die "Réponse '$reponse' trop longue ($nb_trous trous)"
+    unless length($reponse) == $nb_trous;
+
+  # vérification du contenu de la réponse
+  if ($reponse !~ join '', '^[', @coul, ']*$') {
+    die "Couleur incorrecte dans '$reponse'";
+  }
+}
