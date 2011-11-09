@@ -388,8 +388,8 @@ suivant :
 
   +------------+------------+
   | probabilité| information|
-  |de la       |obtenue     |
-  |réponse     |            |
+  | de la      | obtenue    |
+  | réponse    |            |
   +------------+------------+
   |    1/2     |   1 bit    |
   +------------+------------+
@@ -571,4 +571,73 @@ if ($reponse ne '') {
   if ($reponse !~ join '', '^[', @coul, ']*$') {
     die "Couleur incorrecte dans '$reponse'";
   }
+}
+
+debut_de_partie()
+|| interlude()
+|| fin_de_partie();
+exit(0);
+
+sub debut_de_partie {
+  my $pointeur = - $nb_coul;
+  while ($pointeur < 0) {
+    my $prop = join '', @coul[$pointeur .. $pointeur + $nb_trous - 1];
+    jouer($prop);
+    $pointeur += $nb_trous;
+  }
+}
+
+sub interlude {
+  die "interlude : pas encore codé";
+}
+
+sub fin_de_partie {
+  die "fin_de_partie : pas encore codé";
+}
+
+sub jouer {
+  my ($prop) = @_;
+  if ($reponse ne '') {
+    return noter($prop, $reponse);
+  }
+  my $pas_bon = 1;
+  while ($pas_bon) {
+    say $prop;
+    my ($n, $b, $nb, $res);
+
+    my $resultat = <STDIN>;
+    chomp $resultat;
+    next if $resultat eq '';
+    $resultat = uc $resultat;
+
+    if ($resultat =~ /^(\d)\s+(\d)\s*$/) {
+      $n   = $1;
+      $b   = $2;
+      $nb  = $n + $b;
+      $res = 'X' x $n . 'O' x $n;
+    }
+    elsif ($resultat eq ' ') {
+      $n   = 0;
+      $b   = 0;
+      $nb  = 0;
+      $res = '';
+    }
+    elsif ($resultat =~ /^(X*)(O*)$/) {
+      $n   = length($1);
+      $b   = length($2);
+      $nb  = $n + $b;
+      $res = $1 . $2;
+    }
+    else {
+      say "Réponse incorrecte";
+      next;
+    }
+    say "n = $n, b = $b, nb = $nb";
+    return ($n, $b, $nb, $res);
+    $pas_bon = 0;
+  }
+}
+
+sub noter {
+  die "noter : pas encore codé";
 }
