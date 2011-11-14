@@ -607,10 +607,16 @@ sub jouer {
 
     my $resultat = <STDIN>;
     chomp $resultat;
-    next if $resultat eq '';
     $resultat = uc $resultat;
 
-    if ($resultat =~ /^(\d)\s+(\d)\s*$/) {
+    if ($resultat eq '') {
+      print <<"EOF";
+Résultat de la forme '1 2' ou 'XOO' pour un noir et deux blancs.
+Si la réponse est 0 noir et 0 blanc, tapez au moins un espace pour éviter une erreur de saisie.
+EOF
+      next;
+    }
+    elsif ($resultat =~ /^(\d)\s+(\d)\s*$/) {
       $n   = $1;
       $b   = $2;
       $nb  = $n + $b;
@@ -629,7 +635,23 @@ sub jouer {
       $res = $1 . $2;
     }
     else {
-      say "Réponse incorrecte";
+      print <<"EOF";
+Réponse incorrecte.
+Résultat de la forme '1 2' ou 'XOO' pour un noir et deux blancs.
+Si la réponse est 0 noir et 0 blanc, tapez au moins un espace pour éviter une erreur de saisie.
+EOF
+      next;
+    }
+    if ($n > $nb_trous) {
+      say "Réponse incorrecte, le nombre de noirs ($n) ne peut pas dépasser le nombre de trous ($nb_trous)";
+      next;
+    }
+    if ($b > $nb_trous) {
+      say "Réponse incorrecte, le nombre de blancs ($b) ne peut pas dépasser le nombre de trous ($nb_trous)";
+      next;
+    }
+    if ($nb > $nb_trous) {
+      say "Réponse incorrecte, le nombre de noirs et de blancs ($nb) ne peut pas dépasser le nombre de trous ($nb_trous)";
       next;
     }
     say "n = $n, b = $b, nb = $nb";
