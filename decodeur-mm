@@ -661,5 +661,30 @@ EOF
 }
 
 sub noter {
-  die "noter : pas encore codé";
+  my ($prop1, $prop2) = @_;
+  my ($n, $b, $nb, $res) = (0, 0, 0, '');
+
+  say $prop1;
+  for (my $i = 0; $i < $nb_trous; $i++) {
+    if (substr($prop1, $i, 1) eq substr($prop2, $i, 1)) {
+      $n   ++;
+      $nb  ++;
+      $res .= 'X';
+      substr($prop1, $i, 1) = chr(1);
+      substr($prop2, $i, 1) = chr(2);
+    }
+  }
+  for (my $i = 0; $i < length($prop1); $i++) {
+    for (my $j = 0; $j < length($prop2); $j++) {
+      if (substr($prop1, $i, 1) eq substr($prop2, $j, 1)) {
+	$b   ++;
+	$nb  ++;
+	$res .= 'O';
+	substr($prop1, $i, 1) = chr(1);
+	substr($prop2, $j, 1) = chr(2);
+      }
+    }
+  }
+  say "n = $n, b = $b, nb = $nb";
+  return ($n, $b, $nb, $res);
 }
