@@ -677,11 +677,11 @@ sub noter {
   for (my $i = 0; $i < length($prop1); $i++) {
     for (my $j = 0; $j < length($prop2); $j++) {
       if (substr($prop1, $i, 1) eq substr($prop2, $j, 1)) {
-	$b   ++;
-	$nb  ++;
-	$res .= 'O';
-	substr($prop1, $i, 1) = chr(1);
-	substr($prop2, $j, 1) = chr(2);
+        $b   ++;
+        $nb  ++;
+        $res .= 'O';
+        substr($prop1, $i, 1) = chr(1);
+        substr($prop2, $j, 1) = chr(2);
       }
     }
   }
