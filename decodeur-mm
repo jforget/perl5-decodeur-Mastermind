@@ -573,6 +573,8 @@ if ($reponse ne '') {
   }
 }
 
+my @partie;
+
 debut_de_partie()
 || interlude()
 || fin_de_partie();
@@ -582,9 +584,15 @@ sub debut_de_partie {
   my $pointeur = - $nb_coul;
   while ($pointeur < 0) {
     my $prop = join '', @coul[$pointeur .. $pointeur + $nb_trous - 1];
-    jouer($prop);
+    my ($n, $b, $nb, $res) = jouer($prop);
+    if ($n == $nb_trous) {
+      say "Gagné ! mais j'ai eu de la chance...";
+      return 1;
+    }
     $pointeur += $nb_trous;
+    push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
   }
+  return 0;
 }
 
 sub interlude {
