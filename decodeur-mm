@@ -589,8 +589,12 @@ sub debut_de_partie {
       say "Gagné ! mais j'ai eu de la chance...";
       return 1;
     }
-    $pointeur += $nb_trous;
+    if ($nb == 0) {
+      splice @coul, $pointeur, $nb_trous;
+      say join ' ', @coul;
+    }
     push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
+    $pointeur += $nb_trous;
   }
   return 0;
 }
