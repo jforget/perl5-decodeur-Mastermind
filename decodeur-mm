@@ -602,8 +602,10 @@ sub debut_de_partie {
 
 sub interlude {
   @poss = ( '.' x $nb_trous );
+
   # $i représente aussi bien l'emplacement où l'on insère la couleur que le nombre de places
-  # inoccupées dans la génération courante
+  # inoccupées dans la génération courante. C'est pour cela que l'on fait une boucle
+  # descendante.
   for my $i (reverse (0 .. $nb_trous - 1)) {
     my @poss_prec = @poss;
     @poss = ();
@@ -612,6 +614,20 @@ sub interlude {
         my $compatible = 1;
         substr($poss, $i, 1) = $coul;
 
+        for my $coup (@partie) {
+	  my ($n, undef, $nb) = noter($coup->{prop}, $poss);
+          if ($n > $coup->{n} || $nb > $coup->{nb}) {
+            # La proposition incomplète est déjà trop bien notée
+            $compatible = 0;
+	    last;
+	  }
+          if ($n < $coup->{n} - $i || $nb < $coup->{nb} - $i) {
+            # La proposition incomplète est trop en retard par rapport à la note du coup
+            $compatible = 0;
+	    last;
+	  }
+	}
+
         if ($compatible) {
           push @poss, $poss;
         }
@@ -619,7 +635,13 @@ sub interlude {
     }
     say join ' ', @poss
   }
-  die "interlude : pas encore entièrement codé";
+  if (@poss) {
+    return 0;
+  }
+  else {
+    say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
+    return 1;
+  }
 }
 
 sub fin_de_partie {
@@ -629,7 +651,10 @@ sub fin_de_partie {
 sub jouer {
   my ($prop) = @_;
   if ($reponse ne '') {
-    return noter($prop, $reponse);
+    my ($n, $b, $nb, $res) = noter($prop, $reponse);
+    say $prop;
+    say "n = $n, b = $b, nb = $nb";
+    return ($n, $b, $nb, $res);
   }
   my $pas_bon = 1;
   while ($pas_bon) {
@@ -685,9 +710,9 @@ EOF
       say "Réponse incorrecte, le nombre de noirs et de blancs ($nb) ne peut pas dépasser le nombre de trous ($nb_trous)";
       next;
     }
+    $pas_bon = 0;
     say "n = $n, b = $b, nb = $nb";
     return ($n, $b, $nb, $res);
-    $pas_bon = 0;
   }
 }
 
@@ -695,7 +720,7 @@ sub noter {
   my ($prop1, $prop2) = @_;
   my ($n, $b, $nb, $res) = (0, 0, 0, '');
 
-  say $prop1;
+  #say $prop1;
   for (my $i = 0; $i < $nb_trous; $i++) {
     if (substr($prop1, $i, 1) eq substr($prop2, $i, 1)) {
       $n   ++;
@@ -716,6 +741,6 @@ sub noter {
       }
     }
   }
-  say "n = $n, b = $b, nb = $nb";
+  #say "n = $n, b = $b, nb = $nb";
   return ($n, $b, $nb, $res);
 }
