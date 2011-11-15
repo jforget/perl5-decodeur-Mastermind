@@ -557,7 +557,7 @@ die "Nombre de couleurs de 3 à 26"
   unless $nb_coul >= 3 && $nb_coul <= 26;
 
 @coul = ('A'..'Z')[0..$nb_coul-1];
-say join ' ', @coul;
+# say join ' ', @coul;
 
 $reponse = uc $reponse;
 
@@ -574,6 +574,7 @@ if ($reponse ne '') {
 }
 
 my @partie;
+my @poss;
 
 debut_de_partie()
 || interlude()
@@ -600,7 +601,25 @@ sub debut_de_partie {
 }
 
 sub interlude {
-  die "interlude : pas encore codé";
+  @poss = ( '.' x $nb_trous );
+  # $i représente aussi bien l'emplacement où l'on insère la couleur que le nombre de places
+  # inoccupées dans la génération courante
+  for my $i (reverse (0 .. $nb_trous - 1)) {
+    my @poss_prec = @poss;
+    @poss = ();
+    for my $coul (@coul) {
+      for my $poss (@poss_prec) {
+        my $compatible = 1;
+        substr($poss, $i, 1) = $coul;
+
+        if ($compatible) {
+          push @poss, $poss;
+        }
+      }
+    }
+    say join ' ', @poss
+  }
+  die "interlude : pas encore entièrement codé";
 }
 
 sub fin_de_partie {
