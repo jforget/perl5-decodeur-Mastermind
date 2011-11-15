@@ -615,18 +615,18 @@ sub interlude {
         substr($poss, $i, 1) = $coul;
 
         for my $coup (@partie) {
-	  my ($n, undef, $nb) = noter($coup->{prop}, $poss);
+          my ($n, undef, $nb) = noter($coup->{prop}, $poss);
           if ($n > $coup->{n} || $nb > $coup->{nb}) {
             # La proposition incomplète est déjà trop bien notée
             $compatible = 0;
-	    last;
-	  }
+            last;
+          }
           if ($n < $coup->{n} - $i || $nb < $coup->{nb} - $i) {
             # La proposition incomplète est trop en retard par rapport à la note du coup
             $compatible = 0;
-	    last;
-	  }
-	}
+            last;
+          }
+        }
 
         if ($compatible) {
           push @poss, $poss;
@@ -635,13 +635,11 @@ sub interlude {
     }
     say join ' ', @poss
   }
-  if (@poss) {
-    return 0;
-  }
-  else {
+  if (@poss == 0) {
     say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
     return 1;
   }
+  die "Deuxième partie de l'interlude pas encore codée";
 }
 
 sub fin_de_partie {
