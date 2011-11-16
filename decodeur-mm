@@ -541,6 +541,7 @@ use v5.10;
 use strict;
 use warnings;
 use Getopt::Long;
+use YAML;
 
 my (@coul, $nb_coul, $nb_trous, $reponse);
 GetOptions("couleurs=i" => \$nb_coul,
@@ -575,6 +576,7 @@ if ($reponse ne '') {
 
 my @partie;
 my @poss;
+my %notes;
 
 debut_de_partie()
 || interlude()
@@ -612,6 +614,16 @@ sub interlude {
     for my $coul (@coul) {
       for my $poss (@poss_prec) {
         my $compatible = 1;
+
+        # Quelle horrrrrreur !!!!!! Un substr en partie gauche !!!! Les débutants
+        # vont être effffffrayés par une telle construction !!!!!!
+        # (De l'art de programmer en Perl, page 169)
+        #
+        # En fait, je trouve le substr en partie gauche plus lisible que le substr à
+        # quatre arguments, cela montre sans équivoque que la chaîne $poss est modifiée.
+        # Quant à l'effroi du débutant, je me souviens avoir plutôt ressenti un frisson
+        # d'excitation lorsque j'ai découvert cela en 1998 dans Programming Perl 2nd Edition,
+        # rien qui ressemble à de la peur.
         substr($poss, $i, 1) = $coul;
 
         for my $coup (@partie) {
@@ -639,7 +651,21 @@ sub interlude {
     say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
     return 1;
   }
-  die "Deuxième partie de l'interlude pas encore codée";
+
+  for (my $i = 0; $i < @poss; ++$i) {
+
+    my $poss1 = $poss[$i];
+    $notes{$poss1}{$poss1} = { n => $nb_trous, b => 0, nb => $nb_trous, res => 'X' x $nb_trous };
+
+    for (my $j = 0; $j < $i; ++$j) {
+      my %h;
+      my $poss2 = $poss[$j];
+      @h{ qw/n b nb res/ } = noter($poss1, $poss2);
+      $notes{$poss1}{$poss2} = { %h };
+      $notes{$poss2}{$poss1} = { %h };
+    }
+  }
+  #print YAML::Dump(\%notes);
 }
 
 sub fin_de_partie {
