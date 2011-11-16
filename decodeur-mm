@@ -579,6 +579,9 @@ die "Nombre de trous de 2 à 5"
 die "Nombre de couleurs de 3 à 26"
   unless $nb_coul >= 3 && $nb_coul <= 26;
 
+$b_entropie //= 0;
+$b_minimax  //= 0;
+
 if ($b_entropie + $b_minimax != 1) {
   $b_entropie = 1;
   $b_minimax  = 0;
