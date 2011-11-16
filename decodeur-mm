@@ -42,6 +42,14 @@ joue.  Si vous  ne  le  fournissez pas,  le  programme vous  affichera
 chacune des propositions qu'il joue et vous demandera à chaque fois de
 donner la note correspondante.
 
+=item * entropie | minimax
+
+Choix  de  la  tactique  à  utiliser  pour  la  fin  de  la  partie  :
+maximisation  de l'entropie de  Shannon ou  minimisation de  la taille
+maximale   de   la  classe   restante   (voir   ci-dessous  pour   les
+explications). Si aucune n'est demandée ou si les deux sont demandées,
+on prendra l'entropie de Shannon.
+
 =back
 
 =head1 DESCRIPTION
@@ -456,6 +464,18 @@ On voit  donc que le code  C<BACD> et le code  C<ABDC> rapportent plus
 d'information que C<ABCD>.  C'est donc ce que le programme de décodage
 jouera.
 
+Si  les probabilités  sont calculées  à  partir de  la partition  d'un
+ensemble, c'est-à-dire que
+
+  p_i = n_i / N, avec N = sigma(n_i)
+
+alors, après quelques transformations de niveau terminale scientifique,
+l'entropie se calcule avec :
+
+              sigma(n_i x Log2(n_i))
+  Log2(N)  -  ----------------------
+                        N
+
 =head3 Le minimax de Knuth
 
 Ce  critère est  nettement plus  simple  (et beaucoup  moins rigolo  à
@@ -543,10 +563,12 @@ use warnings;
 use Getopt::Long;
 use YAML;
 
-my (@coul, $nb_coul, $nb_trous, $reponse);
+my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax);
 GetOptions("couleurs=i" => \$nb_coul,
            "trous=i"    => \$nb_trous,
            "reponse=s"  => \$reponse,
+           "entropie"   => \$b_entropie,
+           "minimax"    => \$b_minimax,
   ) or die "Problème avec les options";
 
 $nb_coul  //= 6;
@@ -557,6 +579,10 @@ die "Nombre de trous de 2 à 5"
 die "Nombre de couleurs de 3 à 26"
   unless $nb_coul >= 3 && $nb_coul <= 26;
 
+if ($b_entropie + $b_minimax != 1) {
+  $b_entropie = 1;
+  $b_minimax  = 0;
+}
 @coul = ('A'..'Z')[0..$nb_coul-1];
 # say join ' ', @coul;
 
@@ -782,8 +808,32 @@ sub noter {
 }
 
 sub choisir {
-  # pour l'instant, un choix on ne peut plus basique, le premier code qu'on trouve
-  return $poss[0];
+  my (%entropie, %max);
+  foreach my $poss1 (@poss) {
+    my %histogramme;
+    foreach my $poss2 (@poss) {
+      my $res = $notes{$poss1}{$poss2}{res};
+      $histogramme{$res}++;
+    }
+    #say join ' ', $poss1, %histogramme;
+    my ($N, $entr, $max) = (0, 0, 0);
+    for (values %histogramme) {
+      $N += $_;
+      $entr += $_ * log($_);
+      $max = $_ if $_ > $max;
+    }
+    $entropie{$poss1} = (log($N) - $entr / $N) / log(2);
+    $max     {$poss1} = $max;
+  }
+  #say YAML::Dump(\%entropie, \%max);
+
+  my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @poss;
+  my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @poss;
+
+  my ($poss_entr, $minimax) = ($poss_entr[0], $poss_max[0]);
+  say "meilleure entropie $poss_entr avec $entropie{$poss_entr} (max : $max{$poss_entr})";
+  say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
+  return $b_entropie ? $poss_entr : $minimax;
 }
 
 sub filtrer {
