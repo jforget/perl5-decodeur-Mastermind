@@ -669,15 +669,27 @@ sub interlude {
 }
 
 sub fin_de_partie {
-  die "fin_de_partie : pas encore codé";
+  while (1) {
+    my $prop = choisir();
+    my ($n, $b, $nb, $res) = jouer($prop);
+    if ($n == $nb_trous) {
+      say "Gagné !";
+      return 1;
+    }
+    push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
+    filtrer();
+    if (@poss == 0) {
+      say "Il ne reste plus de proposition compatible. Il doit y avoir eu une erreur. Pouvez-vous vérifier, s'il-vous-plaît ?";
+      return 0;
+    }
+  }
 }
 
 sub jouer {
   my ($prop) = @_;
   if ($reponse ne '') {
     my ($n, $b, $nb, $res) = noter($prop, $reponse);
-    say $prop;
-    say "n = $n, b = $b, nb = $nb";
+    say "Je joue $prop -> $res";
     return ($n, $b, $nb, $res);
   }
   my $pas_bon = 1;
@@ -767,4 +779,24 @@ sub noter {
   }
   #say "n = $n, b = $b, nb = $nb";
   return ($n, $b, $nb, $res);
+}
+
+sub choisir {
+  # pour l'instant, un choix on ne peut plus basique, le premier code qu'on trouve
+  return $poss[0];
+}
+
+sub filtrer {
+  my @poss_avant = @poss;
+  @poss = ();
+  my $ref_coup = $partie[-1];
+  my $prop = $ref_coup->{prop};
+  my $n    = $ref_coup->{n};
+  my $b    = $ref_coup->{b};
+  foreach my $poss (@poss_avant) {
+    if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
+      push @poss, $poss;
+    }
+  }
+  say join ' ', "Il reste", @poss;
 }
