@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# -*- encoding: utf-8 -*-
+# -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 # Décodeur mastermind
 #
@@ -513,7 +513,7 @@ Néant.
 
 =head1 DÉPENDANCES
 
-À écrire
+YAML : pour la mise au point
 
 =head1 INCOMPATIBILITÉS
 
