@@ -44,7 +44,9 @@ qu'il vous indique. Exemple :
   Gagné !                       message final du programme
 
 (*) pour  éviter les  erreurs de saisie,  l'utilisateur doit  taper au
-moins un blanc. Ou alors, il peut répondre C<0 0>.
+moins un espace, car une  chaîne vide est vraisemblablement une erreur
+de saisie.  Ou alors,  il peut  répondre C<0 0>,  ce qui  enlève toute
+amiguïté.
 
 Variantes :
 
