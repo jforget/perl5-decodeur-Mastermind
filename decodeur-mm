@@ -14,7 +14,49 @@ decode-mm -- un programme pour jouer au Mastermind en tant que décodeur
 
 =head1 UTILISATION
 
-À écrire
+Utilisation autonome :
+
+  decodeur-mm -r BEEF
+
+Le programme  résoud un problème  à 4 trous  et 6 couleurs,  sans vous
+demander de noter ses propositions, puisque le code secret est C<BEEF>
+(mais il ne triche pas).
+
+Utilisation interactive :
+
+  decodeur-mm
+
+Sans aucun paramètre,  le programme résoud un problème à  4 trous et 6
+couleurs,  en vous  demandant à  chaque fois  de noter  la proposition
+qu'il vous indique. Exemple :
+
+  > decodeur-mm                 ligne de commande écrite par l'utilisateur
+  ABCD                          premier coup du programme
+  0 2                           réponse de l'utilisateur : 0 noir et deux blancs
+  EFAB                          deuxième coup du programme
+  XO                            réponse de l'utilisateur : 1 noir et 1 blanc
+  CFBF                          troisième coup du programme
+                                réponse 0 noir et 0 blanc (*)
+  EDEA                          quatrième coup du programme
+  0 3                           l'utilisateur répond avec 0 noir et 3 blancs
+  DAAE                          cinquième coup du programme
+  XXXX                          l'utilisateur répond avec 4 noirs
+  Gagné !                       message final du programme
+
+(*) pour  éviter les  erreurs de saisie,  l'utilisateur doit  taper au
+moins un blanc. Ou alors, il peut répondre C<0 0>.
+
+Variantes :
+
+Le super Mastermind se joue avec 5 trous et 8 couleurs. Cela donne :
+
+  decodeur-mm -t 5 -c 8 -r FHADE
+
+Et  la même  partie,  en utilisant  le  minimax de  Knuth  au lieu  de
+l'entropie de Shannon :
+
+  decodeur-mm -t 5 -c 8 -r FHADE -m
+
 
 =head1 PARAMÈTRES D'APPEL
 
@@ -467,7 +509,9 @@ jouera.
 Si  les probabilités  sont calculées  à  partir de  la partition  d'un
 ensemble, c'est-à-dire que
 
-  p_i = n_i / N, avec N = sigma(n_i)
+        n_i
+  p_i = --- , avec N = sigma(n_i)
+         N
 
 alors, après quelques transformations de niveau terminale scientifique,
 l'entropie se calcule avec :
@@ -541,7 +585,10 @@ Aucune incompatibilité identifiée.
 
 =head1 BOGUES ET LIMITES
 
-Pour l'instant, aucun n'a été identifié.
+Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
+décimales.
+
+Le programme affiche certaines listes sans se soucier de la longueur.
 
 =head1 AUTEUR
 
@@ -776,7 +823,7 @@ EOF
       next;
     }
     $pas_bon = 0;
-    say "n = $n, b = $b, nb = $nb";
+    #say "n = $n, b = $b, nb = $nb";
     return ($n, $b, $nb, $res);
   }
 }
@@ -819,13 +866,8 @@ sub choisir {
       $histogramme{$res}++;
     }
     #say join ' ', $poss1, %histogramme;
-    my ($N, $entr, $max) = (0, 0, 0);
-    for (values %histogramme) {
-      $N += $_;
-      $entr += $_ * log($_);
-      $max = $_ if $_ > $max;
-    }
-    $entropie{$poss1} = (log($N) - $entr / $N) / log(2);
+    my ($entr, $max) = entropie_et_max(values %histogramme);
+    $entropie{$poss1} = $entr;
     $max     {$poss1} = $max;
   }
   #say YAML::Dump(\%entropie, \%max);
@@ -833,10 +875,12 @@ sub choisir {
   my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @poss;
   my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @poss;
 
-  my ($poss_entr, $minimax) = ($poss_entr[0], $poss_max[0]);
-  say "meilleure entropie $poss_entr avec $entropie{$poss_entr} (max : $max{$poss_entr})";
+  # $savant : le code qui propose la plus grande quantité d'information
+  # $minimax : le code qui minimise la classe maximale
+  my ($savant, $minimax) = ($poss_entr[0], $poss_max[0]);
+  say "meilleure entropie $savant avec $entropie{$savant} (max : $max{$savant})";
   say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
-  return $b_entropie ? $poss_entr : $minimax;
+  return $b_entropie ? $savant : $minimax;
 }
 
 sub filtrer {
@@ -852,4 +896,13 @@ sub filtrer {
     }
   }
   say join ' ', "Il reste", @poss;
+}
+sub entropie_et_max {
+  my ($N, $n_log_n, $max) = (0, 0, 0);
+  for (@_) {
+    $N += $_;
+    $n_log_n += $_ * log($_);
+    $max = $_ if $_ > $max;
+  }
+  return ( (log($N) - $n_log_n / $N) / log(2), $max );
 }
