@@ -581,6 +581,18 @@ meilleur que l'entropie  dans d'autres cas. Notons que  l'on n'est pas
 obligé d'utiliser la  même méthode tout au long  d'une même partie. On
 peut jouer un coup avec le minimax et le suivant avec l'entropie.
 
+En fait, j'utilise  les deux critères. L'un est  le critère principal,
+l'autre sert  à départager les ex-aequo.  Cela ne sert  vraiment pas à
+grand-chose lorsque le critère  principal est l'entropie calculée avec
+une  dizaine de  décimales ou  plus (soit  largement plus  que  ce qui
+serait  significatif).   Si  deux  codes  ont  la   même  entropie  au
+dix-milliardième  de  bit  près,  il  est  quasiment  certain  que  la
+répartition  des notes sera  identique pour  ces deux  propositions et
+donc, a fortiori, la classe la plus peuplée pour ces deux propositions
+aura  le  même nombre  d'éléments.  En  revanche,  lorsque le  critère
+principal est le minimax,  l'utilisation de l'entropie pour départager
+les ex-aequo se révèle utile.
+
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
 Néant.
