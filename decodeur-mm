@@ -52,12 +52,12 @@ Variantes :
 
 Le super Mastermind se joue avec 5 trous et 8 couleurs. Cela donne :
 
-  decodeur-mm -t 5 -c 8 -r FHADE
+  decodeur-mm -t 5 -c 8 -r DEADB
 
 Et  la même  partie,  en utilisant  le  minimax de  Knuth  au lieu  de
-l'entropie de Shannon :
+l'entropie de Shannon et en limitant les listes à 50 éléments :
 
-  decodeur-mm -t 5 -c 8 -r FHADE -m
+  decodeur-mm -t 5 -c 8 -r DEADB -m -l 50
 
 
 =head1 PARAMÈTRES D'APPEL
@@ -93,6 +93,13 @@ maximisation  de l'entropie de  Shannon ou  minimisation de  la taille
 maximale   de   la  classe   restante   (voir   ci-dessous  pour   les
 explications). Si aucune n'est demandée ou si les deux sont demandées,
 on prendra l'entropie de Shannon.
+
+=item * longueur
+
+Le programme affiche de temps en temps une liste de codes. Cette liste
+peut  être très  longue. Le  paramètre C<longueur>  sert à  limiter la
+longueur à l'affichage de cette liste. Cela ne change rien au fait que
+le programme la conserve en totalité en mémoire.
 
 =back
 
@@ -612,21 +619,25 @@ use warnings;
 use Getopt::Long;
 use YAML;
 
-my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax);
+my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $lg_liste);
 GetOptions("couleurs=i" => \$nb_coul,
            "trous=i"    => \$nb_trous,
            "reponse=s"  => \$reponse,
            "entropie"   => \$b_entropie,
            "minimax"    => \$b_minimax,
+           "longueur=i" => \$lg_liste,
   ) or die "Problème avec les options";
 
 $nb_coul  //= 6;
 $nb_trous //= 4;
 $reponse  //= '';
+$lg_liste //= 0;
 die "Nombre de trous de 2 à 5"
   unless $nb_trous >= 2 && $nb_trous <= 5;
 die "Nombre de couleurs de 3 à 26"
   unless $nb_coul >= 3 && $nb_coul <= 26;
+die "La longueur de la liste doit être au moins 10"
+    unless $lg_liste == 0 || $lg_liste >= 10;
 
 $b_entropie //= 0;
 $b_minimax  //= 0;
@@ -723,7 +734,7 @@ sub interlude {
         }
       }
     }
-    say join ' ', @poss
+    say join ' ', tronquer(@poss);
   }
   if (@poss == 0) {
     say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
@@ -897,7 +908,7 @@ sub filtrer {
       push @poss, $poss;
     }
   }
-  say join ' ', "Il reste", @poss;
+  say join ' ', "Il reste", tronquer(@poss);
 }
 sub entropie_et_max {
   my ($N, $n_log_n, $max) = (0, 0, 0);
@@ -907,4 +918,13 @@ sub entropie_et_max {
     $max = $_ if $_ > $max;
   }
   return ( (log($N) - $n_log_n / $N) / log(2), $max );
+}
+sub tronquer {
+  if ($lg_liste == 0 or @_ <= $lg_liste) {
+    return join ' ', @_;
+  }
+  my @l = @_;
+  my $l = @l;
+  splice @l, $lg_liste - 2, $l + 1 - $lg_liste, sprintf "(%d supprimés)", $l + 1 - $lg_liste;
+  return join ' ', @l;
 }
