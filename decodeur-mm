@@ -920,7 +920,14 @@ sub filtrer {
     if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
       push @poss, $poss;
     }
+    elsif ($poss ne $prop) {
+      # on récupère (en partie) la place occupée par $poss dans le hachage
+      delete $notes{$poss};
+      # il faudrait aussi supprimer les entrées où $poss figure
+      # en clé de deuxième niveau, mais c'est trop long. 
+    }
   }
+  delete $notes{$prop};
   say join ' ', "Il reste", tronquer(@poss);
 }
 sub entropie_et_max {
