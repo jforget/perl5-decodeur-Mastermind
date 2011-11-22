@@ -99,7 +99,8 @@ on prendra l'entropie de Shannon.
 Le programme affiche de temps en temps une liste de codes. Cette liste
 peut  être très  longue. Le  paramètre C<longueur>  sert à  limiter la
 longueur à l'affichage de cette liste. Cela ne change rien au fait que
-le programme la conserve en totalité en mémoire.
+le programme la conserve en totalité  en mémoire. Et si vous ne voulez
+pas de cette limite, omettez le paramètre ou fixez-le à 0.
 
 =back
 
