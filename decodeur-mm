@@ -55,7 +55,8 @@ Le super Mastermind se joue avec 5 trous et 8 couleurs. Cela donne :
   decodeur-mm -t 5 -c 8 -r DEADB
 
 Et  la même  partie,  en utilisant  le  minimax de  Knuth  au lieu  de
-l'entropie de Shannon et en limitant les listes à 50 éléments :
+l'entropie  de Shannon  et en  limitant  l'affichage des  listes à  50
+éléments :
 
   decodeur-mm -t 5 -c 8 -r DEADB -m -l 50
 
@@ -90,7 +91,7 @@ donner la note correspondante.
 
 Choix  de  la  tactique  à  utiliser  pour  la  fin  de  la  partie  :
 maximisation  de l'entropie de  Shannon ou  minimisation de  la taille
-maximale   de   la  classe   restante   (voir   ci-dessous  pour   les
+maximale  parmi  les  classes  restantes  (voir  ci-dessous  pour  les
 explications). Si aucune n'est demandée ou si les deux sont demandées,
 on prendra l'entropie de Shannon.
 
@@ -183,8 +184,8 @@ Dans le cas d'un texte en noir sur blanc (ce fichier POD ou un livre),
 on représente  traditionnellement les marques  noires avec un  C<X> et
 les  marques  blanches avec  un  C<O>.   Les  pions de  couleurs  sont
 habituellement  représentés  par l'initiale  de  la  couleur, mais  je
-préfère ici utiliser les lettres de C<A> à C<F>, puisque j'envisage de
-permettre l'utilisation d'un nombre de couleurs allant jusqu'à 26.
+préfère ici utiliser les lettres  de C<A> à C<F>, puisque le programme
+permet l'utilisation d'un nombre de couleurs allant jusqu'à 26.
 
 Il  existe des  variantes  du Mastermind.  Des variantes  élémentaires
 consistent à faire varier le nombre de trous et le nombre de couleurs.
@@ -261,12 +262,12 @@ entame la fin de la partie.
 
 Une autre différence entre mon programme et le jeu avec un humain.  Le
 programme  considère   que  tous  les   codes  secrets  ont   la  même
-probabilité.  Ainsi que le signalent  les auteurs, si le codeur est un
-humain, il  évitera inconsciemment certaines  combinaisons de couleurs
-et  en privilégiera  d'autres. Également,  les codes  monochromes sont
-censés survenir 6 fois sur 1296, ou 1 fois sur 216 si le codeur est un
-programme correctement  codé, alors  que la proportion  sera nettement
-moins importante si le codeur est un humain.
+probabilité.   Ainsi que  le signalent  les  auteurs du  livre, si  le
+codeur est un humain, il évitera inconsciemment certaines combinaisons
+de  couleurs  et  en   privilégiera  d'autres.  Également,  les  codes
+monochromes sont censés survenir 6 fois sur 1296, ou 1 fois sur 216 si
+le codeur est un programme  correctement codé, alors que la proportion
+sera nettement moins importante si le codeur est un humain.
 
 =head2 Début de partie
 
@@ -288,6 +289,9 @@ Tout  au long  du début  de partie,  si l'on  tombe sur  un  nombre de
 marques à zéro, on supprime  carrément de la liste des couleurs celles
 qui apparaissent dans la proposition. Cela accélérera l'interlude.
 
+Quand  quitter  le  début  de  partie  :  à  compléter  tant  dans  la
+documentation que dans le programme.
+
 =head2 Interlude
 
 Dans l'interlude,  le programme construit  la liste de tous  les codes
@@ -298,8 +302,8 @@ puis 3 pions, avant d'arriver aux codes complets à 4 pions.
 À chaque  étape, on  compare le code  incomplet avec  les propositions
 jouées dans le début de partie,  pour voir si les résultats (nombre de
 marques noires et nombre de marques blanches) correspondent.  On garde
-à l'esprit que le code est incomplet et qu'en le ajoutant une couleur,
-on peut :
+à l'esprit que le code est incomplet et qu'en ajoutant une couleur, on
+peut :
 
 =over 4
 
@@ -334,13 +338,13 @@ moins de temps.
 
 Exemples : l'un  des coups joués était C<ABCD>,  noté C<X> (une marque
 noire). Le code C<AE..> obtient  une note C<X> et est donc compatible.
-Le  code C<AD..>  obtient une  note  C<XO> est  est incompatible.   En
-effet,  quelles  que  soient  les  couleurs placées  en  troisième  et
-quatrième positions,  on ne  pourra pas revenir  à une note  C<X>.  Le
-code C<CE..> obtient une note C<O> et est compatible. Bien qu'il y ait
-une marque blanche en trop, cette marque pourra être remplacée par une
-marque  noire, lorsque l'on  testera C<CEC.>  puis C<CECC>  et C<CECE>
-(entre autres).
+Le code C<AD..> obtient une note C<XO> et est incompatible.  En effet,
+quelles  que soient  les couleurs  placées en  troisième  et quatrième
+positions, on ne pourra pas revenir  à une note C<X>.  Le code C<CE..>
+obtient une note  C<O> et est compatible. Bien qu'il  y ait une marque
+blanche en  trop, cette  marque pourra être  remplacée par  une marque
+noire,  lorsque l'on testera  C<CEC.> puis  C<CECC> et  C<CECE> (entre
+autres).
 
 Maintenant, supposons que le coup C<ABCD> ait reçu la note C<XOO> (une
 marque noire et deux blanches). Le code C<AE..> reçoit la note C<X> et
@@ -394,8 +398,8 @@ Donald Knuth et utilise le minimax.
 Au début, l'entropie a été un concept en physique, plus précisément en
 thermodynamique.    L'entropie   a   été   introduite   par   Clausius
 (1822--1888)  comme étant  le quotient  de la  quantité de  chaleur du
-système  considéré par  sa  température absolue.  Cette  notion a  été
-développée  par Ludwig  Boltzmann (1844--1906)  qui  l'a.décrite comme
+système  considéré par  sa température  absolue.  Cette  notion  a été
+développée  par Ludwig  Boltzmann (1844--1906)  qui l'a  décrite comme
 étant le  nombre de micro-états définissant le  macro-état du système.
 Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 étudier le codage  optimal d'un message transmis par  un canal avec ou
@@ -517,7 +521,8 @@ d'information que C<ABCD>.  C'est donc ce que le programme de décodage
 jouera.
 
 Si  les probabilités  sont calculées  à  partir de  la partition  d'un
-ensemble, c'est-à-dire que
+ensemble  de C<N>  éléments  en classes  de  C<n_i> éléments  chacune,
+c'est-à-dire que
 
         n_i
   p_i = --- , avec N = sigma(n_i)
@@ -533,7 +538,7 @@ l'entropie se calcule avec :
 =head3 Le minimax de Knuth
 
 Ce  critère est  nettement plus  simple  (et beaucoup  moins rigolo  à
-expliquer). Lorsque  l'on recense  les différentes notes  obtenues pas
+expliquer). Lorsque  l'on recense  les différentes notes  obtenues par
 les  codes possibles  restants,  on  se contente  de  retenir la  note
 correspondant au nombre maximal de codes possibles. Et le code à jouer
 est  celui pour  lequel ce  maximum est  le plus  petit. Avec  le même
@@ -574,24 +579,27 @@ l'entropie  de Shannon  pour C<ABCC>  est moins  bonne, 3,04  bits. Un
 centième de bit,  cela ne va pas chercher très  loin, mais le résultat
 est là, ces deux critères ne sont pas forcément en accord.
 
-Quel  est le meilleur  critère ?  Je ne  sais pas.  Je pense  que cela
+Quel est  le meilleur critère  ?  Je ne  sais pas.  Je pense  que cela
 dépend des  circonstances et que l'entropie se  révèlera meilleure que
 le  minimax  dans certains  cas  tandis  que  le minimax  se  révèlera
-meilleur que l'entropie  dans d'autres cas. Notons que  l'on n'est pas
-obligé d'utiliser la  même méthode tout au long  d'une même partie. On
-peut jouer un coup avec le minimax et le suivant avec l'entropie.
+meilleur que l'entropie dans  d'autres cas. Pour prendre une métaphore
+sportive ou wargamesque, on peut  dire que Shannon joue pour remporter
+la victoire, tandis que Knuth  joue pour éviter la défaite. Notons que
+l'on n'est  pas obligé d'utiliser la  même méthode tout  au long d'une
+même partie. On peut jouer un  coup avec le minimax et le suivant avec
+l'entropie.
 
 En fait, j'utilise  les deux critères. L'un est  le critère principal,
-l'autre sert  à départager les ex-aequo.  Cela ne sert  vraiment pas à
+l'autre sert à  départager les ex-aequo.  Cela ne  sert vraiment pas à
 grand-chose lorsque le critère  principal est l'entropie calculée avec
 une  dizaine de  décimales ou  plus (soit  largement plus  que  ce qui
-serait  significatif).   Si  deux  codes  ont  la   même  entropie  au
+serait  significatif).   Si  deux   codes  ont  la  même  entropie  au
 dix-milliardième  de  bit  près,  il  est  quasiment  certain  que  la
 répartition  des notes sera  identique pour  ces deux  propositions et
-donc, a fortiori, la classe la plus peuplée pour ces deux propositions
-aura  le  même nombre  d'éléments.  En  revanche,  lorsque le  critère
-principal est le minimax,  l'utilisation de l'entropie pour départager
-les ex-aequo se révèle utile.
+donc, a fortiori,  la classe la plus peuplée  pour les partitions aura
+le même nombre d'éléments.   En revanche, lorsque le critère principal
+est  le  minimax,  l'utilisation  de l'entropie  pour  départager  les
+ex-aequo se révèle utile.
 
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
@@ -599,7 +607,9 @@ Néant.
 
 =head1 DÉPENDANCES
 
-YAML : pour la mise au point
+YAML : pour la mise au point (quelques instructions masquées par C<#>).
+
+v5.10 : pour C<say> et le I<defined-or>.
 
 =head1 INCOMPATIBILITÉS
 
@@ -610,7 +620,7 @@ Aucune incompatibilité identifiée.
 Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
 décimales.
 
-Le programme affiche certaines listes sans se soucier de la longueur.
+La sortie du début de partie pour passer à l'interlude n'est pas optimale.
 
 =head1 AUTEUR
 
@@ -925,6 +935,8 @@ sub filtrer {
       delete $notes{$poss};
       # il faudrait aussi supprimer les entrées où $poss figure
       # en clé de deuxième niveau, mais c'est trop long. 
+      # On préfère gâcher l'espace occupé par $poss en deuxième
+      # niveau que de gâcher du temps à les supprimer.
     }
   }
   delete $notes{$prop};
