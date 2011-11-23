@@ -824,13 +824,14 @@ EOF
       $n   = $1;
       $b   = $2;
       $nb  = $n + $b;
-      $res = 'X' x $n . 'O' x $n;
+      $res = 'X' x $n . 'O' x $b;
+      $res = '(rien)' if $n == 0 && $b == 0;
     }
     elsif ($resultat eq ' ') {
       $n   = 0;
       $b   = 0;
       $nb  = 0;
-      $res = '';
+      $res = '(rien)';
     }
     elsif ($resultat =~ /^(X*)(O*)$/) {
       $n   = length($1);
@@ -889,6 +890,7 @@ sub noter {
       }
     }
   }
+  $res = '(rien)' if $nb == 0;
   #say "n = $n, b = $b, nb = $nb";
   return ($n, $b, $nb, $res);
 }
