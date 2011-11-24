@@ -923,10 +923,16 @@ sub choisir {
   # $savant : le code qui propose la plus grande quantité d'information
   # $minimax : le code qui minimise la classe maximale
   my ($savant, $minimax) = ($poss_entr[0], $poss_max[0]);
-  say "meilleure entropie $savant avec $entropie{$savant} (max : $max{$savant})";
-  say "son histogramme : ", aff_histogramme(%{$histo1{$savant}});
-  say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
-  say "son histogramme : ", aff_histogramme(%{$histo1{$minimax}});
+  if ($savant eq $minimax) {
+    say "meilleure entropie et minimax confondus $savant (entropie : $entropie{$savant}, max : $max{$savant})";
+    aff_details($savant, \%entropie, \%max, \%histo1);
+  }
+  else {
+    say "meilleure entropie $savant avec $entropie{$savant} (max : $max{$savant})";
+    aff_details($savant, \%entropie, \%max, \%histo1);
+    say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
+    aff_details($minimax, \%entropie, \%max, \%histo1);
+  }
   return $b_entropie ? $savant : $minimax;
 }
 
@@ -974,4 +980,12 @@ sub tronquer {
 sub aff_histogramme {
   my %histogramme = @_;
   return join ', ', map { "$_: $histogramme{$_}" } reverse sort keys %histogramme;
+}
+sub aff_details {
+  my ($code, $ref_entropie, $ref_max, $ref_histogramme) = @_;
+  say "son histogramme : ", aff_histogramme(%{$ref_histogramme->{$code}});
+  my @ex_aequo = grep { $ref_entropie->{$_} == $ref_entropie->{$code} && $ref_max->{$_} == $ref_max->{$code} && $_ ne $code } @poss;
+  if (@ex_aequo) {
+    say "ex-aequo avec ", tronquer(@ex_aequo);
+  }
 }
