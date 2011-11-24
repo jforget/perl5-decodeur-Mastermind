@@ -902,7 +902,7 @@ sub noter {
 }
 
 sub choisir {
-  my (%entropie, %max);
+  my (%entropie, %max, %histo1);
   foreach my $poss1 (@poss) {
     my %histogramme;
     foreach my $poss2 (@poss) {
@@ -913,6 +913,7 @@ sub choisir {
     my ($entr, $max) = entropie_et_max(values %histogramme);
     $entropie{$poss1} = $entr;
     $max     {$poss1} = $max;
+    $histo1  {$poss1} = { %histogramme };
   }
   #say YAML::Dump(\%entropie, \%max);
 
@@ -923,7 +924,9 @@ sub choisir {
   # $minimax : le code qui minimise la classe maximale
   my ($savant, $minimax) = ($poss_entr[0], $poss_max[0]);
   say "meilleure entropie $savant avec $entropie{$savant} (max : $max{$savant})";
+  say "son histogramme : ", aff_histogramme(%{$histo1{$savant}});
   say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
+  say "son histogramme : ", aff_histogramme(%{$histo1{$minimax}});
   return $b_entropie ? $savant : $minimax;
 }
 
@@ -967,4 +970,8 @@ sub tronquer {
   my $l = @l;
   splice @l, $lg_liste - 2, $l + 1 - $lg_liste, sprintf "(%d supprimés)", $l + 1 - $lg_liste;
   return join ' ', @l;
+}
+sub aff_histogramme {
+  my %histogramme = @_;
+  return join ', ', map { "$_: $histogramme{$_}" } reverse sort keys %histogramme;
 }
