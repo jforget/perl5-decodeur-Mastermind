@@ -36,17 +36,18 @@ qu'il vous indique. Exemple :
   EFAB                          deuxième coup du programme
   XO                            réponse de l'utilisateur : 1 noir et 1 blanc
   CFBF                          troisième coup du programme
-                                réponse 0 noir et 0 blanc (*)
+  rien                          réponse 0 noir et 0 blanc (*)
   EDEA                          quatrième coup du programme
   0 3                           l'utilisateur répond avec 0 noir et 3 blancs
   DAAE                          cinquième coup du programme
   XXXX                          l'utilisateur répond avec 4 noirs
   Gagné !                       message final du programme
 
-(*) pour  éviter les  erreurs de saisie,  l'utilisateur doit  taper au
-moins un espace, car une  chaîne vide est vraisemblablement une erreur
-de saisie.  Ou alors,  il peut  répondre C<0 0>,  ce qui  enlève toute
-amiguïté.
+(*) pour  éviter les  erreurs de saisie,  l'utilisateur doit  taper la
+chaîne C<rien>  (ou avec des  parenthèses, C<(rien)>), car  une chaîne
+vide pour représenter zéro C<X> et zéro C<O> est vraisemblablement une
+erreur de  saisie.  Ou alors, il  peut répondre C<0 0>,  ce qui enlève
+toute ambiguïté.
 
 Variantes :
 
@@ -353,6 +354,11 @@ trous  peuvent  fournir  les  deux marques  blanches  manquantes.   En
 revanche, le code  C<EF..> reçoit une note nulle  et est incompatible.
 En effet,  ce n'est pas  les deux trous  à remplir qui  permettront de
 fournir les trois marques manquantes.
+
+Remarque : pour des raisons  de simplification du code, le remplissage
+se  fait  par  la  fin,  C<...A>  et  C<...B>  etc  pour  la  première
+génération, puis C<..AA>, C<..AB> pour la deuxième génération et ainsi
+de suite.
 
 Une fois  la liste  des codes construite,  le programme  évalue chaque
 code avec  chaque autre, pour stocker  la note dans  un hachage indexé
@@ -816,7 +822,7 @@ sub jouer {
     if ($resultat eq '') {
       print <<"EOF";
 Résultat de la forme '1 2' ou 'XOO' pour un noir et deux blancs.
-Si la réponse est 0 noir et 0 blanc, tapez au moins un espace pour éviter une erreur de saisie.
+Si la réponse est 0 noir et 0 blanc, tapez soit '0 0', soit 'rien' pour éviter une erreur de saisie.
 EOF
       next;
     }
@@ -827,7 +833,7 @@ EOF
       $res = 'X' x $n . 'O' x $b;
       $res = '(rien)' if $n == 0 && $b == 0;
     }
-    elsif ($resultat eq ' ') {
+    elsif ($resultat =~ /^\s*\(?RIEN\)?\s*$/) {
       $n   = 0;
       $b   = 0;
       $nb  = 0;
@@ -843,7 +849,7 @@ EOF
       print <<"EOF";
 Réponse incorrecte.
 Résultat de la forme '1 2' ou 'XOO' pour un noir et deux blancs.
-Si la réponse est 0 noir et 0 blanc, tapez au moins un espace pour éviter une erreur de saisie.
+Si la réponse est 0 noir et 0 blanc, tapez soit '0 0', soit 'rien' pour éviter une erreur de saisie.
 EOF
       next;
     }
