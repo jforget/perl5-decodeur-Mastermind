@@ -807,7 +807,8 @@ sub jouer {
   my ($prop) = @_;
   if ($reponse ne '') {
     my ($n, $b, $nb, $res) = noter($prop, $reponse);
-    say "Je joue $prop -> $res";
+    my $nb_coup = 1 + @partie;
+    say "$nb_coup : je joue $prop -> $res";
     return ($n, $b, $nb, $res);
   }
   my $pas_bon = 1;
