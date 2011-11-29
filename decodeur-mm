@@ -110,6 +110,19 @@ pas de cette limite, omettez le paramètre ou fixez-le à 0.
 
 =head2 Avant-propos
 
+Le  but  de ce  programme  est  de jouer  au  Mastermind  en tant  que
+décodeur, avec un fonctionnement relativement proche de l'optimum.  Le
+fonctionnement optimal  s'obtient par  la construction de  l'arbre des
+coups possibles, un peu comme  aux échecs, puis en analysant cet arbre
+pour en  extraire la  suite de coups  qui permettra d'arriver  le plus
+rapidement  à  la  découverte  du   code  secret,  quel  que  soit  ce
+code. Comme il s'agit  d'une recherche arborescente, cela peut prendre
+un temps et un espace  mémoire énormes, même en utilisant des méthodes
+comme   l'élagage  alpha-béta.   Ce  programme   utilise   plutôt  des
+algorithmes  relativement  économes en  mémoire  et  en  temps et  qui
+conduisent à  un résultat en  un nombre de coups  relativement réduit,
+même si ce nombre n'est pas minimal.
+
 La description qui suit fait  référence à plusieurs occasions au livre
 I<Le Mastermind en 10 leçons>,  écrit par Marco Meirovitz (le créateur
 du  Mastermind)  et  Jean   Tricot,  publié  par  Hachette  et  achevé
@@ -290,8 +303,54 @@ Tout  au long  du début  de partie,  si l'on  tombe sur  un  nombre de
 marques à zéro, on supprime  carrément de la liste des couleurs celles
 qui apparaissent dans la proposition. Cela accélérera l'interlude.
 
-Quand  quitter  le  début  de  partie  :  à  compléter  tant  dans  la
-documentation que dans le programme.
+Il est  important de remarquer  que les codes  joués dans le  début de
+partie  n'ont jamais  de  couleur commune,  à  part le  premier et  le
+dernier  coup  (celui qui  boucle  sur  la  liste des  couleurs).  Par
+exemple, pour  le jeu à 4  trous et 26 couleurs,  les tours successifs
+sont C<ABCD>, C<EFGH>, C<IJKL>,  C<MNOP>, C<QRST>, C<UVWX> et C<YZAB>.
+Seuls C<ABCD> et C<YZAB> ont des couleurs en commun.
+
+Le programme  décide de quitter le  début de partie dans  l'un des cas
+suivants :
+
+=over 4
+
+=item  *  Lorsqu'il  a  otenu  une note  avec  4  noirs,  c'est-à-dire
+lorsqu'il a trouvé  le code secret. C'est une  victoire due au hasard,
+certes, mais il faut la prévoir.
+
+=item * Lorsqu'il a passé en  revue toutes les couleurs. On estime que
+les notes  des coups passés apportera  suffisamment d'information pour
+que la liste de codes compatibles ne soit pas trop longue.
+
+=item * Lorsque  tous les codes joués jusque-là ont  abouti à une note
+cumulée de 4 marques noires ou blanches. Par exemple :
+
+    IJKL OO
+    EFGH X
+    ABCD O
+
+On  sait  pertinemment que  les  codes  suivants  C<MNOP>, C<QRST>  et
+C<UVWX>  auront une note  nulle. Inutile  donc de  les jouer.  On peut
+passer directement à l'interlude, avec la constitution de la liste des
+codes compatibles.
+
+=item * Lorsque  tous les codes joués jusque-là ont  abouti à une note
+cumulée de 4 marques noires ou blanches. Par exemple :
+
+    IJKL O
+    EFGH X
+    ABCD O
+
+Les codes suivants  C<MNOP>, C<QRST> et C<UVWX> ne  pourront avoir que
+trois notes  possibles : C<X>,  C<O> ou rien  du tout. C'est  donc une
+perte de temps.   On passe donc à l'interlude et  à la constitution de
+la liste des codes compatibles. Celle-ci sera plus importante que dans
+le cas précédent, mais au moins,  on pourra reprendre la fin de partie
+avec un  éventail de notes  plus important, donc  permettant d'aboutir
+plus rapidement.
+
+=back
 
 =head2 Interlude
 
