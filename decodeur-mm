@@ -352,6 +352,12 @@ plus rapidement.
 
 =back
 
+La note cumulée s'effectue en créant  un « coup synthétique », qui est
+la concaténation de tous les coups  réels ayant eu au moins une marque
+noire ou  blanche. Pourquoi  prend-on la peine  de constituer  ce coup
+synthétique, au lieu de cumuler simplement les résultats C<$nb> ? Cela
+sera expliqué dans l'interlude.
+
 =head2 Interlude
 
 Dans l'interlude,  le programme construit  la liste de tous  les codes
@@ -418,6 +424,33 @@ Remarque : pour des raisons  de simplification du code, le remplissage
 se  fait  par  la  fin,  C<...A>  et  C<...B>  etc  pour  la  première
 génération, puis C<..AA>, C<..AB> pour la deuxième génération et ainsi
 de suite.
+
+Autre remarque. Prenons le jeu à  4 trous et 26 couleurs, et supposons
+que le début de partie soit le suivant :
+
+    IJKL X
+    EFGH X
+    ABCD X
+
+La liste  de premier niveau,  c'est-à-dire de codes avec  trois vides,
+comporte   toutes   les   lettres   de  l'alphabet   C<...A>   jusqu'à
+C<...Z>.  Normal.   La  liste  de deuxième  niveau  comportera,  entre
+autres,  des codes  partiels du  genre C<..MN>  ou C<..NO>.  Ces codes
+partiels sont compatibles séparément  avec les trois coups joués, mais
+pas avec les trois coups  dans leur globalité. D'accord pour avoir une
+couleur C<M> ou au-delà, mais pas  deux, car un humain a tout de suite
+compris  qu'il faut une  couleur parmi  C<A>..C<D>, une  couleur parmi
+C<E>..C<H> et  une couleur parmi  C<I>..C<L>. Mais le  programme n'est
+pas  capable de  faire ce  raisonnement. Heureusement,  grâce  au coup
+synthétique  C<ABCDEFGHIJKL>, qui  a comme  note C<XOO>,  le programme
+pourra déterminer qu'il faut trois  de ces douze couleurs dans le code
+final, c'est-à-dire au moins une de ces douze couleurs dans chacun des
+codes partiels  à deux vides. Cela  permet donc de  rejeter C<..MN> et
+C<..NO>.  Mais surtout, cela permet de ne pas prendre en considération
+tous  les coups  à un  seul vide  générés à  partir de  C<..MN>  et de
+C<..NO>.   Cela  ne permet  pas  de  rejeter  C<..AB>, mais  n'importe
+comment,  ce code  a  été rejeté  lorsqu'il  a été  confronté au  coup
+C<ABCD> qui avait une seule marque (noire).
 
 Une fois  la liste  des codes construite,  le programme  évalue chaque
 code avec  chaque autre, pour stocker  la note dans  un hachage indexé
@@ -685,7 +718,27 @@ Aucune incompatibilité identifiée.
 Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
 décimales.
 
-La sortie du début de partie pour passer à l'interlude n'est pas optimale.
+Dans certains  cas, visibles notamment  lorsque le nombre  de couleurs
+est élevé, la  fin de partie n'est pas optimale.  Par exemple, dans le
+jeu à 4 trous et 26 couleurs, la partie :
+
+  AOGL XXX
+  AJNH X
+  AFKM X
+  IJKL X
+  EFGH X
+  ABCD X
+
+conduit  à la liste  de codes  compatibles C<AAGL>,  C<AGGL>, C<ALGL>,
+C<APGL>,  C<AQGL>,   C<ARGL>,  C<ASGL>,  C<ATGL>,   C<AUGL>,  C<AVGL>,
+C<AWGL>, C<AXGL>, C<AYGL>  et C<AZGL>.  Tous ces codes  sont bâtis sur
+le même moule, C<A.GL>.  Avec la  méthode qui conduit à ne choisir que
+parmi les  codes compatibles avec  les coups précédents,  le programme
+essaiera ces 14  codes l'un après l'autre.  Alors  que si le programme
+joue des  codes incompatibles comme  C<PQRS> puis C<TUVW> et  ainsi de
+suite, le programme isolera  nettement fois plus rapidement la couleur
+en deuxième position.  Mais tant pis, on continue  à choisir parmi les
+codes compatibles.
 
 =head1 AUTEUR
 
