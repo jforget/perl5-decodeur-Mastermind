@@ -754,6 +754,7 @@ if ($reponse ne '') {
 my @partie;
 my @poss;
 my %notes;
+my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
 
 debut_de_partie()
 || interlude()
@@ -773,8 +774,26 @@ sub debut_de_partie {
       splice @coul, $pointeur, $nb_trous;
       say join ' ', @coul;
     }
+
     push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
     $pointeur += $nb_trous;
+
+    if ($nb != 0 && $pointeur <= 0) {
+      if ($coup_synthetique{prop} eq '') {
+        $coup_synthetique{n} = $n;
+        $coup_synthetique{b} = $b;
+      }
+      else {
+        $coup_synthetique{b} += $nb;
+      }
+      $coup_synthetique{prop} .= $prop;
+      $coup_synthetique{nb}   += $nb;
+    }
+    say join ' ', %coup_synthetique;
+
+    if ($coup_synthetique{nb} >= $nb_trous - 1) {
+      return 0;
+    }
   }
   return 0;
 }
@@ -803,7 +822,7 @@ sub interlude {
         # rien qui ressemble à de la peur.
         substr($poss, $i, 1) = $coul;
 
-        for my $coup (@partie) {
+        for my $coup (@partie, \%coup_synthetique) {
           my ($n, undef, $nb) = noter($coup->{prop}, $poss);
           if ($n > $coup->{n} || $nb > $coup->{nb}) {
             # La proposition incomplète est déjà trop bien notée
@@ -872,6 +891,8 @@ sub jouer {
   }
   my $pas_bon = 1;
   while ($pas_bon) {
+    my $nb_coup = 1 + @partie;
+    say "$nb_coup : je joue $prop";
     say $prop;
     my ($n, $b, $nb, $res);
 
