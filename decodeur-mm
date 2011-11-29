@@ -718,6 +718,20 @@ Aucune incompatibilité identifiée.
 Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
 décimales.
 
+Le  calcul  du tableau  à  double entrée  dans  la  seconde partie  de
+l'interlude peut conduire à  une occupation prohibitive de la mémoire,
+si la  liste des codes compatibles  est trop peuplée.  Exemple avec un
+jeu à 4 trous et 26 couleurs et avec le début de partie :
+
+  IJKL O
+  EFGH O
+  ABCD O
+
+Avec ce début de partie,  la liste des codes compatibles comporte 9720
+codes. Lors du  calcul du tableau à double entrée  sur ces 9720 codes,
+une machine  a complètement  rempli ses  3,9 Go de  mémoire vive  et a
+commencé à alimenter son fichier swap.
+
 Dans certains  cas, visibles notamment  lorsque le nombre  de couleurs
 est élevé, la  fin de partie n'est pas optimale.  Par exemple, dans le
 jeu à 4 trous et 26 couleurs, la partie :
@@ -895,6 +909,7 @@ sub interlude {
       }
     }
     say join ' ', tronquer(@poss);
+    say scalar(@poss), " codes";
   }
   if (@poss == 0) {
     say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
