@@ -463,6 +463,11 @@ présente,  cela  aurait  impliqué  une  boucle avec  des  dizaines  de
 milliers  d'itérations.   On préfère  donc,  autant  que possible,  se
 limiter à quelques dizaines de codes possibles.
 
+À titre de précaution, si le nombre de possibilités dépasse une limite
+(codée en dur dans le programme), le tableau à double entrée n'est pas
+généré. Lors de la fin de  partie, il faudra calculer au coup par coup
+les notes, sans les récupérer dans le tableau.
+
 =head2 Fin de partie
 
 Un coup de la fin de la partie prend l'allure suivante :
@@ -479,6 +484,11 @@ codes restants,
 =item *  Sinon, le  programme reçoit  la note du  codeur et  filtre la
 liste des  codes restants pour  éliminer les codes  incompatibles avec
 cette note.
+
+=item *  Si le tableau  à double entrée  C<%notes> n'a pas  été généré
+lors  de l'interlude  et  si  le nombre  de  possibilités est  retombé
+en-deçà de  la limite, alors  on le génère maintenant,  pour permettre
+d'accélérer les appels ultérieurs à la fonction de choix.
 
 =back
 
