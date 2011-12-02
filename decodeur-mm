@@ -818,6 +818,7 @@ if ($reponse ne '') {
   }
 }
 
+my $limite_notes = 2000; # limite du nombre de possibilités restantes pour générer %notes
 my @partie;
 my @poss;
 my %notes;
@@ -839,7 +840,7 @@ sub debut_de_partie {
     }
     if ($nb == 0) {
       splice @coul, $pointeur, $nb_trous;
-      say join ' ', @coul;
+      #say join ' ', @coul;
     }
 
     push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
@@ -916,20 +917,12 @@ sub interlude {
     return 1;
   }
 
-  for (my $i = 0; $i < @poss; ++$i) {
-
-    my $poss1 = $poss[$i];
-    $notes{$poss1}{$poss1} = { n => $nb_trous, b => 0, nb => $nb_trous, res => 'X' x $nb_trous };
-
-    for (my $j = 0; $j < $i; ++$j) {
-      my %h;
-      my $poss2 = $poss[$j];
-      @h{ qw/n b nb res/ } = noter($poss1, $poss2);
-      $notes{$poss1}{$poss2} = { %h };
-      $notes{$poss2}{$poss1} = { %h };
-    }
+  if (@poss < $limite_notes) {
+    heure("début du remplissage de %notes");
+    remplir();
+    heure("fin du remplissage de %notes");
   }
-  #print YAML::Dump(\%notes);
+  return 0;
 }
 
 sub fin_de_partie {
@@ -946,6 +939,11 @@ sub fin_de_partie {
       say "Il ne reste plus de proposition compatible. Il doit y avoir eu une erreur. Pouvez-vous vérifier, s'il-vous-plaît ?";
       return 0;
     }
+    if (scalar (keys %notes) == 0 && @poss < $limite_notes) {
+      heure("début du remplissage a posteriori de %notes");
+      remplir();
+      heure("fin du remplissage a posteriori de %notes");
+    }
   }
 }
 
@@ -961,7 +959,6 @@ sub jouer {
   while ($pas_bon) {
     my $nb_coup = 1 + @partie;
     say "$nb_coup : je joue $prop";
-    say $prop;
     my ($n, $b, $nb, $res);
 
     my $resultat = <STDIN>;
@@ -1050,12 +1047,35 @@ sub noter {
   return ($n, $b, $nb, $res);
 }
 
+sub remplir {
+  for (my $i = 0; $i < @poss; ++$i) {
+
+    my $poss1 = $poss[$i];
+    $notes{$poss1}{$poss1} = { n => $nb_trous, b => 0, nb => $nb_trous, res => 'X' x $nb_trous };
+
+    for (my $j = 0; $j < $i; ++$j) {
+      my %h;
+      my $poss2 = $poss[$j];
+      @h{ qw/n b nb res/ } = noter($poss1, $poss2);
+      $notes{$poss1}{$poss2} = { %h };
+      $notes{$poss2}{$poss1} = { %h };
+    }
+  }
+  #print YAML::Dump(\%notes);
+}
+
 sub choisir {
   my (%entropie, %max, %histo1);
   foreach my $poss1 (@poss) {
     my %histogramme;
     foreach my $poss2 (@poss) {
-      my $res = $notes{$poss1}{$poss2}{res};
+      my $res;
+      if (%notes) {
+        $res = $notes{$poss1}{$poss2}{res};
+      }
+      else {
+        (undef, undef, undef, $res) = noter($poss1, $poss2);
+      }
       $histogramme{$res}++;
     }
     #say join ' ', $poss1, %histogramme;
@@ -1093,19 +1113,29 @@ sub filtrer {
   my $n    = $ref_coup->{n};
   my $b    = $ref_coup->{b};
   foreach my $poss (@poss_avant) {
-    if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
-      push @poss, $poss;
+    if (%notes) {
+      if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
+        push @poss, $poss;
+      }
+      elsif ($poss ne $prop) {
+        # on récupère (en partie) la place occupée par $poss dans le hachage
+        delete $notes{$poss};
+        # il faudrait aussi supprimer les entrées où $poss figure
+        # en clé de deuxième niveau, mais c'est trop long. 
+        # On préfère gâcher l'espace occupé par $poss en deuxième
+        # niveau que de gâcher du temps à les supprimer.
+      }
     }
-    elsif ($poss ne $prop) {
-      # on récupère (en partie) la place occupée par $poss dans le hachage
-      delete $notes{$poss};
-      # il faudrait aussi supprimer les entrées où $poss figure
-      # en clé de deuxième niveau, mais c'est trop long. 
-      # On préfère gâcher l'espace occupé par $poss en deuxième
-      # niveau que de gâcher du temps à les supprimer.
+    else {
+      my ($n1, $b1, undef, undef) = noter($poss, $prop);
+      if ($n1 == $n && $b1 == $b) {
+        push @poss, $poss;
+      }
     }
   }
-  delete $notes{$prop};
+  if (%notes) {
+    delete $notes{$prop};
+  }
   say join ' ', "Il reste", tronquer(@poss);
 }
 sub entropie_et_max {
@@ -1137,4 +1167,9 @@ sub aff_details {
   if (@ex_aequo) {
     say "ex-aequo avec ", tronquer(@ex_aequo);
   }
+}
+sub heure {
+  my ($msg) = @_;
+  my ($ss, $mn, $hh) = gmtime();
+  say sprintf "%02d:%02d:%02d %s", $hh, $mn, $ss, $msg;
 }
