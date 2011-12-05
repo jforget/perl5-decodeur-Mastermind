@@ -336,7 +336,7 @@ passer directement à l'interlude, avec la constitution de la liste des
 codes compatibles.
 
 =item * Lorsque  tous les codes joués jusque-là ont  abouti à une note
-cumulée de 4 marques noires ou blanches. Par exemple :
+cumulée de 3 marques noires ou blanches. Par exemple :
 
     IJKL O
     EFGH X
@@ -467,6 +467,19 @@ limiter à quelques dizaines de codes possibles.
 (codée en dur dans le programme), le tableau à double entrée n'est pas
 généré. Lors de la fin de  partie, il faudra calculer au coup par coup
 les notes, sans les récupérer dans le tableau.
+
+Par exemple, avant  de mettre en place ce test,  j'ai essayé la partie
+suivante, avec un jeu à 4 trous et 26 couleurs :
+
+  IJKL O
+  EFGH O
+  ABCD O
+
+Avec ce début de partie,  la liste des codes compatibles comporte 9720
+codes. Lors du  calcul du tableau à double entrée  sur ces 9720 codes,
+ma  machine a  complètement rempli  ses 3,9  Go de  mémoire vive  et a
+commencé à alimenter son fichier swap, avant que je stoppe l'exécution
+du programme.
 
 =head2 Fin de partie
 
@@ -728,41 +741,29 @@ Aucune incompatibilité identifiée.
 Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
 décimales.
 
-Le  calcul  du tableau  à  double entrée  dans  la  seconde partie  de
-l'interlude peut conduire à  une occupation prohibitive de la mémoire,
-si la  liste des codes compatibles  est trop peuplée.  Exemple avec un
-jeu à 4 trous et 26 couleurs et avec le début de partie :
-
-  IJKL O
-  EFGH O
-  ABCD O
-
-Avec ce début de partie,  la liste des codes compatibles comporte 9720
-codes. Lors du  calcul du tableau à double entrée  sur ces 9720 codes,
-une machine  a complètement  rempli ses  3,9 Go de  mémoire vive  et a
-commencé à alimenter son fichier swap.
-
 Dans certains  cas, visibles notamment  lorsque le nombre  de couleurs
 est élevé, la  fin de partie n'est pas optimale.  Par exemple, dans le
 jeu à 4 trous et 26 couleurs, la partie :
 
-  AOGL XXX
-  AJNH X
-  AFKM X
-  IJKL X
-  EFGH X
-  ABCD X
+  ABCE XXX
+  ABCD XXX
 
-conduit  à la liste  de codes  compatibles C<AAGL>,  C<AGGL>, C<ALGL>,
-C<APGL>,  C<AQGL>,   C<ARGL>,  C<ASGL>,  C<ATGL>,   C<AUGL>,  C<AVGL>,
-C<AWGL>, C<AXGL>, C<AYGL>  et C<AZGL>.  Tous ces codes  sont bâtis sur
-le même moule, C<A.GL>.  Avec la  méthode qui conduit à ne choisir que
-parmi les  codes compatibles avec  les coups précédents,  le programme
-essaiera ces 14  codes l'un après l'autre.  Alors  que si le programme
-joue des  codes incompatibles comme  C<PQRS> puis C<TUVW> et  ainsi de
-suite, le programme isolera  nettement fois plus rapidement la couleur
-en deuxième position.  Mais tant pis, on continue  à choisir parmi les
-codes compatibles.
+conduit à une  liste contenant uniquement des codes  C<ABC.>, le point
+étant l'une des lettres C<A>, C<B>, C<C> ou C<F> à C<Z>.  Les 24 codes
+correspondants  sont évalués  de  la  même manière  par  le calcul  de
+l'entropie de Shannon et par le minimax : ils ont tous une répartition
+
+  XXXX: 1, XXX: 23
+
+ce qui donne  une quantité d'information de 0.25 bit  et un minimax de
+23.  Alors que si l'on prenait un code incompatible tel que C<FGHI> ou
+C<GHIJ>, la répartition serait
+
+  X: 1, O: 3, (rien): 20
+
+d'où une  quantité d'information de 0.78  bit et un minimax  de 20. Et
+surtout, au  lieu d'éliminer  les codes  un à un,  cela en  élimine au
+moins quatre à chaque coup.
 
 =head1 AUTEUR
 
