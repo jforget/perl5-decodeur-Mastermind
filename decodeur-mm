@@ -352,8 +352,8 @@ plus rapidement.
 
 =back
 
-La note cumulée s'effectue en créant  un « coup synthétique », qui est
-la concaténation de tous les coups  réels ayant eu au moins une marque
+La note cumulée s'évalue en créant un « coup synthétique », qui est la
+concaténation de  tous les  coups réels ayant  eu au moins  une marque
 noire ou  blanche. Pourquoi  prend-on la peine  de constituer  ce coup
 synthétique, au lieu de cumuler simplement les résultats C<$nb> ? Cela
 sera expliqué dans l'interlude.
@@ -722,6 +722,55 @@ le même nombre d'éléments.   En revanche, lorsque le critère principal
 est  le  minimax,  l'utilisation  de l'entropie  pour  départager  les
 ex-aequo se révèle utile.
 
+=head3 Remarque
+
+L'une des hypothèses que j'ai  faite était que l'on pouvait limiter la
+recherche  des codes  les  plus  discriminants à  la  liste des  codes
+compatibles avec  le début de  la partie. Je  ne doutais pas  que l'on
+pouvait avoir une meilleure discrimination  avec un code qui ne figure
+pas  dans  la  liste des  codes  possibles,  mais  je croyais  que  la
+différence  n'était  jamais  très  grande  entre  le  code  obtenu  en
+cherchant uniquement parmi les codes  compatibles et le code obtenu en
+cherchant  dans   la  liste  complète  des  codes   autorisés.  Je  me
+trompais.  Prenons l'exemple d'un  jeu à  4 trous  et 26  couleurs. Le
+premier tour est :
+
+  ABCD XXX
+
+Le programme  abandonne les codes suivants  C<EFGH>, C<IJKL>, C<MNOP>,
+C<QRST>, C<UVWX> et C<YZAB>, passe  à l'interlude et obtient une liste
+de  100   codes.   Avec   une  notation  semblables   aux  expressions
+régulières,  ces  100 codes  sont  C<ABC[^D]>  (25), C<AB[^C]D>  (25),
+C<A[^B]CD> (25) et  C<[^A]BCD> (25).  Parmi ces 100  codes, les 88 qui
+n'ont pas de répétitions sont  tous identiques pour la répartition des
+notes
+
+  XXXX: 1, XXX: 24, XXO: 3, XX: 72
+
+et  donc la  valeurs en  bits  (1.05) ou  la valeur  minimax (72).  Le
+programme  joue  donc C<ABCE>  et  supposons  qu'il  obtienne la  note
+C<XXX>.  Les  codes compatibles ne  sont plus que  24, C<ABC[A-CF-Z]>.
+Ils sont tous équivalents, avec une répartition
+
+  XXXX: 1, XXX: 23
+
+Avec  la méthode  consistant à  prendre le  code le  plus discriminant
+parmi les codes  possibles, il faudra essayer les 23  codes un par un,
+jusqu'à obtenir le code secret. Alors qu'avec d'autres codes, tels que
+C<FGHI> ou C<IJKL>, on peut éliminer quatre codes de la liste à chaque
+fois (ou, avec un peu de chance, éliminer tous les codes sauf quatre ;
+mieux, comme le  résultat peut être C<X> ou  C<O>, la liste résultante
+ne comportera pas 4 codes, mais 1 ou 3).
+
+Il faut donc admettre des codes  invalides. Pour ne pas tomber dans un
+calcul très long, on ne  va pas admettre les C<26**4> codes possibles,
+mais on  va se contenter des  codes qui auraient été  utilisés lors du
+début de partie, s'il n'avait pas été interrompu subitement.  Mais ces
+codes restent quand même  en compétition avec les codes C<ABC[A-CF-Z]>
+de  la  liste des  codes  possibles  et on  prendra  le  code le  plus
+discriminant.  Qui sera  C<IJKL>,  ex-aequo avec  C<MNOP>, C<QRST>  et
+C<UVWX>.
+
 =head1 CONFIGURATION ET ENVIRONNEMENT
 
 Néant.
@@ -741,29 +790,9 @@ Aucune incompatibilité identifiée.
 Les  entropies   sont  affichées  avec  un   nombre  déraisonnable  de
 décimales.
 
-Dans certains  cas, visibles notamment  lorsque le nombre  de couleurs
-est élevé, la  fin de partie n'est pas optimale.  Par exemple, dans le
-jeu à 4 trous et 26 couleurs, la partie :
-
-  ABCE XXX
-  ABCD XXX
-
-conduit à une  liste contenant uniquement des codes  C<ABC.>, le point
-étant l'une des lettres C<A>, C<B>, C<C> ou C<F> à C<Z>.  Les 24 codes
-correspondants  sont évalués  de  la  même manière  par  le calcul  de
-l'entropie de Shannon et par le minimax : ils ont tous une répartition
-
-  XXXX: 1, XXX: 23
-
-ce qui donne  une quantité d'information de 0.25 bit  et un minimax de
-23.  Alors que si l'on prenait un code incompatible tel que C<FGHI> ou
-C<GHIJ>, la répartition serait
-
-  X: 1, O: 3, (rien): 20
-
-d'où une  quantité d'information de 0.78  bit et un minimax  de 20. Et
-surtout, au  lieu d'éliminer  les codes  un à un,  cela en  élimine au
-moins quatre à chaque coup.
+Lorsqu'il  y   a  beaucoup  de   possibilités  compatibles  (notamment
+lorsqu'il  y  a  beaucoup de  couleurs),  le  choix  du code  le  plus
+discriminant peut être très long.
 
 =head1 AUTEUR
 
@@ -834,6 +863,8 @@ my @partie;
 my @poss;
 my %notes;
 my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
+my @suppl; # code supplémentaires, qui ne sont pas compatibles avec les coups
+           # déjà joués, mais qui peuvent accélérer la partie
 
 debut_de_partie()
 || interlude()
@@ -870,6 +901,13 @@ sub debut_de_partie {
     }
     say join ' ', %coup_synthetique;
 
+    if ($coup_synthetique{nb} == $nb_trous - 1) {
+      while ($pointeur < 0) {
+        my $prop = join '', @coul[$pointeur .. $pointeur + $nb_trous - 1];
+        push @suppl, $prop;
+        $pointeur += $nb_trous;
+      }
+    }
     if ($coup_synthetique{nb} >= $nb_trous - 1) {
       return 0;
     }
@@ -1077,11 +1115,12 @@ sub remplir {
 
 sub choisir {
   my (%entropie, %max, %histo1);
-  foreach my $poss1 (@poss) {
+  # say join ' ', @suppl;
+  foreach my $poss1 (@poss, @suppl) {
     my %histogramme;
     foreach my $poss2 (@poss) {
       my $res;
-      if (%notes) {
+      if ($notes{$poss1}) {
         $res = $notes{$poss1}{$poss2}{res};
       }
       else {
@@ -1089,16 +1128,16 @@ sub choisir {
       }
       $histogramme{$res}++;
     }
-    #say join ' ', $poss1, %histogramme;
     my ($entr, $max) = entropie_et_max(values %histogramme);
     $entropie{$poss1} = $entr;
     $max     {$poss1} = $max;
     $histo1  {$poss1} = { %histogramme };
+    # say join ' ', $poss1, %histogramme, $entr, $max;
   }
   #say YAML::Dump(\%entropie, \%max);
 
-  my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @poss;
-  my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @poss;
+  my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @poss, @suppl;
+  my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @poss, @suppl;
 
   # $savant : le code qui propose la plus grande quantité d'information
   # $minimax : le code qui minimise la classe maximale
@@ -1124,7 +1163,7 @@ sub filtrer {
   my $n    = $ref_coup->{n};
   my $b    = $ref_coup->{b};
   foreach my $poss (@poss_avant) {
-    if (%notes) {
+    if ($notes{$prop}) {
       if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
         push @poss, $poss;
       }
