@@ -3,7 +3,7 @@
 #
 # Décodeur mastermind
 #
-# Copyright 2011 Jean Forget
+# Copyright 2011, 2023 Jean Forget, tous droits réservés
 
 
 =encoding utf8
@@ -526,7 +526,7 @@ Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 étudier le codage  optimal d'un message transmis par  un canal avec ou
 sans parasites. La formule qu'il donne est
 
-  - sigma(pi x Log2(pi))
+  - Σ(p_i x Log2(p_i))
 
 Jean Tricot et Marco Meirovitz  ont appliqué ce concept au Mastermind,
 mais sans  vraiment donner  de détails.  Voici  une explication  de la
@@ -599,7 +599,7 @@ Plus généralement,  si les probabilités des  différentes réponses sont
 (p_i), alors la quantité d'information moyenne obtenue par la question
 est :
 
-  - sigma(p_i x Log2(p_i))
+  - Σ(p_i x Log2(p_i))
 
 Pour faire  pédant, signalons que  l'on peut utiliser  les logarithmes
 népériens dans la formule à la  place des logarithmes à base deux.  On
@@ -646,15 +646,15 @@ ensemble  de C<N>  éléments  en classes  de  C<n_i> éléments  chacune,
 c'est-à-dire que
 
         n_i
-  p_i = --- , avec N = sigma(n_i)
+  p_i = --- , avec N = Σ(n_i)
          N
 
 alors, après quelques transformations de niveau terminale scientifique,
 l'entropie se calcule avec :
 
-              sigma(n_i x Log2(n_i))
-  Log2(N)  -  ----------------------
-                        N
+              Σ(n_i x Log2(n_i))
+  Log2(N)  -  ------------------
+                      N
 
 =head3 Le minimax de Knuth
 
@@ -724,7 +724,7 @@ ex-aequo se révèle utile.
 
 =head3 Remarque
 
-L'une des hypothèses que j'ai  faite était que l'on pouvait limiter la
+L'une des hypothèses que j'ai faites était que l'on pouvait limiter la
 recherche  des codes  les  plus  discriminants à  la  liste des  codes
 compatibles avec  le début de  la partie. Je  ne doutais pas  que l'on
 pouvait avoir une meilleure discrimination  avec un code qui ne figure
@@ -800,7 +800,7 @@ Jean Forget, JFORGET (à) cpan.org
 
 =head1 LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2011, tous droits réservés.
+(C) Jean Forget, 2011, 2023, tous droits réservés.
 
 Les termes de licence de ce script sont les mêmes termes que pour Perl
 : GNU General Public License (GPL) et Artistic License.
