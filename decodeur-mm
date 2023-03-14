@@ -863,7 +863,7 @@ my @partie;
 my @poss;
 my %notes;
 my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
-my @suppl; # code supplémentaires, qui ne sont pas compatibles avec les coups
+my @suppl; # codes supplémentaires, qui ne sont pas compatibles avec les coups
            # déjà joués, mais qui peuvent accélérer la partie
 
 debut_de_partie()
@@ -1171,7 +1171,7 @@ sub filtrer {
         # on récupère (en partie) la place occupée par $poss dans le hachage
         delete $notes{$poss};
         # il faudrait aussi supprimer les entrées où $poss figure
-        # en clé de deuxième niveau, mais c'est trop long. 
+        # en clé de deuxième niveau, mais c'est trop long.
         # On préfère gâcher l'espace occupé par $poss en deuxième
         # niveau que de gâcher du temps à les supprimer.
       }
