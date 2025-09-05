@@ -473,9 +473,8 @@ bit,  mais  pas  tout-à-fait  2.  On  va dire  que  cette  réponse  de
 probabilité 1/3  lui a fait gagner  1,58 bit. On en  déduit le tableau
 suivant :
 
-  |------------|------------|
   | probabilité de la réponse | information obtenue    |
-  |------------|------------|
+  |:----------:|:----------:|
   |    1/2     |   1 bit    |
   |    1/4     |   2 bits   |
   |    1/256   |   8 bits   |
@@ -553,7 +552,7 @@ jouera.
 
 Si  les probabilités  sont calculées  à  partir de  la partition  d'un
 ensemble  de  `N`  éléments  en classes  de  `n_i`  éléments  chacune,
-c'est-à-dire que $ p_i = \frac{n_i}{N} $ avec $ N = \sum n_i $.
+c'est-à-dire que $p_i = \frac{n_i}{N}$ avec $N = \sum n_i$.
 
 alors, après quelques transformations de niveau terminale scientifique,
 l'entropie se calcule avec :
