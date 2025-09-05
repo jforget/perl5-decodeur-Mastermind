@@ -3,7 +3,7 @@
 #
 # Décodeur mastermind
 #
-# Copyright 2011, 2023 Jean Forget, tous droits réservés
+# Copyright 2011, 2023, 2025 Jean Forget, tous droits réservés
 
 
 =encoding utf8
@@ -882,7 +882,7 @@ sub debut_de_partie {
     }
     if ($nb == 0) {
       splice @coul, $pointeur, $nb_trous;
-      #say join ' ', @coul;
+      #say join ' ', "couleurs restantes", @coul;
     }
 
     push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
@@ -899,7 +899,7 @@ sub debut_de_partie {
       $coup_synthetique{prop} .= $prop;
       $coup_synthetique{nb}   += $nb;
     }
-    say join ' ', %coup_synthetique;
+    say join ' ', "coup synthétique", %coup_synthetique;
 
     if ($coup_synthetique{nb} == $nb_trous - 1) {
       while ($pointeur < 0) {
@@ -939,7 +939,7 @@ sub interlude {
         # rien qui ressemble à de la peur.
         substr($poss, $i, 1) = $coul;
 
-        for my $coup (@partie, \%coup_synthetique) {
+        for my $coup (grep { $_->{prop} ne '' } @partie, \%coup_synthetique) {
           my ($n, undef, $nb) = noter($coup->{prop}, $poss);
           if ($n > $coup->{n} || $nb > $coup->{nb}) {
             # La proposition incomplète est déjà trop bien notée
@@ -1070,7 +1070,8 @@ sub noter {
   my ($prop1, $prop2) = @_;
   my ($n, $b, $nb, $res) = (0, 0, 0, '');
 
-  #say $prop1;
+  #say "prop1 = $prop1";
+  #say "prop2 = $prop2";
   for (my $i = 0; $i < $nb_trous; $i++) {
     if (substr($prop1, $i, 1) eq substr($prop2, $i, 1)) {
       $n   ++;
