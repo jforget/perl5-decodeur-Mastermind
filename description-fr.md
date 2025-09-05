@@ -350,9 +350,9 @@ rejeté lorsqu'il  a été confronté au  coup `ABCD` qui avait  une seule
 marque (noire).
 
 À noter que  si les _n_ - 1  premiers coups ont eu chacun 0  noir et 0
-blanc et que le  _n_ième coup a eu 3 ou 4  marques noires et blanches,
+blanc et que le _n_ ième coup a  eu 3 ou 4 marques noires et blanches,
 alors le coup  synthétique est vide. On ne l'utilise  pas, car avec le
-seul  _n_ième  coup, la  constitution  de  la liste  est  suffisamment
+seul  _n_ ième  coup, la  constitution  de la  liste est  suffisamment
 rapide.
 
 Une fois  la liste  des codes construite,  le programme  évalue chaque
@@ -426,9 +426,7 @@ Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 étudier le codage  optimal d'un message transmis par  un canal avec ou
 sans parasites. La formule qu'il donne est
 
-$$
-  - \sum p_i \times \log_2(p_i)
-$$
+$ - \sum p_i \times \log_2(p_i) $
 
 Jean Tricot et Marco Meirovitz  ont appliqué ce concept au Mastermind,
 mais sans  vraiment donner  de détails.  Voici  une explication  de la
@@ -473,21 +471,13 @@ bit,  mais  pas  tout-à-fait  2.  On  va dire  que  cette  réponse  de
 probabilité 1/3  lui a fait gagner  1,58 bit. On en  déduit le tableau
 suivant :
 
-  |:----------:|:----------:|
-  | probabilité| information|
-  | de la      | obtenue    |
-  | réponse    |            |
   |------------|------------|
+  | probabilité de la réponse | information obtenue    |
   |    1/2     |   1 bit    |
-  |------------|------------|
   |    1/4     |   2 bits   |
-  |------------|------------|
   |    1/256   |   8 bits   |
-  |------------|------------|
   |    1/3     | 1,58 bit   |
-  |------------|------------|
   |    p_i     | -Log_2(p_i)|
-  |------------|------------|
 
 Une question peut  être considérée comme un éventail  de réponses plus
 ou  moins probables. Supposons  que la  première question  du décodeur
@@ -501,9 +491,7 @@ Plus généralement,  si les probabilités des  différentes réponses sont
 (p_i), alors la quantité d'information moyenne obtenue par la question
 est :
 
-$$
-  - \sum p_i \times \log_2(p_i)
-$$
+$ - \sum p_i \times \log_2(p_i) $
 
 Pour faire  pédant, signalons que  l'on peut utiliser  les logarithmes
 népériens dans la formule à la  place des logarithmes à base deux.  On
