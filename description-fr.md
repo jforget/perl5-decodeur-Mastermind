@@ -426,7 +426,9 @@ Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 étudier le codage  optimal d'un message transmis par  un canal avec ou
 sans parasites. La formule qu'il donne est
 
-$ - \sum p_i \times \log_2(p_i) $
+$$
+E = - \sum p_i \times \log_2(p_i)
+$$
 
 Jean Tricot et Marco Meirovitz  ont appliqué ce concept au Mastermind,
 mais sans  vraiment donner  de détails.  Voici  une explication  de la
@@ -473,6 +475,7 @@ suivant :
 
   |------------|------------|
   | probabilité de la réponse | information obtenue    |
+  |------------|------------|
   |    1/2     |   1 bit    |
   |    1/4     |   2 bits   |
   |    1/256   |   8 bits   |
@@ -489,9 +492,11 @@ troisième  réponse lui  fournit 1  bit  avec une  probabilité 1/2.  Le
 décodeur récoltera en moyenne  1/4 x 2 + 1/4 x 2 + 1/2  x 1 = 1,5 bit.
 Plus généralement,  si les probabilités des  différentes réponses sont
 (p_i), alors la quantité d'information moyenne obtenue par la question
-est :
+est :
 
-$ - \sum p_i \times \log_2(p_i) $
+$$
+E = - \sum p_i \times \log_2(p_i)
+$$
 
 Pour faire  pédant, signalons que  l'on peut utiliser  les logarithmes
 népériens dans la formule à la  place des logarithmes à base deux.  On
@@ -548,15 +553,13 @@ jouera.
 
 Si  les probabilités  sont calculées  à  partir de  la partition  d'un
 ensemble  de  `N`  éléments  en classes  de  `n_i`  éléments  chacune,
-c'est-à-dire que
-
-$ p_i = \frac{n_i}{N} $ avec $ N = \sum n_i $
+c'est-à-dire que $ p_i = \frac{n_i}{N} $ avec $ N = \sum n_i $.
 
 alors, après quelques transformations de niveau terminale scientifique,
 l'entropie se calcule avec :
 
 $$
-\log_2 \left( N \right) - \frac{ \sum n_i \times \log_2\left(n_i\right)}{N}
+E = \log_2 \left( N \right) - \frac{ \sum n_i \times \log_2\left(n_i\right)}{N}
 $$
 
 ### Le minimax de Knuth
