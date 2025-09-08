@@ -51,6 +51,14 @@ combinaison et  le codeur répond  de même. Le  but du décodeur  est de
 trouver le code  secret, ce qui se traduit  par quatre marques noires,
 avec le minimum de coups.
 
+Si le  jeu physique utilise  des pions  de 6 couleurs  différentes, en
+revanche certains programmes  utilisent des symboles `A`  à `F`. C'est
+le cas  également de ce texte,  qui pourra ainsi être  affiché en noir
+sur blanc. De plus, les navigateurs avec synthèse vocale pourront plus
+facilement  traiter mes  explications. Néanmoins,  dans la  suite, les
+symboles `A` à  `F` seront appelés « couleurs ». De  même, les marques
+noires sont représentées par `X` et les marques blanches par `O`.
+
 Exemple : le codeur a choisi
 
 ```
@@ -152,9 +160,9 @@ Si en revanche, le décodeur joue `BACD`, le codeur répondra :
 * `XXOO` si le code secret est `BADC`,
 * `OOOO` si le code secret est `BACD`.
 
-On voit donc  que `BACD` mène à un gain en  deux coups maximum, alors
-que dans  un tiers  des cas, `ABCD`  conduit à  une fin de  partie en
-trois coups.
+On voit  donc que `BACD`  (tout comme `BADC`) mène  à un gain  en deux
+coups maximum, alors  que dans un tiers des cas,  `ABCD` conduit à une
+fin de partie en trois coups.
 
 Dans le  cas de mon  programme, le milieu  de partie n'existe  pas. Le
 programme est capable de mémoriser  une liste de plusieurs dizaines de
@@ -206,7 +214,7 @@ suivants :
 <ul>
 
 <li>
-Lorsqu'il  a otenu  une note  avec 4  noirs, c'est-à-dire  lorsqu'il a
+Lorsqu'il a  obtenu une  note avec 4  noirs, c'est-à-dire  lorsqu'il a
 trouvé le code secret. C'est une  victoire due au hasard, certes, mais
 il faut la prévoir.
 </li>

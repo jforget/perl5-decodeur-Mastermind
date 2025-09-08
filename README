@@ -8,4 +8,8 @@ game. It  can deal with the  variants with rules similar  to the basic
 rules. It cannot deal with  rules variants, such as "Grand Mastermind"
 (with colors and shapes), 4-player mastermind and the like.
 
+The program is written with French variable names, French messages and
+prompts,  French comments,  and  French user  documentation. Only  the
+external Markdown documentation is translated to English.
+
 This script is licensed under the same terms as perl.
