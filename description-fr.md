@@ -281,6 +281,7 @@ marques noires et nombre de marques blanches) correspondent.  On garde
 à l'esprit que le code est incomplet et qu'en ajoutant une couleur, on
 peut :
 
+* conserver la note courante,
 * obtenir une marque noire supplémentaire,
 * obtenir une marque blanche supplémentaire,
 * remplacer une marque blanche par une marque noire.

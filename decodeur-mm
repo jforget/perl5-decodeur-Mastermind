@@ -108,6 +108,15 @@ pas de cette limite, omettez le paramètre ou fixez-le à 0.
 
 =head1 DESCRIPTION
 
+Ce  chapitre "Description"  n'est plus  mis  à jour  dans ce  fichier.
+Veuillez vous  référer au fichier C<description-fr.md>  dans le dépôt.
+L'avantage est que  si vous visitez le dépôt avec  un navigateur HTML,
+ce fichier Markdown  sera mis en forme  directement et automatiquement
+par Github.
+
+Il existe également une traduction  anglaise de cette description dans
+le fichier C<description-en.md>.
+
 =head2 Avant-propos
 
 Le  but  de ce  programme  est  de jouer  au  Mastermind  en tant  que

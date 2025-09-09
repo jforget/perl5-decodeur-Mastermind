@@ -198,16 +198,113 @@ skill, but you have to take this possibility into account.
 </li>
 
 <li>
+When all the  colours have been tried, that is,  when rollover occurs.
+We think  that the game  turns already  played will give  a sufficient
+amount of information so the list  of all possible codes will not have
+an enormous size.
 </li>
 
 <li>
+When all the  game turns already played have a  cumulative result of 4
+marks (no matter black or white). Example
+
+<pre>
+    IJKL OO
+    EFGH X
+    ABCD O
+</pre>
+
+It is  obvious that  the next propositions  `MNOP`, `QRST`  and `UVWX`
+will each get zero marks. Playing them is a waste of time. The program
+runs the interlude and builds the list of compatible codes.
 </li>
 
 <li>
+When all the  game turns already played have a  cumulative result of 3
+marks (no matter black or white). Example:
+
+<pre>
+    IJKL O
+    EFGH X
+    ABCD O
+</pre>
+
+The  propositions `MNOP`,  `QRST` and  `UVWX` can  only receive  a low
+rating: `X`, `O` or nothing. Playing  them until getting `X` or `O` is
+most certainly  a waste of  time. The  program runs the  interlude and
+builds the  list of compatible  codes. This  list will be  much bigger
+than  in the  case above,  but hopefully  still manageable.  Then, the
+program  can go  on with  a wider  range of  markings and  therefore a
+faster solution.
 </li>
 
 </ul>
 
+The  cumulative result  is  computed with  a "synthetic"  proposition,
+which is  the concatenation of  all game  turns that have  received at
+least one  marking, no  matter black  or white. Why  do we  build this
+synthetic proposition instead of just adding the `$nb` results? (`$nb`
+is the program variable counting all black and white marks.) This will
+be explained in the description of the interlude.
+
+## Interlude
+
+In the interlude, the program builds  the list of all codes compatible
+with the  already played game turns.  The codes are built  and checked
+step-by-step: first  incomplete codes  with a  single peg,  then codes
+with two  pegs, then codes with  three pegs and lastly  complete codes
+wuhh four pegs.
+
+At each step, the incomplete code is matched against all played
+game turns, to check if the result (number of black marks and
+number of white marks) are compatible. Keep in mind that the
+candidate code is incomplete. When adding a new peg, we can
+
+* keep the current marking,
+* get an additional black mark,
+* get an additional white mark,
+* replace a white mark with a black mark.
+
+For a code with 3 filled slots and 1 empty slot, the current number of
+black marks must  be equal to the  final number of black  marks, or to
+the final  number minus one.  Instead of  testing the number  of white
+marks, we test the sum black marks + white marks (`$nb` because of the
+French-speaking mnemonics: `n`  for _noir_ = black, `b`  for _blanc_ =
+white).  The current  `$nb` value  must be  equal to  the final  `$nb`
+value, or to the final value minus 1.
+
+For a code with 2 filled slots and 2 empty slots, the current value of
+`$n` (the  number of  black marks)  must be in  the interval  from the
+final `$n` value back to the final  `$n` value minus 2. Same thing for
+the `$nb` values.
+
+And for a code with 1 filled slot and 3 empty slots, the current value
+of `$n` (the number  of black marks) must be in  the interval from the
+final `$n` value back  to the final `$n` value minus  3. And as above,
+this is the same thing for the `$nb` values.
+
+In this way, by building 1-slot  codes, then 2-slot codes, then 3-slot
+codes and the  4-slot codes, we do  not need to walk the  full tree of
+propositions,  we  can prune  it  on  the  go.  Building the  list  of
+compatible codes takes less time.
+
+Examples: one game  turn used code `ABCD` with marking  `X` (one black
+mark). Partial code  `AE..` gets marking `X`, which  is compatible. On
+the other hand,  partial code `AD..` gets marking `XO`  which shows it
+is not  compatible. No  matter which  colours are  added to  the still
+empty slots, we cannot  get back to a marking `X`.  Code `CE..` gets a
+marking `O`. Although there is a  white mark for this partial code and
+none for the  already played gameturn, this is  compatible because the
+white mark can be replaced with a  black one, when we will test `CEC.`
+and then `CECC` and `CECE` (among others).
+
+Now suppose that the proposition `ABCD` got a marking `XOO` (one black
+mark and  two white marks).  Code `AE..`  receives marking `X`  and is
+compatible. There are still two empty slots and these slots can be the
+places  generating  the  missing  white  marks.  On  the  other  hand,
+proposition `EF..`  receives an empty  marking and is  not compatible.
+The  two empty  slots are  not enough  to generate  the three  missing
+marks.
 
 # License and Copyright
 
