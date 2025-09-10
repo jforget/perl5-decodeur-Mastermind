@@ -51,6 +51,12 @@ combinaison et  le codeur répond  de même. Le  but du décodeur  est de
 trouver le code  secret, ce qui se traduit  par quatre marques noires,
 avec le minimum de coups.
 
+Pour  une compétition  équilibrée, les  joueurs échangent  ensuite les
+rôles et l'ancien codeur cherche à  décoder un nouveau code choisi par
+l'ancien  décodeur. Les  joueurs comparent  le nombre  de tours  de la
+première manche  avec celui  de la  seconde manche  pour savoir  qui a
+gagné. Cet aspect n'est pas pris en compte dans mon programme.
+
 Si le  jeu physique utilise  des pions  de 6 couleurs  différentes, en
 revanche certains programmes  utilisent des symboles `A`  à `F`. C'est
 le cas  également de ce texte,  qui pourra ainsi être  affiché en noir
@@ -103,7 +109,7 @@ possibles, le  décodeur a le  droit d'insérer dans sa  proposition une
 couleur  dont il sait  qu'elle est  invalide. Matériellement,  cela se
 traduit par une place laissée vide, sans pion de couleur.
 
-Dans le cas d'un texte en noir sur blanc (ce fichier POD ou un livre),
+Dans le cas d'un texte en noir sur blanc (ce fichier Markdown ou un livre),
 on représente traditionnellement les marques noires avec un `X` et les
 marques   blanches  avec   un  `O`.   Les  pions   de  couleurs   sont
 habituellement  représentés  par l'initiale  de  la  couleur, mais  je
@@ -122,10 +128,13 @@ secret  doit  contenir quatre  couleurs  différentes, les  répétitions
 position  correspond chaque marque  noire ou  blanche qu'il  pose. Ces
 variantes ne sont pas prises en compte dans le présent programme.
 
-Enfin, d'autres variantes changent les mécanismes du jeu : utilisation
-de formes en plus des couleurs, utilisation de lettres, le code secret
-devant être  un mot intelligible  en français, etc.  Ces  variantes ne
-sont pas prises en considération dans le présent programme.
+Enfin, d'autres variantes changent les mécanismes du jeu :
+[utilisation de formes en plus des couleurs](https://boardgamegeek.com/boardgame/3664/grand-mastermind),
+[utilisation de lettres](https://boardgamegeek.com/boardgame/5662/word-mastermind),
+le code secret  devant être un mot intelligible en  français,
+[etc](https://boardgamegeek.com/boardgamefamily/142/game-mastermind).
+Ces  variantes ne  sont pas  prises en  considération dans  le présent
+programme.
 
 ## Déroulement d'une partie
 
@@ -180,6 +189,12 @@ de  couleurs  et  en   privilégiera  d'autres.  Également,  les  codes
 monochromes sont censés survenir 6 fois sur 1296, ou 1 fois sur 216 si
 le codeur est un programme  correctement codé, alors que la proportion
 sera nettement moins importante si le codeur est un humain.
+
+Remarque : à cause  d'une tradition, d'une charte  ancienne ou quelque
+chose comme  ça, les  parties sont  habituellement présentées  avec le
+premier  coup en  bas et  le  dernier coup  en haut.  C'est ainsi  que
+procèdent Tricot et Meirovitz dans leur livre, c'est ainsi que je fais
+dans la présente documentation.
 
 ## Début de partie
 
@@ -267,6 +282,66 @@ concaténation de  tous les  coups réels ayant  eu au moins  une marque
 noire ou  blanche. Pourquoi  prend-on la peine  de constituer  ce coup
 synthétique, au lieu de cumuler simplement les résultats `$nb` ? Cela
 sera expliqué dans l'interlude.
+
+### Exemple
+
+Si les  explications ci-dessus  ne vous ont  pas permis  de comprendre
+comment fonctionnent les variables `$couleurs` et `%coup_synthetique`,
+voici un exemple qui vous  expliquera le « comment » de ces variables.
+Pour  le  « pourquoi », il  faudra  attendre  un peu  plus  longtemps.
+L'exemple utilise 4 positions et 26 couleurs.
+
+La variable `$coup_synthetique` est une  table de hachage, avec la clé
+`code`  pour la  proposition, la  clé `n`  pour le  nombre de  marques
+noirs, la clé  `b` pour le nombre  de marques blanches et  la clé `nb`
+pour  le nombre  de marques  noires et  blanches confondues.  Elle est
+initialisée à
+
+```
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+La  variable  `$coul`  (=  « couleurs »)  est  une  simple  chaîne  de
+caractères  contenant   toutes  les   couleurs  possibles.   Elle  est
+initialisée à
+
+```
+  $coul = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+```
+
+Le premier tour est `ABCD`, qui ne reçoit aucune marque. Tout se passe
+comme si l'on avait 22 couleurs possibles au lieu de 26:
+
+```
+  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+Le deuxième tour est `EFGH`, qui reçoit une marque noire et une marque
+blanche.
+
+```
+  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
+```
+
+Le troisième  tour est `IJKL`,  qui ne reçoit aucune  marque. Nouvelle
+simplification :
+
+```
+  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
+```
+
+Le  quatrième tour  est `MNOP`,  qui reçoit  une marque  noire et  une
+marque blanche.  Étant donné que  le coup synthétique n'est  pas vide,
+ces deux  marques sont enregistrées  dans le coup synthétique  en tant
+que marques blanches :
+
+```
+  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGHMNOP', n => 1, b => 3, nb => 4 )
+```
 
 ## Interlude
 

@@ -45,6 +45,12 @@ codemaker how  many black and  white marks this new  combination gets.
 The codebreaker's aim is to find the  secret code with as few turns as
 possible.
 
+For  a balanced  competitive game,  the players  switch roles  and the
+former codemaker  attempts to  find a  new code  chosen by  the former
+codebreaker. At the  end of this second game, the  players compare the
+number of  game turns  of their  respective games to  find who  is the
+winner. This is irrelevant in my program.
+
 While the physical game uses coloured pegs, many programs prefer using
 simple ASCII  letters, `A` to `F`.  The text you are  reading uses the
 same convention,  so you can  read it in  black characters on  a white
@@ -104,10 +110,13 @@ codemaker must tell the codebreaker which slot is associated with each
 black  or  white mark.  These  variants  are  not implemented  in  the
 program.
 
-Lastly,  other variants  alter  the game  mechanisms:  using not  only
-colours but also shapes, using letters  and requiring that the code is
-a valid word in the players'  native language, etc. These variants are
-not implemented in the program.
+Lastly,  other variants  alter  the game  mechanisms:
+[using not  only colours but also shapes](https://boardgamegeek.com/boardgame/3664/grand-mastermind),
+[using letters](https://boardgamegeek.com/boardgame/5662/word-mastermind)
+and requiring  that the code  is a valid  word in the  players' native
+language,
+[etc](https://boardgamegeek.com/boardgamefamily/142/game-mastermind).
+These variants are not implemented in the program.
 
 ## Timeline of a Typical Game
 
@@ -152,16 +161,21 @@ interlude (from  "inter" meaning "between" and  "lude" meaning "game")
 and builds the  list of codes compatible with the  opening game turns.
 Then the program starts the endgame.
 
-Another difference between my program and a game between human ylayers
+Another difference between my program and a game between human players
 is that  my program considers  that all  possible codes have  the same
 probability. In  their book, Tricot  and Meirovitz tell  their readers
 that  a   human  codemaker  will  unconsciously   reject  some  colour
-combinations  and prefer  other combiinations.  Also, a  single-colour
-code has  a theoretical probability  of 6-in-1296, or 1-in-216  with a
+combinations and prefer other combinations. Also, a single-colour code
+has  a  theoretical probability  of  6-in-1296,  or 1-in-216,  with  a
 cybernetic  codemaker,  but a  much  lower  probability with  a  human
 codemaker.
 
-## Openings
+Note: because of  tradition, an old charter or something,  a full game
+is usually  displayed with the first  turn at the bottom  and the last
+turn at  the top. This  is the way games  are printed in  Tricot's and
+Meirovitz' book. I do the same in this documentation.
+
+## Overture
 
 The  book from  Tricot  and Meirovitz  examines  the various  starting
 propositions from the game with 4 pegs  and 6 colours and for the game
@@ -187,7 +201,7 @@ with rollover). For example, with the 26-colour game, the propositions
 are `ABCD`,  `EFGH`, `IJKL`, `MNOP`,  `QRST`, `UVWX` and  `YZAB`. Only
 `ABCD` and `YZAB` share some colours.
 
-The program leaves the opening phase in any of the following cases:
+The program leaves the overture in any of the following cases:
 
 <ul>
 
@@ -247,6 +261,61 @@ synthetic proposition instead of just adding the `$nb` results? (`$nb`
 is the program variable counting all black and white marks.) This will
 be explained in the description of the interlude.
 
+### Example
+
+If the way the `$couleurs`  and `%coup_synthetique` variables are used
+is not clear, here is an example  that will explain the "how" (but not
+yet the "why") in a game with 4 slots and 26 colours.
+
+Variable `%coup_synthetique` (synthetic game turn) is a hashtable with
+key `code` for  the proposition, key `n` (for _noir_  = black) for the
+number of black marks, key `b` (for _blanc_ = white) giving the number
+of white marks  and key `nb` for  the total number of  black and white
+marks. It is initialised with:
+
+```
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+Variable `$coul` (for _couleurs_ =  "colours") is a plain char string,
+containing all possible colours in the current game. It is initialised
+with:
+
+```
+  $coul = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+```
+
+First game turn is `ABCD`, which gets no marks. The game is simplified
+to a 22-colour game:
+
+```
+  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+Second game turn is `EFGH`, which gets a black mark and a white mark.
+
+```
+  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
+```
+
+Third game turn is `IJKL`, which gets no marks:
+
+```
+  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
+```
+
+Fourth game turn is `MNOP`, which gets  a black mark and a white mark.
+Because the  synthetic game turn is  no longer empty, these  marks are
+registered in the synthetic game turn as white marks:
+
+```
+  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  %coup_synthetique = (code => 'EFGHMNOP', n => 1, b => 3, nb => 4 )
+```
+
 ## Interlude
 
 In the interlude, the program builds  the list of all codes compatible
@@ -295,8 +364,8 @@ is not  compatible. No  matter which  colours are  added to  the still
 empty slots, we cannot  get back to a marking `X`.  Code `CE..` gets a
 marking `O`. Although there is a  white mark for this partial code and
 none for the  already played gameturn, this is  compatible because the
-white mark can be replaced with a  black one, when we will test `CEC.`
-and then `CECC` and `CECE` (among others).
+white mark can be  later replaced with a black one,  when we will test
+`CEC.` and then `CECC` and `CECE` (among others).
 
 Now suppose that the proposition `ABCD` got a marking `XOO` (one black
 mark and  two white marks).  Code `AE..`  receives marking `X`  and is
