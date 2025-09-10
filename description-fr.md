@@ -404,6 +404,8 @@ Remarque : pour des raisons  de simplification du code, le remplissage
 se fait par la fin, `...A`  et `...B` etc pour la première génération,
 puis `..AA`, `..AB` pour la deuxième génération et ainsi de suite.
 
+### Utilisation du coup synthétique
+
 Autre remarque. Prenons le jeu à  4 trous et 26 couleurs, et supposons
 que le début de partie soit le suivant :
 
@@ -423,7 +425,12 @@ ou au-delà, mais pas deux, car un humain a tout de suite compris qu'il
 faut une  couleur parmi  `A`..`D`, une couleur  parmi `E`..`H`  et une
 couleur parmi `I`..`L`.  Mais le programme n'est pas  capable de faire
 ce   raisonnement.    Heureusement,   grâce   au    coup   synthétique
-`ABCDEFGHIJKL`, qui a comme note `XOO`, le programme pourra déterminer
+
+```
+  %coup_synthetique = (code => 'ABCDEFGHIJKL', n => 1, b => 2, nb => 3 )
+```
+
+le programme pourra déterminer
 qu'il  faut  trois   de  ces  douze  couleurs  dans   le  code  final,
 c'est-à-dire au moins une de ces  douze couleurs dans chacun des codes
 partiels à deux  vides. Cela permet donc de rejeter  `..MN` et `..NO`.
@@ -433,11 +440,53 @@ permet pas  de rejeter `..AB`, mais  n'importe comment, ce code  a été
 rejeté lorsqu'il  a été confronté au  coup `ABCD` qui avait  une seule
 marque (noire).
 
-À noter que  si les _n_ - 1  premiers coups ont eu chacun 0  noir et 0
-blanc et que le _n_ ième coup a  eu 3 ou 4 marques noires et blanches,
-alors le coup  synthétique est vide. On ne l'utilise  pas, car avec le
-seul  _n_ ième  coup, la  constitution  de la  liste est  suffisamment
-rapide.
+Le coup synthétique ne doit pas contenir le coup où l'on boucle sur la
+liste des  couleurs. Il faut  arrêter d'alimenter le  coup synthétique
+juste avant ce coup. Voici un exemple dans une partie à 6 couleurs. La
+solution est `ABEE` et les premiers coups sont :
+
+```
+EFAB OO
+ABCD XX
+```
+
+Supposons que le coup synthétique contienne le coup numéro 2 :
+
+```
+  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 2, nb => 4 )
+```
+
+Avec ce coup synthétique, la construction de la liste des propositions
+compatibles rejette  toute proposition contenant  2 `E`. La  raison de
+cet échec est que le `A` en position 1 du coup 1 et le `A` en position
+3 du  coup 2 correspondent tous  les deux au  `A` en position 1  de la
+solution.  Pour cette  raison, le  coup qui  boucle sur  la liste  des
+couleurs doit être exclu du coup synthétique.
+
+Une nouvelle  difficulté se  fait jour, avec  un cas  très particulier
+néanmoins  parfaitement valide.  Les _n_  -  1 premiers  coups ont  eu
+chacun 0  noir et  0 blanc et  le _n_ ième  coup a  eu 3 ou  4 marques
+noires et blanches. Exemple avec une partie à 10 couleurs :
+
+```
+IJIJ XXO
+EFGH -
+ABCD -
+```
+
+Le coup synthétique a encore sa valeur initiale :
+
+```
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+Le processus de l'interlude ne  doit pas utiliser ce coup synthétique,
+sinon le  programme déclencherait un avertissement  `substr outside of
+string` (sous-chaîne en dehors de la chaîne).
+
+De toutes façons, avec le coup `IJIJ`  et avec le fait que la variable
+`$coul`  est   réduite  à  `IJ`,  la   construction  des  propositions
+compatibles sera très rapide.
 
 Une fois  la liste  des codes construite,  le programme  évalue chaque
 code avec  chaque autre, pour stocker  la note dans  un hachage indexé

@@ -375,6 +375,92 @@ proposition `EF..`  receives an empty  marking and is  not compatible.
 The  two empty  slots are  not enough  to generate  the three  missing
 marks.
 
+Remark:  because   it  leads  to   a  simpler  program,   the  partial
+propositions are  filled right-to-left: `...A`,  `...B` and so  on for
+the first generation, then `..AA`, `..AB` ... `..BA`, `..BB` and so on
+for the second generation.
+
+### Use of the Synthetic Game Turn
+
+Another remark.  This is an  example with a game  with 4 slots  and 26
+colours. Let us suppose that the first three turns are:
+
+```
+    IJKL X
+    EFGH X
+    ABCD X
+```
+
+In the  first generation,  you will  have 26  partial codes  with each
+letter in  the alphabet:  `...A` to  `...Z`. So far,  so good.  In the
+second generation, we  have among others partial codes  such as `..MN`
+or `..NO`.  These partial codes  are compatible with the  three played
+turns, when  considered separately. But  they are not  compatible with
+the three played turns when considered as  a whole. It is OK to have a
+proposition with one  colour among `M` .. `Z`, but  we cannot have two
+such colours. A human can see immediately that a proposition must have
+one `A` .. `D` colour, plus one `E` .. `H` colour, plus one `I` .. `L`
+colour, which gives no longer room for  two colours in `M` .. `Z`. The
+program  is not  able to  make  this analysis.  Fortunately, with  the
+synthetic game turn
+
+```
+  %coup_synthetique = (code => 'ABCDEFGHIJKL', n => 1, b => 2, nb => 3 )
+```
+
+the program  will be able  to determine  that a proposition  must have
+three colours  among `A` ..  `L`, and  a partial proposition  with two
+empy slots must have at least one colour among `A` .. `L`. Thus `..MN`
+and `..NO` are incompatible. The  synthetic turn cannot reject `..AB`,
+but this proposition has already been rejected when compared with game
+turn `ABCD` and its single black mark.
+
+The synthetic turn cannot contain the  game turn in which the rollover
+occurs. We  must stop immediately  before this  game turn. Here  is an
+example with  a 6-colour game.  The solution  is `ABEE` and  the first
+game turns are
+
+```
+EFAB OO
+ABCD XX
+```
+
+Let us suppose that the synthetic code contains the rolling-over game turn:
+
+```
+  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 2, nb => 4 )
+```
+
+Then the  building of  the list of  possible propositions  rejects any
+proposition containing two  `E`'s. The reason of this  failure is that
+the `A` in slot 1 in game turn 1  and the `A` in slot 3 in game turn 2
+both match the  `A` in slot 1 in the  solution. Thus, the rolling-over
+game turn must be avoided when building the synthetic game turn.
+
+Then  a new  difficulty arises,  with  a special  case which,  however
+special, is  still valid. The first  _n_ - 1 game  turns received zero
+black  marks and  zero  white marks  and  only the  _n_  th game  turn
+receives marks. Example with a 10-colour game:
+
+```
+IJIJ XXO
+EFGH -
+ABCD -
+```
+
+In this case the synthetic game turn still has its initial value:
+
+```
+  %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
+```
+
+The interlude process must not use the synthetic turn, which would
+trigger a warning `substr outside of string`.
+
+Anyhow, with the `IJIJ` game turn and with variable `@coul` containing
+`IJ` and  nothing more,  the building  of the  compatible propositions
+will be very fast.
+
 # License and Copyright
 
 (c) Jean Forget, 2025, all rights reserved.
