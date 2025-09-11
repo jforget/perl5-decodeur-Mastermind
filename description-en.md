@@ -583,7 +583,7 @@ table:
   |    1/4     |   2 bits   |
   |    1/256   |   8 bits   |
   |    1/3     | 1;58 bit   |
-  |    p_i     | $-\log_2(p_i)$ |
+  |    p_i     | -Log_2(p_i)|
 
 A question can be considered as a range of answers, each with a higher
 or  lower  probability.  Suppose  that   the  first  question  of  the
@@ -594,13 +594,55 @@ probability  1/4  and  gives  2  bits. The  answer  "128..255"  has  a
 probability 1/2 and gives only 1 bit. On average, the codebreaker will
 receive 1/4 x 2 + 1/4 x 2 +  1/2 x 1 = 1,5 bit. More generally, if the
 probabilities  of  the  various  answers  are  $p_i$,  the  amount  of
-information received aftre the question is:
+information received after the question is:
 
 $$
 S = - \sum p_i \times \log_2(p_i)
 $$
 
+If I may use pedantry, I would add that we can use Neperian logarithms
+instead  of binary  logarithms. The  result  can no  longer be  called
+"bits", but,  if I remember  correctly, "shannons". Yet, this  unit of
+measure is rarely if ever used, including in theoretical papers on the
+subject.
 
+## Annex: Entropy or not Entropy?
+
+In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart
+and J.  Cohen, the authors  say that  Shannon called the  new quantity
+"entropy" because  the formula  for the  information quantity  was the
+same as the formula for Boltzmann's  entropy, except for a minus sign.
+According to them,  the information quantity and the  entropy are used
+in different contexts, therefore they  cannot be the same quantity and
+the use  of "entropy" by  Shannon is not valid.  You can find  this on
+page  192, chapter  "bit  from it"  in _Science  of  Discworld II  the
+Globe_, ISBN 009 188273 7, published by Ebury Press.
+
+You may agree,  you may disagree. I disagree. Some  words have several
+meanings, depending on the context. For example, I have been told that
+the  English word  "set" has  many  many different  meanings. Being  a
+native French-speaker  and not a  native English-speaker, I  will give
+the example of the French word _tension_. This word can mean:
+
+1. blood pressure in a medical context (_tension artérielle_),
+
+2. tensile strength of a I-beam or of a rope in a mechanical context,
+
+3. in an hydrostatic context, something which I do not understand very
+well,  but which  allows  the existence  of water  drops  and of  soap
+bubbles (_tension superficielle_),
+
+4. electric voltage,
+
+5. in a psychological context, hidden hostility or unresolved insecurity,
+
+6. in an economical context, a threat of shortage,
+
+and most certainly many other meanings...
+
+So if the  word _tension_ has several different  meanings depending on
+the context, why  not use the word "entropy" in  different contexts to
+designate different concepts?
 
 # License and Copyright
 

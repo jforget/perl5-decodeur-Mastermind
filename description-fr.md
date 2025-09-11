@@ -628,7 +628,7 @@ réponse  lui fournit  aussi  2 bits  avec  une probabilité  1/4 et  la
 troisième  réponse lui  fournit 1  bit  avec une  probabilité 1/2.  Le
 décodeur récoltera en moyenne  1/4 x 2 + 1/4 x 2 + 1/2  x 1 = 1,5 bit.
 Plus généralement,  si les probabilités des  différentes réponses sont
-(p_i), alors la quantité d'information moyenne obtenue par la question
+$p_i$, alors la quantité d'information moyenne obtenue par la question
 est :
 
 $$
@@ -641,17 +641,6 @@ ne peut plus parler de bits dans ce cas. L'unité est alors appelé le «
 shannon ». Cette unité de quantité d'information n'est jamais utilisée
 dans  la  réalité,  y  compris  pour  les  études  théoriques  sur  la
 transmission de l'information.
-
-Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
-Steward et J. Cohen, les auteurs font remarquer que Shannon a nommé sa
-grandeur   « entropie »  parce   que   la  formule   de  la   quantité
-d'information était  identique à celle  de l'entropie de  Boltzmann, à
-l'exception du signe moins. Or selon eux, la quantité d'information et
-l'entropie sont  utilisés dans  des contextes  différents, donc  il ne
-peut  pas  s'agir  d'une  même  grandeur  et  l'utilisation  du  terme
-« entropie »  dans les  œuvres  de Shannon  est  injustifiée. Dans  la
-version anglaise, cela se trouve  page 192, chapitre « _bit from it_ »
-(ISBN 009 188273 7, éditions Ebury Press).
 
 Revenons au Mastermind. Une question consiste à jouer une proposition,
 `ABCD` ou `BACD`  par exemple. La réponse est l'une  des notes `XXXX`,
@@ -819,6 +808,45 @@ début de partie, s'il n'avait  pas été interrompu subitement. Mais ces
 codes restent quand  même en compétition avec  les codes `ABC[A-CF-Z]`
 de  la  liste des  codes  possibles  et on  prendra  le  code le  plus
 discriminant. Qui sera `IJKL`, ex-aequo avec `MNOP`, `QRST` et `UVWX`.
+
+## Annexe : entropie ou pas ?
+
+Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
+Stewart et J. Cohen, les auteurs font remarquer que Shannon a nommé sa
+grandeur   « entropie »  parce   que   la  formule   de  la   quantité
+d'information était  identique à celle  de l'entropie de  Boltzmann, à
+l'exception du signe moins. Or selon eux, la quantité d'information et
+l'entropie sont  utilisés dans  des contextes  différents, donc  il ne
+peut  pas  s'agir  d'une  même  grandeur  et  l'utilisation  du  terme
+« entropie »  dans les  œuvres  de Shannon  est  injustifiée. Dans  la
+version anglaise, cela se trouve  page 192, chapitre « _bit from it_ »
+(ISBN 009 188273 7, éditions Ebury Press).
+
+On peut être  d'accord ou pas. Je  ne suis pas d'accord.  Il existe un
+certain nombre de notions différentes  désignées par le même terme. Un
+exemple particulièrement frappant en  français est le mot « tension ».
+Il désigne :
+
+1. la pression sanguine en médecine (tension artérielle),
+
+2. la force longitudinale dans un câble ou une poutrelle en mécanique,
+
+3. une grandeur en hydrostatique que je n'arrive pas à me représenter,
+mais qui permet  l'existence des gouttes d'eau et des  bulles de savon
+(tension superficielle),
+
+4. la différence de potentiel en électrocinétique,
+
+5. un sentiment latent d'insécurité ou d'hostilité en psychologie,
+
+6. une menace de pénurie en économie (p.ex. métier en tension)
+
+et je dois en oublier...
+
+Donc,  si   le  mot  « tension »  peut   désigner  plusieurs  concepts
+différents en fonction du contexte,  pourquoi ne pas utiliser le terme
+« entropie »  dans différents  contextes pour  désigner des  contextes
+différents ?
 
 # LICENCE ET COPYRIGHT
 
