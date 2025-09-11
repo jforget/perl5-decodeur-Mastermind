@@ -461,6 +461,147 @@ Anyhow, with the `IJIJ` game turn and with variable `@coul` containing
 `IJ` and  nothing more,  the building  of the  compatible propositions
 will be very fast.
 
+When the list of possible codes is built, the program matchs each code
+with each  other and stores  the markings  in a hashtable  with 2-tier
+keys. As you will see during  the endgame, the program needs all these
+markings at least once, but usually several times, so we compute these
+markings once for all.
+
+Because of this step, we want to have a list as small as possible. The
+linear list can  contain several hundred entries, but  this means that
+the hashtable  of markings will be  filled within a loop  with tens of
+thousands iterations. So we prefer situations when the list has just a
+few dozens entries.
+
+There  is  a  limit  (variable  `$limite_notes`,  initialised  with  a
+hard-coded value) which determines  whether the hashtable is generated
+in this step. If it is not  generated now, it will be generated later,
+when the number of remaining possible codes falls below this limit.
+
+A real-life example with a 26-colour game before the limit was in use.
+The game began with:
+
+```
+  IJKL O
+  EFGH O
+  ABCD O
+```
+
+With these results, the list  of possible codes contains 9270 entries.
+When building the  hashtable, the computer filled its  3.9G memory and
+started to fill its swapfile. So I interrupted the program.
+
+## Endgame
+
+During the endgame, a game turn looks like:
+
+* The program chooses the most selective proposition among the list of
+possible ones.
+
+* The program plays this code.
+
+* If the program gets `XXXX`, the game ends here and now.
+
+* Else, the program filters the list  of possible codes to select only
+those which are compatible with the new result.
+
+* If the  hashtable `%notes`  has not  been generated  yet and  if the
+number of  compatible codes  is below  the limit  `$limite_notes`, the
+program generates this  hashtable, which will speed up  the next calls
+to the choice function `choisir`.
+
+Playing a  code and  filtering the list  need no  additional comments.
+Choosing  the most  selective  proposition is  much more  interesting.
+There are at least two methods. The  one I have read about in Tricot's
+and Meirovitz'  book uses  a formula  which, as I  learned later  in a
+course about  transmission of data,  is called "the  Shannon entropy".
+The second one, which I discovered only in late 2011, when reading the
+documentation for
+[Algorithm::MasterMind](https://metacpan.org/pod/Algorithm::MasterMind)
+has been described by Donald Knuth and uses minimax (yet, now in 2025,
+I no longer find any mention of minimax in this module).
+
+### The Shannon Entropy
+
+At the beginning, entropy was  a concept in physics, more specifically
+thermodynamics. Entropy  was brought  in by Clausius  (1822--1888) and
+was computed  by dividing the  heat by the absolute  temperature. This
+concept  has  been developped  by  Ludwig  Boltzmann (1844--1906)  who
+described it as the number of microstates for each macrostate. Shannon
+(1916--2001) has reused this concept in mathematics, when studying how
+to encode  a message  to transmit  it through a  data channel  with or
+without noise. The formula from Shannon is:
+
+$$
+S = - \sum p_i \times \log_2(p_i)
+$$
+
+Jean Tricot  and Marco Meirovitz  applied this concept  to Mastermind,
+without giving any details and  even without using the word "entropy".
+Here  is a  description of  the mathematical  entropy. This  is not  a
+strict mathematical lesson using  formal reasoning and demonstrations,
+this  is rather  a naive  approach  targetting an  audience using  its
+intuition.
+
+Let  us  put aside  Mastermind  and  examine  another game,  based  on
+questions and answers: number guessing. The codemaker secretly chooses
+a number  between 1 and 100.  The codebreaker gives a  number, e.g. 50
+and the codemaker must  answer if this is the right  number, or if the
+code is  greater than  50, or  lower than  50. Now  we alter  the game
+rules. First the interval is 0..255  instead of 1..100, and second the
+questions are more diverse.
+
+The codebreaker first asks "Is the number in the 0..127 interval or in
+the 128..255 interval?". In one  case, the codebreaker learns that the
+high-order bit is  0, in the other case he  learns that the high-order
+bit is 1. Both answers has  a probability 1/2 and both answers provide
+1 bit.
+
+We suppose now that the codebreaker asks "Is the number odd or even?".
+In this  case, both answers  have a  probability 1/2 and  both answers
+provide 1  bit, the difference  being that they provide  the low-order
+bit.
+
+The codebreaker  asks "Is the number  in the 0..63 interval?".  If the
+answer is  yes, the codebreaker has  found two bits at  once. But this
+"yes" answer has a probability 1/4.  The codebreaker can even asks "Is
+the number equal to 23?" and  a "yes" answer, probability 1/256, would
+provide all 8 bits at once.
+
+And now,  the question is  "Is the number  in the 0..84  interval?". A
+"yes" answer  would give  the exact  value of  the high-order  bit and
+would give strong hints on the value of the next-to-high-order bit. We
+are sure that  the number begins with "0" and,  without being certain,
+we are very  confident it begins with "00". The  codebreaker has found
+more than 1 bit,  but less than 2. We will  consider that this answer,
+with a  probability 1/3, provides  1.58 bit. This gives  the following
+table:
+
+  | probability of answer | received information |
+  |:----------:|:----------:|
+  |    1/2     |   1 bit    |
+  |    1/4     |   2 bits   |
+  |    1/256   |   8 bits   |
+  |    1/3     | 1;58 bit   |
+  |    p_i     | $-\log_2(p_i)$ |
+
+A question can be considered as a range of answers, each with a higher
+or  lower  probability.  Suppose  that   the  first  question  of  the
+codebreaker is "Is the number in the 0..63 interval, or in the 64..127
+interval  or in  the 128..255  interval?".  The answer  "0..63" has  a
+probability  1/4  and  gives  2  bits.  The  answer  "64..127"  has  a
+probability  1/4  and  gives  2  bits. The  answer  "128..255"  has  a
+probability 1/2 and gives only 1 bit. On average, the codebreaker will
+receive 1/4 x 2 + 1/4 x 2 +  1/2 x 1 = 1,5 bit. More generally, if the
+probabilities  of  the  various  answers  are  $p_i$,  the  amount  of
+information received aftre the question is:
+
+$$
+S = - \sum p_i \times \log_2(p_i)
+$$
+
+
+
 # License and Copyright
 
 (c) Jean Forget, 2025, all rights reserved.

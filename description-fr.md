@@ -492,7 +492,9 @@ Une fois  la liste  des codes construite,  le programme  évalue chaque
 code avec  chaque autre, pour stocker  la note dans  un hachage indexé
 par ces deux codes. Comme cela sera montré dans la suite, le programme
 aura besoin de toutes ces notes  au moins une fois, mais assez souvent
-plusieurs fois. À cause de cette étape, on souhaite avoir une liste de
+plusieurs fois.
+
+À cause de cette étape, on souhaite avoir une liste de
 codes  suffisamment  petite.   Il   aurait  été  possible  de  stocker
 plusieurs centaines de codes possible dans la liste, mais pour l'étape
 présente,  cela  aurait  impliqué  une  boucle avec  des  dizaines  de
@@ -544,8 +546,10 @@ les  codes restants  est plus  intéressant. Il  y  principalement deux
 méthodes. Celle que j'ai connue la première pendant les années 1980 et
 qui est  mentionnée dans  le livre de  Jean Tricot et  Marco Meirovitz
 repose sur  l'entropie de Shannon. La  seconde, dont j'ai  eu vent fin
-2011 en  lisant la doc  de `Algorithm::Mastermind` a été  décrite par
-Donald Knuth et utilise le minimax.
+2011 en  lisant la doc  de
+[Algorithm::MasterMind](https://metacpan.org/pod/Algorithm::MasterMind)
+a été  décrite par Donald  Knuth et utilise  le minimax (cela  dit, en
+2025 je ne retrouve plus la mention du minimax dans ce module Perl).
 
 ### L'entropie de Shannon
 
@@ -560,11 +564,12 @@ Shannon  (1916--2001)  a repris  cette  notion  en mathématiques  pour
 sans parasites. La formule qu'il donne est
 
 $$
-E = - \sum p_i \times \log_2(p_i)
+S = - \sum p_i \times \log_2(p_i)
 $$
 
 Jean Tricot et Marco Meirovitz  ont appliqué ce concept au Mastermind,
-mais sans  vraiment donner  de détails.  Voici  une explication  de la
+mais sans  vraiment donner  de détails et sans même utiliser le terme
+« entropie ».  Voici  une explication  de la
 notion  d'entropie mathématique.  Cela ne  constitue pas  un  cours de
 mathématiques en bonne et due  forme, c'est plutôt une présentation de
 mathématiques expérimentales faisant  appel à l'intuition plutôt qu'au
@@ -627,7 +632,7 @@ Plus généralement,  si les probabilités des  différentes réponses sont
 est :
 
 $$
-E = - \sum p_i \times \log_2(p_i)
+S = - \sum p_i \times \log_2(p_i)
 $$
 
 Pour faire  pédant, signalons que  l'on peut utiliser  les logarithmes
