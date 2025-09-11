@@ -648,8 +648,8 @@ Revenons au Mastermind. Une question consiste à jouer une proposition,
 ces  réponses   est  proportionnelle   au  nombre   de  codes   qui  y
 correspondent. On peut ainsi calculer l'entropie de la question.
 
-Reprenons  l'exemple du  début.  Les codes  restants  sont :  `ABCD`,
-`ABDC` et `BACD`. Si le décodeur joue `ABCD`, le codeur répondra :
+Reprenons l'exemple du début. Les codes restants sont : `ABCD`, `ABDC`
+et `BACD`. En fonction de la  question du décodeur, le codeur répondra :
 
 ```
   +----------+----------+--------------+-------------+------------+
@@ -678,14 +678,13 @@ d'information que `ABCD`.  C'est donc ce que le programme de décodage
 jouera.
 
 Si  les probabilités  sont calculées  à  partir de  la partition  d'un
-ensemble  de  `N`  éléments  en classes  de  `n_i`  éléments  chacune,
-c'est-à-dire que $p_i = \frac{n_i}{N}$ avec $N = \sum n_i$.
-
+ensemble  de  $N$  éléments  en classes  de  $n_i$  éléments  chacune,
+c'est-à-dire que $p_i = \frac{n_i}{N}$ avec $N = \sum n_i$,
 alors, après quelques transformations de niveau terminale scientifique,
 l'entropie se calcule avec :
 
 $$
-E = \log_2 \left( N \right) - \frac{ \sum n_i \times \log_2\left(n_i\right)}{N}
+S = \log_2 \left( N \right) - \frac{ \sum n_i \times \log_2\left(n_i\right)}{N}
 $$
 
 ### Le minimax de Knuth

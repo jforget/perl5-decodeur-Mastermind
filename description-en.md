@@ -606,6 +606,86 @@ instead  of binary  logarithms. The  result  can no  longer be  called
 measure is rarely if ever used, including in theoretical papers on the
 subject.
 
+Back to Mastermind.  When the codebreaker plays a  possible code, this
+is  similar to  a  question  in the  number  guessing  game. When  the
+codebreaker  "asks" `ABCD`  or  `BACD`, the  codemaker "answers"  with
+markings such as  `XXXX`, `XXOO`, `XXX` and so on.  The probability of
+each  answer is  proportional to  the  number of  codes matching  this
+marking. With these probabilities, we can compute an entropy.
+
+Suppose that  the list of  possible codes contains `ABCD`,  `ABDC` and
+`BACD`.  Depending  on  the codebreaker's  question,  the  codemaker's
+answers will be
+
+```
+  +----------+---------+--------------+-------------+------------+
+  | Question | Answers | Codes        | Probability | Entropy    |
+  +----------+---------+--------------+-------------+------------+
+  |   ABCD   |   XXXX  | ABCD         |    1/3      |            |
+  |          +---------+--------------+-------------+            |
+  |          |   XXOO  | ABDC et BACD |    2/3      |  0,92 bit  |
+  +----------+---------+--------------+-------------+------------+
+  |   BACD   |   XXXX  | BACD         |    1/3      |            |
+  |          +---------+--------------+-------------+            |
+  |          |   XXOO  | ABCD         |    1/3      |            |
+  |          +---------+--------------+-------------+            |
+  |          |   OOOO  | ABDC         |    1/3      |  1,58 bit  |
+  +----------+---------+--------------+-------------+------------+
+  |   ABDC   |   XXXX  | ABDC         |    1/3      |            |
+  |          +---------+--------------+-------------+            |
+  |          |   XXOO  | ABCD         |    1/3      |            |
+  |          +---------+--------------+-------------+            |
+  |          |   OOOO  | BACD         |    1/3      |  1,58 bit  |
+  +----------+---------+--------------+-------------+------------+
+```
+
+We can see that codes `BACD`  and `ABDC` provide more information than
+`ABCD`. So the decoding program will play `BACD` or `ABDC`.
+
+if the probabilities apply to a  set with $N$ elements, partitioned in
+classes with $n_i$ elements each, that is, if
+$p_i = \frac{n_i}{N}$ with $N = \sum n_i$,
+then after a few elementary algebraic transformations, the entropy can
+be computed with
+
+$$
+S = \log_2 \left( N \right) - \frac{ \sum n_i \times \log_2\left(n_i\right)}{N}
+$$
+
+### Knuth's Minimax
+
+This method  is much simpler (and  much less fun to  explain). When we
+tally how many markings of each  kind are generated for each remaining
+possibility, we note the maximal number we find. Then we compare these
+remaining  possibilities according  to  these maximal  numbers and  we
+select the possibility  with the lowest maximal number.  With the same
+example as above, we have:
+
+```
+  +----------+----------+--------------+--------+---------+
+  | Question | Answers  | Codes        | Number | Maximum |
+  +----------+----------+--------------+--------+---------+
+  |   ABCD   |   XXXX   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABDC et BACD |    2   |    2    |
+  +----------+----------+--------------+--------+---------+
+  |   BACD   |   XXXX   | BACD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   OOOO   | ABDC         |    1   |    1    |
+  +----------+----------+--------------+--------+---------+
+  |   ABDC   |   XXXX   | ABDC         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   XXOO   | ABCD         |    1   |         |
+  |          +----------+--------------+--------+         |
+  |          |   OOOO   | BACD         |    1   |    1    |
+  +----------+----------+--------------+--------+---------+
+```
+
+As  with Shannon's  entropy, we  must avoid  playing `ABCD`,  and play
+either `BACD` or `ABDC` instead.
+
 ## Annex: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart
