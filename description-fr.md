@@ -733,15 +733,16 @@ Shannon pour  `ABCC` est moins bonne,  3,04 bits. Un centième  de bit,
 cela ne va pas  chercher très loin, mais le résultat  est là, ces deux
 critères ne sont pas forcément en accord.
 
-Quel est  le meilleur critère  ?  Je ne  sais pas.  Je pense  que cela
-dépend des  circonstances et que l'entropie se  révèlera meilleure que
+Quel est  le meilleur  critère ?  Je ne  sais pas.  Je pense  que cela
+dépend des circonstances  et que l'entropie se  révèlera meilleure que
 le  minimax  dans certains  cas  tandis  que  le minimax  se  révèlera
-meilleur que l'entropie dans  d'autres cas. Pour prendre une métaphore
+meilleur que l'entropie dans d'autres  cas. Pour prendre une métaphore
 sportive ou wargamesque, on peut  dire que Shannon joue pour remporter
-la victoire, tandis que Knuth  joue pour éviter la défaite. Notons que
-l'on n'est  pas obligé d'utiliser la  même méthode tout  au long d'une
-même partie. On peut jouer un  coup avec le minimax et le suivant avec
-l'entropie.
+la victoire, tandis que Knuth joue  pour éviter la défaite. Notons que
+l'on n'est  pas obligé d'utiliser la  même méthode tout au  long d'une
+même partie. On peut jouer un coup  avec le minimax et le suivant avec
+l'entropie. Cela dit, mon programme  utilise le même critère d'un bout
+à l'autre d'une même partie.
 
 En fait, j'utilise  les deux critères. L'un est  le critère principal,
 l'autre sert à  départager les ex-aequo.  Cela ne  sert vraiment pas à

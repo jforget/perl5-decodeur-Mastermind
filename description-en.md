@@ -686,6 +686,35 @@ example as above, we have:
 As  with Shannon's  entropy, we  must avoid  playing `ABCD`,  and play
 either `BACD` or `ABDC` instead.
 
+With  this very  simple case,  the entropy  criterion and  the minimax
+criterion  have  the  same  result. In  more  complicated  cases,  the
+criteria can differ.  In an annex in their book,  Tricot and Meirovitz
+give an  analysis for the first  game turn in a  4-slot 6-colour game.
+Code `ABCD` has the best entropy,  3.05 bits, but with a minimax equal
+to 312  with marking `OO`.  On the other  hand, code `ABCC`  is better
+with Knuth's  criterion, the  `O` marking  giving only  276 compatible
+codes,  while its  Shannon entropy  is a  little lower,  3.04 bits.  A
+hundredth of a bit  is very small, but it proves  that the criteria do
+not always agree.
+
+What is the best  criterion? I do not know. I think  it depends on the
+circumstances. In some cases, entropy  will be better than minimax and
+in other  cases, minimax  will be  better than entropy.  If we  take a
+comparison with sports or wargames, Shannon plays to grab the victory,
+while Knuth plays  to avoid defeat. Note that a  player can use mnimax
+on one  game turn and entropy  on the next  turn in the same  game. My
+program sticks with one criterion, though.
+
+Actually, my  program uses both  criteria. One is the  main criterion,
+the other is  the tie-breaking criterion. This can be  useful when the
+main criterion is minimax. If two compatible codes have the same value
+for the  minimax criterion, the  program compares their  entropies. On
+the other hand, the entropies are  computed with 10 decimal digits. So
+if the  main criterion is  entropy, if  two compatible codes  have the
+same entropy within  one ten-billionth bit, that means  that they have
+the same histogram of markings, therefore the same minimax value.
+
+
 ## Annex: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart
