@@ -28,7 +28,7 @@ Utilisation interactive :
 
 Sans aucun paramètre,  le programme résoud un problème à  4 trous et 6
 couleurs,  en vous  demandant à  chaque fois  de noter  la proposition
-qu'il vous indique. Exemple :
+qu'il vous indique. Exemple commenté :
 
   > decodeur-mm                 ligne de commande écrite par l'utilisateur
   ABCD                          premier coup du programme
@@ -56,10 +56,10 @@ Le super Mastermind se joue avec 5 trous et 8 couleurs. Cela donne :
   decodeur-mm -t 5 -c 8 -r DEADB
 
 Et  la même  partie,  en utilisant  le  minimax de  Knuth  au lieu  de
-l'entropie  de Shannon  et en  limitant  l'affichage des  listes à  50
-éléments :
+l'entropie de Shannon et en mode verbeux, tout en limitant l'affichage
+des listes à 50 éléments :
 
-  decodeur-mm -t 5 -c 8 -r DEADB -m -l 50
+  decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
 
 
 =head1 PARAMÈTRES D'APPEL
@@ -96,13 +96,20 @@ maximale  parmi  les  classes  restantes  (voir  ci-dessous  pour  les
 explications). Si aucune n'est demandée ou si les deux sont demandées,
 on prendra l'entropie de Shannon.
 
+=item * verbeux
+
+Le programme affiche de nombreuses indications sur son fonctionnement,
+comme la  liste des  codes compatibles  ou bien  la valeur  minimax et
+l'entropie du code joué.
+
 =item * longueur
 
-Le programme affiche de temps en temps une liste de codes. Cette liste
-peut  être très  longue. Le  paramètre C<longueur>  sert à  limiter la
-longueur à l'affichage de cette liste. Cela ne change rien au fait que
-le programme la conserve en totalité  en mémoire. Et si vous ne voulez
-pas de cette limite, omettez le paramètre ou fixez-le à 0.
+En mode verbeux,  le programme affiche de temps en  temps une liste de
+codes. Cette  liste peut  être très  longue. Le  paramètre C<longueur>
+sert  à limiter  la longueur  à l'affichage  de cette  liste. Cela  ne
+change  rien au  fait  que le  programme la  conserve  en totalité  en
+mémoire.  Et  si vous  ne  voulez  pas  de  cette limite,  omettez  le
+paramètre ou fixez-le à 0.
 
 =back
 
@@ -823,12 +830,13 @@ use warnings;
 use Getopt::Long;
 use YAML;
 
-my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $lg_liste);
+my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $verbeux, $lg_liste);
 GetOptions("couleurs=i" => \$nb_coul,
            "trous=i"    => \$nb_trous,
            "reponse=s"  => \$reponse,
            "entropie"   => \$b_entropie,
            "minimax"    => \$b_minimax,
+           "verbeux"    => \$verbeux,
            "longueur=i" => \$lg_liste,
   ) or die "Problème avec les options";
 
@@ -908,7 +916,8 @@ sub debut_de_partie {
       $coup_synthetique{prop} .= $prop;
       $coup_synthetique{nb}   += $nb;
     }
-    say join ' ', "coup synthétique", %coup_synthetique;
+    say join ' ', "coup synthétique", %coup_synthetique
+      if $verbeux;
 
     if ($coup_synthetique{nb} == $nb_trous - 1) {
       while ($pointeur < 0) {
@@ -967,8 +976,10 @@ sub interlude {
         }
       }
     }
-    say join ' ', tronquer(@poss);
-    say scalar(@poss), " codes";
+    if ($verbeux) {
+      say join ' ', tronquer(@poss);
+      say scalar(@poss), " codes";
+    }
   }
   if (@poss == 0) {
     say "Il y a une incohérence quelque part. Pouvez-vous vérifier les notes, s'il-vous-plaît ?";
@@ -976,9 +987,11 @@ sub interlude {
   }
 
   if (@poss < $limite_notes) {
-    heure("début du remplissage de %notes");
+    heure("début du remplissage de %notes")
+      if $verbeux;
     remplir();
-    heure("fin du remplissage de %notes");
+    heure("fin du remplissage de %notes")
+      if $verbeux;
   }
   return 0;
 }
@@ -998,9 +1011,11 @@ sub fin_de_partie {
       return 0;
     }
     if (scalar (keys %notes) == 0 && @poss < $limite_notes) {
-      heure("début du remplissage a posteriori de %notes");
+      heure("début du remplissage a posteriori de %notes")
+        if $verbeux;
       remplir();
-      heure("fin du remplissage a posteriori de %notes");
+      heure("fin du remplissage a posteriori de %notes")
+        if $verbeux;
     }
   }
 }
@@ -1153,10 +1168,11 @@ sub choisir {
   # $minimax : le code qui minimise la classe maximale
   my ($savant, $minimax) = ($poss_entr[0], $poss_max[0]);
   if ($savant eq $minimax) {
-    say "meilleure entropie et minimax confondus $savant (entropie : $entropie{$savant}, max : $max{$savant})";
+    say "meilleure entropie et minimax confondus $savant (entropie : $entropie{$savant}, max : $max{$savant})"
+      if $verbeux;
     aff_details($savant, \%entropie, \%max, \%histo1);
   }
-  else {
+  elsif ($verbeux) {
     say "meilleure entropie $savant avec $entropie{$savant} (max : $max{$savant})";
     aff_details($savant, \%entropie, \%max, \%histo1);
     say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
@@ -1196,7 +1212,8 @@ sub filtrer {
   if (%notes) {
     delete $notes{$prop};
   }
-  say join ' ', "Il reste", tronquer(@poss);
+  say join ' ', "Il reste", tronquer(@poss)
+    if $verbeux;
 }
 sub entropie_et_max {
   my ($N, $n_log_n, $max) = (0, 0, 0);
@@ -1222,9 +1239,10 @@ sub aff_histogramme {
 }
 sub aff_details {
   my ($code, $ref_entropie, $ref_max, $ref_histogramme) = @_;
-  say "son histogramme : ", aff_histogramme(%{$ref_histogramme->{$code}});
+  say "son histogramme : ", aff_histogramme(%{$ref_histogramme->{$code}})
+    if $verbeux;
   my @ex_aequo = grep { $ref_entropie->{$_} == $ref_entropie->{$code} && $ref_max->{$_} == $ref_max->{$code} && $_ ne $code } @poss;
-  if (@ex_aequo) {
+  if ($verbeux && @ex_aequo) {
     say "ex-aequo avec ", tronquer(@ex_aequo);
   }
 }
