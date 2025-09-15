@@ -166,10 +166,10 @@ discriminant.  Exemple, les codes  restants sont : `ABCD`, `ABDC` et
 Si en revanche, le décodeur joue `BACD`, le codeur répondra :
 
 * `XXXX` si le code secret est `BACD`,
-* `XXOO` si le code secret est `BADC`,
-* `OOOO` si le code secret est `BACD`.
+* `XXOO` si le code secret est `ABCD`,
+* `OOOO` si le code secret est `ABDC`.
 
-On voit  donc que `BACD`  (tout comme `BADC`) mène  à un gain  en deux
+On voit  donc que `BACD`  (tout comme `ABDC`) mène  à un gain  en deux
 coups maximum, alors  que dans un tiers des cas,  `ABCD` conduit à une
 fin de partie en trois coups.
 
@@ -236,7 +236,7 @@ il faut la prévoir.
 
 <li>
 Lorsqu'il a  passé en  revue toutes  les couleurs.  On estime  que les
-notes des  coups passés apportera suffisamment  d'information pour que
+notes des coups passés apporteront suffisamment d'information pour que
 la liste de codes compatibles ne soit pas trop longue.
 </li>
 
@@ -286,14 +286,14 @@ sera expliqué dans l'interlude.
 ### Exemple
 
 Si les  explications ci-dessus  ne vous ont  pas permis  de comprendre
-comment fonctionnent les variables `$couleurs` et `%coup_synthetique`,
+comment  fonctionnent les  variables  `@coul` et  `%coup_synthetique`,
 voici un exemple qui vous  expliquera le « comment » de ces variables.
 Pour  le  « pourquoi », il  faudra  attendre  un peu  plus  longtemps.
 L'exemple utilise 4 positions et 26 couleurs.
 
-La variable `$coup_synthetique` est une  table de hachage, avec la clé
+La variable `%coup_synthetique` est une  table de hachage, avec la clé
 `code`  pour la  proposition, la  clé `n`  pour le  nombre de  marques
-noirs, la clé  `b` pour le nombre  de marques blanches et  la clé `nb`
+noires, la clé `b`  pour le nombre de marques blanches  et la clé `nb`
 pour  le nombre  de marques  noires et  blanches confondues.  Elle est
 initialisée à
 
@@ -301,19 +301,19 @@ initialisée à
   %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
 ```
 
-La  variable  `$coul`  (=  « couleurs »)  est  une  simple  chaîne  de
+La  variable  `@coul`  (=  « couleurs »)  est  un  simple  tableau  de
 caractères  contenant   toutes  les   couleurs  possibles.   Elle  est
 initialisée à
 
 ```
-  $coul = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<A B C D E F G H I J K L M N O P Q R S T U V W X Y Z>
 ```
 
 Le premier tour est `ABCD`, qui ne reçoit aucune marque. Tout se passe
 comme si l'on avait 22 couleurs possibles au lieu de 26:
 
 ```
-  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H I J K L M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
 ```
 
@@ -321,7 +321,7 @@ Le deuxième tour est `EFGH`, qui reçoit une marque noire et une marque
 blanche.
 
 ```
-  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H I J K L M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
 ```
 
@@ -329,7 +329,7 @@ Le troisième  tour est `IJKL`,  qui ne reçoit aucune  marque. Nouvelle
 simplification :
 
 ```
-  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
 ```
 
@@ -339,7 +339,7 @@ ces deux  marques sont enregistrées  dans le coup synthétique  en tant
 que marques blanches :
 
 ```
-  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGHMNOP', n => 1, b => 3, nb => 4 )
 ```
 
@@ -434,34 +434,37 @@ le programme pourra déterminer
 qu'il  faut  trois   de  ces  douze  couleurs  dans   le  code  final,
 c'est-à-dire au moins une de ces  douze couleurs dans chacun des codes
 partiels à deux  vides. Cela permet donc de rejeter  `..MN` et `..NO`.
-Mais surtout, cela permet de ne  pas prendre en considération tous les
-coups à un seul vide générés à  partir de `..MN` et de `..NO`. Cela ne
+Mais surtout, cela permet d'élaguer l'arbre de recherche et
+de ne  pas prendre en considération tous les coups à un seul vide
+générés à  partir de `..MN` et de `..NO`. Le coup synthétique ne
 permet pas  de rejeter `..AB`, mais  n'importe comment, ce code  a été
 rejeté lorsqu'il  a été confronté au  coup `ABCD` qui avait  une seule
 marque (noire).
 
 Le coup synthétique ne doit pas contenir le coup où l'on boucle sur la
 liste des  couleurs. Il faut  arrêter d'alimenter le  coup synthétique
-juste avant ce coup. Voici un exemple dans une partie à 6 couleurs. La
-solution est `ABEE` et les premiers coups sont :
+juste avant ce coup. Voici un exemple  dans une partie à 6 couleurs où
+l'on n'a  pas pris  cette précaution.  La solution  est `ABEE`  et les
+premiers coups sont :
 
 ```
-EFAB OO
+EFAB OOO
 ABCD XX
 ```
 
 Supposons que le coup synthétique contienne le coup numéro 2 :
 
 ```
-  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 2, nb => 4 )
+  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 3, nb => 5 )
 ```
 
-Avec ce coup synthétique, la construction de la liste des propositions
-compatibles rejette  toute proposition contenant  2 `E`. La  raison de
-cet échec est que le `A` en position 1 du coup 1 et le `A` en position
-3 du  coup 2 correspondent tous  les deux au  `A` en position 1  de la
-solution.  Pour cette  raison, le  coup qui  boucle sur  la liste  des
-couleurs doit être exclu du coup synthétique.
+Quoi ? 5 marques pour  un code à 4 positions ? C'est  parce que le `A`
+en première position  du premier coup et le `A`  en troisième position
+du deuxième  coup ont tous  les deux été  appariés au `A`  en première
+position du code. Idem  pour les `B`. Il faut donc  éviter que le coup
+synthétique contienne  des couleurs en  double. Pour cette  raison, le
+coup qui  boucle sur  la liste  des couleurs doit  être exclu  du coup
+synthétique.
 
 Une nouvelle  difficulté se  fait jour, avec  un cas  très particulier
 néanmoins  parfaitement valide.  Les _n_  -  1 premiers  coups ont  eu
@@ -469,7 +472,7 @@ chacun 0  noir et  0 blanc et  le _n_ ième  coup a  eu 3 ou  4 marques
 noires et blanches. Exemple avec une partie à 10 couleurs :
 
 ```
-IJIJ XXO
+IJIJ XOO
 EFGH -
 ABCD -
 ```
@@ -485,7 +488,7 @@ sinon le  programme déclencherait un avertissement  `substr outside of
 string` (sous-chaîne en dehors de la chaîne).
 
 De toutes façons, avec le coup `IJIJ`  et avec le fait que la variable
-`$coul`  est   réduite  à  `IJ`,  la   construction  des  propositions
+`@coul`  est réduite  à `qw<I  J>`, la  construction des  propositions
 compatibles sera très rapide.
 
 Une fois  la liste  des codes construite,  le programme  évalue chaque
@@ -503,8 +506,9 @@ limiter à quelques dizaines de codes possibles.
 
 À titre de précaution, si le nombre de possibilités dépasse une limite
 (codée en dur dans le programme), le tableau à double entrée n'est pas
-généré. Lors de la fin de  partie, il faudra calculer au coup par coup
-les notes, sans les récupérer dans le tableau.
+généré. Lors de la fin de partie,  il faudra calculer au coup par coup
+les notes, sans les récupérer dans  le tableau. Cela prendra du temps,
+mais cela ne pompera pas toute la mémoire vive de votre machine.
 
 Par exemple, avant  de mettre en place ce test,  j'ai essayé la partie
 suivante, avec un jeu à 4 trous et 26 couleurs :
@@ -802,12 +806,18 @@ mieux, comme le résultat peut être  `X` ou `O`, la liste résultante ne
 comportera pas 4 codes, mais 1 ou 3).
 
 Il faut donc admettre des codes  invalides. Pour ne pas tomber dans un
-calcul très long,  on ne va pas admettre les  `26**4` codes possibles,
+calcul très  long, on ne va  pas admettre les $26^4$  codes possibles,
 mais on  va se contenter des  codes qui auraient été  utilisés lors du
-début de partie, s'il n'avait  pas été interrompu subitement. Mais ces
+début de partie, s'il n'avait pas été interrompu subitement.
+
+Cela veut-il dire que la décision  d'arrêter le début de partie dès le
+premier  tour était  mauvaise, puisque  l'on utilisera  les codes  qui
+auraient été utilisés avec un début de partie plus long ? Non, car ces
 codes restent quand  même en compétition avec  les codes `ABC[A-CF-Z]`
-de  la  liste des  codes  possibles  et on  prendra  le  code le  plus
-discriminant. Qui sera `IJKL`, ex-aequo avec `MNOP`, `QRST` et `UVWX`.
+de  la  liste  des  codes  possibles.  On  prendra  le  code  le  plus
+discriminant. Qui sera `IJKL` dans  le cas de l'exemple, ex-aequo avec
+`MNOP`, `QRST`  et `UVWX`. Mais  dans d'autres parties,  cela pourrait
+être l'un des codes compatibles.
 
 ## Annexe : entropie ou pas ?
 
@@ -835,7 +845,7 @@ Il désigne :
 mais qui permet  l'existence des gouttes d'eau et des  bulles de savon
 (tension superficielle),
 
-4. la différence de potentiel en électrocinétique,
+4. la différence de potentiel en électrocinétique (tension électrique),
 
 5. un sentiment latent d'insécurité ou d'hostilité en psychologie,
 

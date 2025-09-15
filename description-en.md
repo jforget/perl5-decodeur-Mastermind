@@ -128,7 +128,7 @@ code.  He plays  quite  randomly, yet  taking care  of  using a  broad
 approach instead of a detrimentally narrow focus.
 
 During  the middle  game, the  codebreaker  has some  ideas about  the
-secret  code. He  builds  a few  hypotheses and  check  them: "Is  red
+secret  code. He  builds  a few  hypotheses and  checks them: "Is  red
 duplicated or single?", or "Does the black mark from turn 1 match blue
 in the first slot or yellow in the third one?".
 
@@ -147,10 +147,10 @@ On the other hand, if the codebreaker plays `BACD`, the codemaker will
 reply with:
 
 * `XXXX` if the secret code is `BACD`,
-* `XXOO` if the secret code is `BADC`,
-* `OOOO` if the secret code is `BACD`.
+* `XXOO` if the secret code is `ABCD`,
+* `OOOO` if the secret code is `ABDC`.
 
-As you can see, `BACD` (and `BADC` as well) will give the final result
+As you can see, `BACD` (and `ABDC` as well) will give the final result
 in at most  2 game turns, while  there is a 1-in-3  chance that `ABCD`
 will need a third game turn.
 
@@ -263,7 +263,7 @@ be explained in the description of the interlude.
 
 ### Example
 
-If the way the `$couleurs`  and `%coup_synthetique` variables are used
+If the way the `@coul`  and `%coup_synthetique` variables are used
 is not clear, here is an example  that will explain the "how" (but not
 yet the "why") in a game with 4 slots and 26 colours.
 
@@ -277,33 +277,33 @@ marks. It is initialised with:
   %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
 ```
 
-Variable `$coul` (for _couleurs_ =  "colours") is a plain char string,
+Variable `@coul` (for  _couleurs_ = "colours") is a  plain char array,
 containing all possible colours in the current game. It is initialised
 with:
 
 ```
-  $coul = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<A B C D E F G H I J K L M N O P Q R S T U V W X Y Z>
 ```
 
 First game turn is `ABCD`, which gets no marks. The game is simplified
 to a 22-colour game:
 
 ```
-  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H I J K L M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => '', n => 0, b => 0, nb => 0 )
 ```
 
 Second game turn is `EFGH`, which gets a black mark and a white mark.
 
 ```
-  $coul = 'EFGHIJKLMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H I J K L M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
 ```
 
 Third game turn is `IJKL`, which gets no marks:
 
 ```
-  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGH', n => 1, b => 1, nb => 2 )
 ```
 
@@ -312,7 +312,7 @@ Because the  synthetic game turn is  no longer empty, these  marks are
 registered in the synthetic game turn as white marks:
 
 ```
-  $coul = 'EFGHMNOPQRSTUVWXYZ'
+  @coul = qw<E F G H M N O P Q R S T U V W X Y Z>
   %coup_synthetique = (code => 'EFGHMNOP', n => 1, b => 3, nb => 4 )
 ```
 
@@ -322,7 +322,7 @@ In the interlude, the program builds  the list of all codes compatible
 with the  already played game turns.  The codes are built  and checked
 step-by-step: first  incomplete codes  with a  single peg,  then codes
 with two  pegs, then codes with  three pegs and lastly  complete codes
-wuhh four pegs.
+with four pegs.
 
 At each step, the incomplete code is matched against all played
 game turns, to check if the result (number of black marks and
@@ -421,21 +421,24 @@ example with  a 6-colour game.  The solution  is `ABEE` and  the first
 game turns are
 
 ```
-EFAB OO
+EFAB OOO
 ABCD XX
 ```
 
 Let us suppose that the synthetic code contains the rolling-over game turn:
 
 ```
-  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 2, nb => 4 )
+  %coup_synthetique = (code => 'ABCDEFAB', n => 2, b => 3, nb => 5 )
 ```
 
-Then the  building of  the list of  possible propositions  rejects any
-proposition containing two  `E`'s. The reason of this  failure is that
-the `A` in slot 1 in game turn 1  and the `A` in slot 3 in game turn 2
-both match the  `A` in slot 1 in the  solution. Thus, the rolling-over
-game turn must be avoided when building the synthetic game turn.
+How can  we have  five marks  (black +  white) in  a 4-slot  game? The
+reason of this  failure is that the `A`  in slot 1 in game  turn 1 and
+the `A` in slot 3  in game turn 2 both match the `A`  in slot 1 in the
+solution. Likewise, the  `B` in slot 2  of game turn 1 and  the `B` in
+slot 4 of  game turn 2 both match  the `B` in slot 2  of the solution.
+Thus, the  synthetic code must  not contain duplicate colours  and the
+rolling-over game  turn must  be avoided  when building  the synthetic
+game turn.
 
 Then  a new  difficulty arises,  with  a special  case which,  however
 special, is  still valid. The first  _n_ - 1 game  turns received zero
@@ -443,7 +446,7 @@ black  marks and  zero  white marks  and  only the  _n_  th game  turn
 receives marks. Example with a 10-colour game:
 
 ```
-IJIJ XXO
+IJIJ XOO
 EFGH -
 ABCD -
 ```
@@ -458,8 +461,8 @@ The interlude process must not use the synthetic turn, which would
 trigger a warning `substr outside of string`.
 
 Anyhow, with the `IJIJ` game turn and with variable `@coul` containing
-`IJ` and  nothing more,  the building  of the  compatible propositions
-will be very fast.
+`qw<I  J>`   and  nothing  more,   the  building  of   the  compatible
+propositions will be very fast.
 
 When the list of possible codes is built, the program matchs each code
 with each  other and stores  the markings  in a hashtable  with 2-tier
@@ -476,7 +479,8 @@ few dozens entries.
 There  is  a  limit  (variable  `$limite_notes`,  initialised  with  a
 hard-coded value) which determines  whether the hashtable is generated
 in this step. If it is not  generated now, it will be generated later,
-when the number of remaining possible codes falls below this limit.
+when the number of remaining possible codes falls below this limit. It
+will take time, but it will not exhaust your computer's memory.
 
 A real-life example with a 26-colour game before the limit was in use.
 The game began with:
@@ -582,7 +586,7 @@ table:
   |    1/2     |   1 bit    |
   |    1/4     |   2 bits   |
   |    1/256   |   8 bits   |
-  |    1/3     | 1;58 bit   |
+  |    1/3     | 1.58 bit   |
   |    p_i     | -Log_2(p_i)|
 
 A question can be considered as a range of answers, each with a higher
@@ -623,7 +627,7 @@ answers will be
   +----------+---------+--------------+-------------+------------+
   |   ABCD   |   XXXX  | ABCD         |    1/3      |            |
   |          +---------+--------------+-------------+            |
-  |          |   XXOO  | ABDC et BACD |    2/3      |  0,92 bit  |
+  |          |   XXOO  | ABDC /  BACD |    2/3      |  0,92 bit  |
   +----------+---------+--------------+-------------+------------+
   |   BACD   |   XXXX  | BACD         |    1/3      |            |
   |          +---------+--------------+-------------+            |
@@ -642,7 +646,7 @@ answers will be
 We can see that codes `BACD`  and `ABDC` provide more information than
 `ABCD`. So the decoding program will play `BACD` or `ABDC`.
 
-if the probabilities apply to a  set with $N$ elements, partitioned in
+If the probabilities apply to a  set with $N$ elements, partitioned in
 classes with $n_i$ elements each, that is, if
 $p_i = \frac{n_i}{N}$ with $N = \sum n_i$,
 then after a few elementary algebraic transformations, the entropy can
@@ -667,7 +671,7 @@ example as above, we have:
   +----------+----------+--------------+--------+---------+
   |   ABCD   |   XXXX   | ABCD         |    1   |         |
   |          +----------+--------------+--------+         |
-  |          |   XXOO   | ABDC et BACD |    2   |    2    |
+  |          |   XXOO   | ABDC /  BACD |    2   |    2    |
   +----------+----------+--------------+--------+---------+
   |   BACD   |   XXXX   | BACD         |    1   |         |
   |          +----------+--------------+--------+         |
@@ -701,7 +705,7 @@ What is the best  criterion? I do not know. I think  it depends on the
 circumstances. In some cases, entropy  will be better than minimax and
 in other  cases, minimax  will be  better than entropy.  If we  take a
 comparison with sports or wargames, Shannon plays to grab the victory,
-while Knuth plays  to avoid defeat. Note that a  player can use mnimax
+while Knuth plays to avoid defeat.  Note that a player can use minimax
 on one  game turn and entropy  on the next  turn in the same  game. My
 program sticks with one criterion, though.
 
@@ -714,6 +718,54 @@ if the  main criterion is  entropy, if  two compatible codes  have the
 same entropy within  one ten-billionth bit, that means  that they have
 the same histogram of markings, therefore the same minimax value.
 
+## Remark
+
+When designing  this program, I posited  that the search for  the most
+selective proposition  could be  restricted to  the list  of remaining
+possibilities. I was ready to admit that an incompatible code could be
+more selective than any compatible code, but only with a narrow margin.
+I was wrong. Here is an example with 4 slots and 26 colours. The first
+turn is:
+
+```
+  ABCD XXX
+```
+
+The program cancels  codes `EFGH`, `IJKL`, `MNOP`,  `QRST`, `UVWX` and
+`YZAB`, leaves  the overture, switches  to the interlude and  builds a
+list of 100 compatible codes. Using the regexp syntax, these 100 codes
+are `ABC[^D]` (25), `AB[^C]D` (25), `A[^B]CD` (25) and `[^A]BCD` (25).
+Among these 100  codes, the 88 codes without repetition  have the same
+markings histogram:
+
+```
+  XXXX: 1, XXX: 24, XXO: 3, XX: 72
+```
+
+and thefore the name entropy (1.05 bit) and the same minimax (72). The
+program plays `ABCE` and gets `XXX`.  There are now only 24 compatible
+codes, `ABC[A-CF-Z]`. All have the same histogram,
+
+```
+  XXXX: 1, XXX: 23
+```
+
+With  the method  consisting in  finding  a selective  code among  the
+possible ones, we will have to try all 23 codes in turn, until we find
+the solution.  On the  other hand,  if we  use a  code like  `FGHI` or
+`JKLM`, we can remove 4 codes each turn (or with a little luck, remove
+all but three, or even remove all but one).
+
+So we  must include some incompatible  codes in the list  of candidate
+propositions. To keep the computation short,  we do not try all $26^4$
+possible  codes, but  only  those that  would have  been  used in  the
+overture, if it had not been interrupted after game turn 1.
+
+Does it mean that the decision to end the overture when we have have a
+cumulative result  of 3 black and  white marks is wrong  and should be
+removed?  No.  The  `EFGH`,  `IJKL`  and  other  codes  are  still  in
+competition with  the compatible  codes (`ABC[A-CF-Z]` in  the example
+above).
 
 ## Annex: Entropy or not Entropy?
 
@@ -741,11 +793,12 @@ the example of the French word _tension_. This word can mean:
 well,  but which  allows  the existence  of water  drops  and of  soap
 bubbles (_tension superficielle_),
 
-4. electric voltage,
+4. electric voltage (_tension électrique_),
 
 5. in a psychological context, hidden hostility or unresolved insecurity,
 
-6. in an economical context, a threat of shortage,
+6. in  an economical context,  a threat  of shortage (e.g.  _métier en
+tension_, possible shortage of manpower in a profession),
 
 and most certainly many other meanings...
 
