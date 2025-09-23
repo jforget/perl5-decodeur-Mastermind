@@ -558,6 +558,40 @@ repose sur  l'entropie de Shannon. La  seconde, dont j'ai  eu vent fin
 a été  décrite par Donald  Knuth et utilise  le minimax (cela  dit, en
 2025 je ne retrouve plus la mention du minimax dans ce module Perl).
 
+### Échantillon de codes restants
+
+Le choix du code le plus  discriminant nécessite une boucle double sur
+la liste des  codes restants. Cela peut prendre du  temps, beaucoup de
+temps.  Pour éviter  cela, si  la liste  des codes  restants est  trop
+importante, on en prend un échantillon et on effectue la double boucle
+sur  cet échantillon.  On n'est  pas sûr  d'obtenir le  minimax ou  la
+meilleure entropie, mais espérons que l'on ne tombe pas loin.
+
+Le programme définit  une limite du nombre de codes  à tester, dans la
+variable `$limite_notes`. Si le nombre de codes restants est inférieur
+ou égal à cette limite, le  programme n'échantillonne pas, il prend la
+totalité de la liste des codes restants.
+
+Supposons que la  limite soit 100 et que l'on  ait 234 codes restants.
+L'échantillon sélectionnera un code tous les 2,34. Il prendra :
+
+* le code d'indice 0,
+
+* le code d'indice 2,34 arrondi à 2,
+
+* le code d'indice 2 × 2,34 = 4,68 arrondi à 4,
+
+* le code d'indice 3 × 2,34 = 7,02 arrondi à 7,
+
+* le code d'indice 4 × 2,34 = 9,36, arrondi à 9
+
+et  ainsi  de  suite.  L'échantillon est  mémorisé  dans  la  variable
+`@echantillon_poss`.
+
+Avec une partie à 26 couleurs, qui donne 9270 possibilités et avec une
+limite d'échantillon à 2000 codes, ma machine effectue les 4 milllions
+d'itérations de la double boucle en une vingtaine de secondes.
+
 ### L'entropie de Shannon
 
 Au début, l'entropie a été un concept en physique, plus précisément en

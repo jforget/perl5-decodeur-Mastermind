@@ -528,6 +528,40 @@ documentation for
 has been described by Donald Knuth and uses minimax (yet, now in 2025,
 I no longer find any mention of minimax in this module).
 
+### Code Sampling
+
+Choosing the  most selective proposition  requires a double  loop over
+the list of  compatible propositions. If the list is  a little big, it
+may take a looooooong time. To avoid this, the program will sample the
+list of compatible  propositions and it will run the  double loop over
+this sample. We are not sure to  find the minimax or the best entropy,
+but we can hope we will find something not far from it.
+
+The program defines a limit on  the number of propositions to process,
+stored in  the variable `$limite_notes`.  If the number  of compatible
+propositions is  lower than or equal  to this limit, the  program uses
+the whole list.
+
+Now suppose  that the limit is  100 and that there  are 234 compatible
+propositions. The sampling will take  1 proposition out of every 2.34.
+In other words, the program will take:
+
+* the proposition at index 0,
+
+* the proposition at index 2.34, rounded to 2,
+
+* the proposition at index 2 × 2.34 = 4.68, rounded to 4,
+
+* the proposition at index 3 × 2.34 = 7.02, rounded to 7,
+
+* the proposition at index 4 × 2.34 = 9.36, rounded to 9,
+
+and so on. The sample is stored into `@echantillon_poss`.
+
+With a 26-colour game and a list of 9270 compatible propositions, with
+a limit of 2000  codes, my computer needs about 20  seconds to run the
+4-million iterations of the double loop.
+
 ### The Shannon Entropy
 
 At the beginning, entropy was  a concept in physics, more specifically

@@ -1141,9 +1141,20 @@ sub remplir {
 sub choisir {
   my (%entropie, %max, %histo1);
   # say join ' ', @suppl;
-  foreach my $poss1 (@poss, @suppl) {
+  heure("début du choix");
+  my @echantillon_poss;
+  if (@poss <= $limite_notes) {
+    @echantillon_poss = @poss;
+  }
+  else {
+    my $lambda = @poss / $limite_notes;
+    @echantillon_poss = @poss[ map { $lambda * $_} 0 .. $limite_notes - 1 ];
+    say "Liste des possibilités tronquée"
+      if $verbeux;
+  }
+  foreach my $poss1 (@echantillon_poss, @suppl) {
     my %histogramme;
-    foreach my $poss2 (@poss) {
+    foreach my $poss2 (@echantillon_poss) {
       my $res;
       if ($notes{$poss1}) {
         $res = $notes{$poss1}{$poss2}{res};
@@ -1161,8 +1172,8 @@ sub choisir {
   }
   #say YAML::Dump(\%entropie, \%max);
 
-  my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @poss, @suppl;
-  my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @poss, @suppl;
+  my @poss_entr = sort { $entropie{$b} <=> $entropie{$a} || $max{$a} <=> $max{$b} } @echantillon_poss, @suppl;
+  my @poss_max  = sort { $max{$a} <=> $max{$b} || $entropie{$b} <=> $entropie{$a} } @echantillon_poss, @suppl;
 
   # $savant : le code qui propose la plus grande quantité d'information
   # $minimax : le code qui minimise la classe maximale
@@ -1178,6 +1189,7 @@ sub choisir {
     say "minimax $minimax avec $max{$minimax} (entropie $entropie{$minimax})";
     aff_details($minimax, \%entropie, \%max, \%histo1);
   }
+  heure("fin du choix");
   return $b_entropie ? $savant : $minimax;
 }
 
@@ -1241,7 +1253,7 @@ sub aff_details {
   my ($code, $ref_entropie, $ref_max, $ref_histogramme) = @_;
   say "son histogramme : ", aff_histogramme(%{$ref_histogramme->{$code}})
     if $verbeux;
-  my @ex_aequo = grep { $ref_entropie->{$_} == $ref_entropie->{$code} && $ref_max->{$_} == $ref_max->{$code} && $_ ne $code } @poss;
+  my @ex_aequo = grep { ($ref_entropie->{$_} // 0) == $ref_entropie->{$code} && ($ref_max->{$_} // 0) == $ref_max->{$code} && $_ ne $code } @poss;
   if ($verbeux && @ex_aequo) {
     say "ex-aequo avec ", tronquer(@ex_aequo);
   }
