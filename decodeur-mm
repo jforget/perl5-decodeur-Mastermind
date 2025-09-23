@@ -986,13 +986,7 @@ sub interlude {
     return 1;
   }
 
-  if (@poss < $limite_notes) {
-    heure("début du remplissage de %notes")
-      if $verbeux;
-    remplir();
-    heure("fin du remplissage de %notes")
-      if $verbeux;
-  }
+  %notes = (); # nettoyer le cache qui contient les codse incomplets et le coup synthétique
   return 0;
 }
 
@@ -1091,7 +1085,8 @@ EOF
 }
 
 sub noter {
-  my ($prop1, $prop2) = @_;
+  my ($prop1, $prop2) = @_; # qui seront modifiés au cours de la procédure
+  my ($poss1, $poss2) = @_; # parce qu'on a besoin de la valeur origine à la fin de la procédure
   my ($n, $b, $nb, $res) = (0, 0, 0, '');
 
   #say "prop1 = $prop1";
@@ -1117,25 +1112,15 @@ sub noter {
     }
   }
   $res = '(rien)' if $nb == 0;
+
+  # mise en cache
+  my %h;
+  @h{ qw/n b nb res/ } = ($n, $b, $nb, $res);
+  $notes{$poss1}{$poss2} = { %h };
+  $notes{$poss2}{$poss1} = { %h };
+
   #say "n = $n, b = $b, nb = $nb";
   return ($n, $b, $nb, $res);
-}
-
-sub remplir {
-  for (my $i = 0; $i < @poss; ++$i) {
-
-    my $poss1 = $poss[$i];
-    $notes{$poss1}{$poss1} = { n => $nb_trous, b => 0, nb => $nb_trous, res => 'X' x $nb_trous };
-
-    for (my $j = 0; $j < $i; ++$j) {
-      my %h;
-      my $poss2 = $poss[$j];
-      @h{ qw/n b nb res/ } = noter($poss1, $poss2);
-      $notes{$poss1}{$poss2} = { %h };
-      $notes{$poss2}{$poss1} = { %h };
-    }
-  }
-  #print YAML::Dump(\%notes);
 }
 
 sub choisir {
@@ -1156,7 +1141,7 @@ sub choisir {
     my %histogramme;
     foreach my $poss2 (@echantillon_poss) {
       my $res;
-      if ($notes{$poss1}) {
+      if ($notes{$poss1}{$poss2}) {
         $res = $notes{$poss1}{$poss2}{res};
       }
       else {

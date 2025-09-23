@@ -473,30 +473,11 @@ keys. As you will see during  the endgame, the program needs all these
 markings at least once, but usually several times, so we compute these
 markings once for all.
 
-Because of this step, we want to have a list as small as possible. The
-linear list can  contain several thousands entries, but  this means that
-the hashtable  of markings will be  filled within a loop  with millions of
-iterations. So we prefer situations when the list has just a
-few dozens entries.
-
-There  is  a  limit  (variable  `$limite_notes`,  initialised  with  a
-hard-coded value) which determines  whether the hashtable is generated
-in this step. If it is not  generated now, it will be generated later,
-when the number of remaining possible codes falls below this limit. It
-will take time, but it will not exhaust your computer's memory.
-
-A real-life example with a 26-colour game before the limit was in use.
-The game began with:
-
-```
-  IJKL O
-  EFGH O
-  ABCD O
-```
-
-With these results, the list  of possible codes contains 9270 entries.
-When building the  hashtable, the computer filled its  3.9G memory and
-started to fill its swapfile. So I interrupted the program.
+Actually,  this was  the way  a previous  version of  the program  was
+working. A better  way is to cache the various  results of the `noter`
+subroutine. The cache is emptied at  the end of the interlude, because
+the interlude  has filled this cache  with partial codes and  with the
+synthetic code in addition to valid 4-slot propositions.
 
 ## Endgame
 
@@ -558,9 +539,17 @@ In other words, the program will take:
 
 and so on. The sample is stored into `@echantillon_poss`.
 
-With a 26-colour game and a list of 9270 compatible propositions, with
-a limit of 2000  codes, my computer needs about 20  seconds to run the
-4-million iterations of the double loop.
+The following 26-colour game
+
+```
+  IJKL O
+  EFGH O
+  ABCD O
+```
+
+yields a  list of 9270 compatible  propositions. With a limit  of 2000
+codes, the program  runs 4 million iterations instead  of 85 millions.
+On my computer, this represents about 20 seconds.
 
 ### The Shannon Entropy
 

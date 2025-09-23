@@ -500,33 +500,13 @@ par ces deux codes. Comme cela sera montré dans la suite, le programme
 aura besoin de toutes ces notes  au moins une fois, mais assez souvent
 plusieurs fois.
 
-À cause de cette étape, on souhaite avoir une liste de
-codes  suffisamment  petite.   Il   aurait  été  possible  de  stocker
-plusieurs milliers de codes possible dans la liste, mais pour l'étape
-présente,  cela  aurait  impliqué  une  boucle avec  des  millions
-d'itérations.   On préfère  donc,  autant  que possible,  se
-limiter à quelques dizaines de codes possibles.
-
-À titre de précaution, si le nombre de possibilités dépasse une limite
-(codée en dur dans le programme), le tableau à double entrée n'est pas
-généré. Lors de la fin de partie,  il faudra calculer au coup par coup
-les notes, sans les récupérer dans  le tableau. Cela prendra du temps,
-mais cela ne pompera pas toute la mémoire vive de votre machine.
-
-Par exemple, avant  de mettre en place ce test,  j'ai essayé la partie
-suivante, avec un jeu à 4 trous et 26 couleurs :
-
-```
-  IJKL O
-  EFGH O
-  ABCD O
-```
-
-Avec ce début de partie,  la liste des codes compatibles comporte 9720
-codes. Lors du  calcul du tableau à double entrée  sur ces 9720 codes,
-ma  machine a  complètement rempli  ses 3,9  Go de  mémoire vive  et a
-commencé à alimenter son fichier swap, avant que je stoppe l'exécution
-du programme.
+En  fait, c'était  la façon  dont  une ancienne  version du  programme
+fonctionnait. Il  est plus simple  d'adapter la fonction  `noter` pour
+qu'elle  alimente un  cache et  qu'elle l'utilise  lors d'un  éventuel
+deuxième appel avec  les mêmes paramètres. Il faut  toutefois vider le
+cache à  la fin de  l'interlude, car cet  interlude a rempli  le cache
+entre autres avec des codes partiels  et avec le code synthétique, qui
+n'ont plus aucune utilité dans la fin de partie.
 
 ## Fin de partie
 
@@ -588,9 +568,18 @@ L'échantillon sélectionnera un code tous les 2,34. Il prendra :
 et  ainsi  de  suite.  L'échantillon est  mémorisé  dans  la  variable
 `@echantillon_poss`.
 
-Avec une partie à 26 couleurs, qui donne 9270 possibilités et avec une
-limite d'échantillon à 2000 codes, ma machine effectue les 4 milllions
-d'itérations de la double boucle en une vingtaine de secondes.
+La partie à 26 couleurs suivante :
+
+```
+  IJKL O
+  EFGH O
+  ABCD O
+```
+
+donne 9270 possibilités.  En adoptant une limite  d'échantillon à 2000
+codes, le programme  effectue 4 milllions d'itérations  dans la double
+boucle  au  lieu de  85  millions.  Sur  ma  machine, cela  prend  une
+vingtaine de secondes.
 
 ### L'entropie de Shannon
 
