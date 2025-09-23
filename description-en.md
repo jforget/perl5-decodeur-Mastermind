@@ -7,6 +7,7 @@
 The purpose of this program is to play Mastermind as codebreaker, with
 a nearly  optimal strategy. The  absolutely perfect strategy  would be
 obtained by building  the tree of all possible plays,  like it is done
+for tic-tac-toe and, theoretically,
 for chess, and by analysing this tree to find the sequence of plays in
 the fewest turns, no matter which is the code to find. Since this is a
 tree-search, it can  require an outrageous duration  and an outrageous
@@ -97,7 +98,8 @@ While  the codemaker  must  choose  his code  within  the six  allowed
 colours,  the  codebreaker  may  use a  deliberately  invalid  colour.
 Usually, the  codebreaker leaves a  slot empty. Of course,  this empty
 slot cannot match any slot in the secret code and it generates neither
-a black mark nor a white one.
+a  black  mark  nor  a  white  one. The  program  does  not  use  this
+possibility.
 
 Several variants exist for Mastermind.  Basic variants use a different
 number of  colours, a  different number  of slots,  or both.  They are
@@ -134,7 +136,7 @@ in the first slot or yellow in the third one?".
 
 During the  endgame, the codebreaker  has precise ideas on  the secret
 code and there remain only a  few codes compatible with the game until
-now. The  codebreaker in  able to  build an  exhaustive list  of these
+now. The  codebreaker is  able to  build an  exhaustive list  of these
 compatible codes.  His purpose is now  to prune this list  in the most
 efficient  way, that  is, using  as few  game turns  as possible.  For
 example, the  remaining possibilities are: `ABCD`,  `ABDC` and `BACD`.
@@ -155,7 +157,7 @@ in at most  2 game turns, while  there is a 1-in-3  chance that `ABCD`
 will need a third game turn.
 
 In  the program,  the  middle game  does not  exist.  The program  can
-memorise a list  of several dozen possible codes, a  feat that a human
+memorise a list of several thousands possible codes, a  feat that a human
 player cannot  do. So when  the opening is  over, the program  runs an
 interlude (from  "inter" meaning "between" and  "lude" meaning "game")
 and builds the  list of codes compatible with the  opening game turns.
@@ -199,7 +201,8 @@ Important remark:  during the opening, the  various propositions never
 share colours, except for the first  proposition and the last (the one
 with rollover). For example, with the 26-colour game, the propositions
 are `ABCD`,  `EFGH`, `IJKL`, `MNOP`,  `QRST`, `UVWX` and  `YZAB`. Only
-`ABCD` and `YZAB` share some colours.
+`ABCD` and `YZAB`  share some colours. The reason why  it is important
+will be given later.
 
 The program leaves the overture in any of the following cases:
 
@@ -471,9 +474,9 @@ markings at least once, but usually several times, so we compute these
 markings once for all.
 
 Because of this step, we want to have a list as small as possible. The
-linear list can  contain several hundred entries, but  this means that
-the hashtable  of markings will be  filled within a loop  with tens of
-thousands iterations. So we prefer situations when the list has just a
+linear list can  contain several thousands entries, but  this means that
+the hashtable  of markings will be  filled within a loop  with millions of
+iterations. So we prefer situations when the list has just a
 few dozens entries.
 
 There  is  a  limit  (variable  `$limite_notes`,  initialised  with  a

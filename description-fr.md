@@ -7,7 +7,7 @@
 Le  but  de ce  programme  est  de jouer  au  Mastermind  en tant  que
 décodeur, avec un fonctionnement relativement proche de l'optimum.  Le
 fonctionnement optimal  s'obtient par  la construction de  l'arbre des
-coups possibles, un peu comme  aux échecs, puis en analysant cet arbre
+coups possibles, un peu comme aux tic-tac-toe et, en thérorie, aux échecs, puis en analysant cet arbre
 pour en  extraire la  suite de coups  qui permettra d'arriver  le plus
 rapidement  à  la  découverte  du   code  secret,  quel  que  soit  ce
 code. Comme il s'agit  d'une recherche arborescente, cela peut prendre
@@ -106,8 +106,9 @@ blanche.
 
 Si le codeur  est obligé de choisir ses quatre  couleurs parmi les six
 possibles, le  décodeur a le  droit d'insérer dans sa  proposition une
-couleur  dont il sait  qu'elle est  invalide. Matériellement,  cela se
-traduit par une place laissée vide, sans pion de couleur.
+couleur dont  il sait  qu'elle est  invalide. Matériellement,  cela se
+traduit  par  une  place  laissée  vide, sans  pion  de  couleur.  Mon
+programme n'utilise pas cette possibilité.
 
 Dans le cas d'un texte en noir sur blanc (ce fichier Markdown ou un livre),
 on représente traditionnellement les marques noires avec un `X` et les
@@ -174,7 +175,7 @@ coups maximum, alors  que dans un tiers des cas,  `ABCD` conduit à une
 fin de partie en trois coups.
 
 Dans le  cas de mon  programme, le milieu  de partie n'existe  pas. Le
-programme est capable de mémoriser  une liste de plusieurs dizaines de
+programme est capable de mémoriser  une liste de plusieurs milliers de
 codes autorisés, ce  que ne peut pas faire un  humain normal.  Donc, à
 l'issue  du  début  de   partie,  pendant  un  interlude  (de  "inter"
 signifiant "entre" et "lude" signifiant "jeu") le programme établit la
@@ -217,11 +218,13 @@ marques à zéro, on supprime  carrément de la liste des couleurs celles
 qui apparaissent dans la proposition. Cela accélérera l'interlude.
 
 Il est  important de remarquer  que les codes  joués dans le  début de
-partie  n'ont jamais  de  couleur commune,  à  part le  premier et  le
+partie  n'ont jamais  de  couleur commune,  à part  le  premier et  le
 dernier  coup  (celui qui  boucle  sur  la  liste des  couleurs).  Par
 exemple, pour  le jeu à 4  trous et 26 couleurs,  les tours successifs
-sont `ABCD`, `EFGH`, `IJKL`,  `MNOP`, `QRST`, `UVWX` et `YZAB`.
-Seuls `ABCD` et `YZAB` ont des couleurs en commun.
+sont `ABCD`, `EFGH`,  `IJKL`, `MNOP`, `QRST`, `UVWX`  et `YZAB`. Seuls
+`ABCD` et `YZAB`  ont des couleurs en commun. La  raison pour laquelle
+il est important de ne pas avoir de couleur commune est donnée dans la
+suite du texte.
 
 Le programme  décide de quitter le  début de partie dans  l'un des cas
 suivants :
@@ -499,9 +502,9 @@ plusieurs fois.
 
 À cause de cette étape, on souhaite avoir une liste de
 codes  suffisamment  petite.   Il   aurait  été  possible  de  stocker
-plusieurs centaines de codes possible dans la liste, mais pour l'étape
-présente,  cela  aurait  impliqué  une  boucle avec  des  dizaines  de
-milliers  d'itérations.   On préfère  donc,  autant  que possible,  se
+plusieurs milliers de codes possible dans la liste, mais pour l'étape
+présente,  cela  aurait  impliqué  une  boucle avec  des  millions
+d'itérations.   On préfère  donc,  autant  que possible,  se
 limiter à quelques dizaines de codes possibles.
 
 À titre de précaution, si le nombre de possibilités dépasse une limite
