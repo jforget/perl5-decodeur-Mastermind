@@ -581,6 +581,32 @@ codes, le programme  effectue 4 milllions d'itérations  dans la double
 boucle  au  lieu de  85  millions.  Sur  ma  machine, cela  prend  une
 vingtaine de secondes.
 
+Attention au piège, toutefois. Soit la partie suivante, avec 26 couleurs
+
+```
+IJKL O
+EFGH O
+ABCD O
+```
+
+La fin de l'interlude et le début de la fin de partie donnent :
+
+```
+9720 codes
+07:35:13 début du choix
+Liste des possibilités échantillonnée (1 sur 4.86)
+meilleure entropie RAJG avec 2.33432868885235 (max : 782)
+son histogramme : XXXX: 1, XXX: 4, XXO: 10, XX: 56, XOOO: 1, XOO: 24, XO: 133, X: 272, OOO: 12, OO: 182, O: 523, (rien): 782
+minimax FRBJ avec 725 (entropie 2.25283449338101)
+son histogramme : XXXX: 1, XXX: 2, XXOO: 2, XXO: 5, XX: 52, XOOO: 1, XOO: 9, XO: 112, X: 313, OOO: 9, OO: 157, O: 612, (rien): 725
+07:35:33 fin du choix
+4 : je joue RAJG
+```
+
+L'histogramme de `RAJG`  ne concerne que l'échantillon  de 2000 codes.
+Si l'on répond `XX` (ou `2 0`), il restera 218 possibilités et non pas
+56. Si l'on répond `0 0`, on n'aura pas 782 possibilités, mais 3883.
+
 ### L'entropie de Shannon
 
 Au début, l'entropie a été un concept en physique, plus précisément en

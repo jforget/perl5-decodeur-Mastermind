@@ -551,6 +551,47 @@ yields a  list of 9270 compatible  propositions. With a limit  of 2000
 codes, the program  runs 4 million iterations instead  of 85 millions.
 On my computer, this represents about 20 seconds.
 
+Beware of this pitfall. In the following 26-colour game
+
+```
+  IJKL O
+  EFGH O
+  ABCD O
+```
+
+the end of the interlude and the first lines of the endgame are:
+
+```
+9720 codes
+07:35:13 début du choix
+Liste des possibilités échantillonnée (1 sur 4.86)
+meilleure entropie RAJG avec 2.33432868885235 (max : 782)
+son histogramme : XXXX: 1, XXX: 4, XXO: 10, XX: 56, XOOO: 1, XOO: 24, XO: 133, X: 272, OOO: 12, OO: 182, O: 523, (rien): 782
+minimax FRBJ avec 725 (entropie 2.25283449338101)
+son histogramme : XXXX: 1, XXX: 2, XXOO: 2, XXO: 5, XX: 52, XOOO: 1, XOO: 9, XO: 112, X: 313, OOO: 9, OO: 157, O: 612, (rien): 725
+07:35:33 fin du choix
+4 : je joue RAJG
+```
+
+this translates to
+
+```
+9720 codes
+07:35:13 start choosing
+The list of compatible codes is sampled (1 for every 4.86)
+best entropy RAJG with 2.33432868885235 (max : 782)
+histogram : XXXX: 1, XXX: 4, XXO: 10, XX: 56, XOOO: 1, XOO: 24, XO: 133, X: 272, OOO: 12, OO: 182, O: 523, (nothing): 782
+minimax FRBJ with 725 (entropy 2.25283449338101)
+histogramme : XXXX: 1, XXX: 2, XXOO: 2, XXO: 5, XX: 52, XOOO: 1, XOO: 9, XO: 112, X: 313, OOO: 9, OO: 157, O: 612, (nothing): 725
+07:35:33 stop choosing
+4 : I play RAJG
+```
+
+The histogram for `RAJG` applies only  to the 2000-code sample, not to
+the full  9720-code list. If  you answer `XX`  (or `2 0`),  the filter
+will yield  218 propositions instead of  56. If you answer  `0 0`, you
+will not have just 782 remaining propositions, but 3883 propositions.
+
 ### The Shannon Entropy
 
 At the beginning, entropy was  a concept in physics, more specifically

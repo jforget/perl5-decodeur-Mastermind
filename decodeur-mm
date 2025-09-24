@@ -879,6 +879,7 @@ my $limite_notes = 2000; # limite du nombre de possibilités restantes pour gén
 my @partie;
 my @poss;
 my %notes;
+my ($cache_hit, $cache_miss) = (0, 0); # statistiques sur le cache
 my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
 my @suppl; # codes supplémentaires, qui ne sont pas compatibles avec les coups
            # déjà joués, mais qui peuvent accélérer la partie
@@ -986,7 +987,9 @@ sub interlude {
     return 1;
   }
 
-  %notes = (); # nettoyer le cache qui contient les codse incomplets et le coup synthétique
+  %notes = (); # nettoyer le cache qui contient les codes incomplets et le coup synthétique
+  $cache_hit  = 0;
+  $cache_miss = 0;
   return 0;
 }
 
@@ -996,6 +999,9 @@ sub fin_de_partie {
     my ($n, $b, $nb, $res) = jouer($prop);
     if ($n == $nb_trous) {
       say "Gagné !";
+      if ($verbeux) {
+        say "statistiques du cache : $cache_hit trouvés, $cache_miss pas trouvés";
+      }
       return 1;
     }
     push @partie, { prop => $prop, n => $n, b => $b, nb => $nb, res => $res };
@@ -1087,6 +1093,19 @@ EOF
 sub noter {
   my ($prop1, $prop2) = @_; # qui seront modifiés au cours de la procédure
   my ($poss1, $poss2) = @_; # parce qu'on a besoin de la valeur origine à la fin de la procédure
+
+  if (exists $notes{$poss1}{$poss2}) {
+    ++ $cache_hit;
+    my %h = %{$notes{$poss1}{$poss2}};
+    return @h{ qw/n b nb res/ };
+  }
+  if (exists $notes{$poss2}{$poss1}) {
+    ++ $cache_hit;
+    my %h = %{$notes{$poss2}{$poss1}};
+    return @h{ qw/n b nb res/ };
+  }
+
+  ++ $cache_miss;
   my ($n, $b, $nb, $res) = (0, 0, 0, '');
 
   #say "prop1 = $prop1";
@@ -1117,7 +1136,6 @@ sub noter {
   my %h;
   @h{ qw/n b nb res/ } = ($n, $b, $nb, $res);
   $notes{$poss1}{$poss2} = { %h };
-  $notes{$poss2}{$poss1} = { %h };
 
   #say "n = $n, b = $b, nb = $nb";
   return ($n, $b, $nb, $res);
@@ -1134,7 +1152,7 @@ sub choisir {
   else {
     my $lambda = @poss / $limite_notes;
     @echantillon_poss = @poss[ map { $lambda * $_} 0 .. $limite_notes - 1 ];
-    say "Liste des possibilités tronquée"
+    say "Liste des possibilités échantillonnée (1 sur $lambda)"
       if $verbeux;
   }
   foreach my $poss1 (@echantillon_poss, @suppl) {
@@ -1186,31 +1204,28 @@ sub filtrer {
   my $n    = $ref_coup->{n};
   my $b    = $ref_coup->{b};
   foreach my $poss (@poss_avant) {
-    if ($notes{$prop}) {
-      if ($notes{$prop}{$poss}{n} == $n && $notes{$prop}{$poss}{b} == $b) {
-        push @poss, $poss;
-      }
-      elsif ($poss ne $prop) {
-        # on récupère (en partie) la place occupée par $poss dans le hachage
-        delete $notes{$poss};
-        # il faudrait aussi supprimer les entrées où $poss figure
-        # en clé de deuxième niveau, mais c'est trop long.
-        # On préfère gâcher l'espace occupé par $poss en deuxième
-        # niveau que de gâcher du temps à les supprimer.
-      }
+    my ($n1, $b1, undef, undef) = noter($poss, $prop);
+    if ($n1 == $n && $b1 == $b) {
+      push @poss, $poss;
     }
     else {
-      my ($n1, $b1, undef, undef) = noter($poss, $prop);
-      if ($n1 == $n && $b1 == $b) {
-        push @poss, $poss;
-      }
+      # on récupère (en partie) la place occupée par $poss dans le hachage
+      delete $notes{$poss};
+      # il faudrait aussi supprimer les entrées où $poss figure
+      # en clé de deuxième niveau, mais c'est trop long.
+      # On préfère gâcher l'espace occupé par $poss en deuxième
+      # niveau que de gâcher du temps à les supprimer.
     }
   }
   if (%notes) {
     delete $notes{$prop};
   }
-  say join ' ', "Il reste", tronquer(@poss)
-    if $verbeux;
+  if ($verbeux) {
+    say join ' ', "Il reste", tronquer(@poss);
+    if (1 < 0 + @poss) {
+      say join ' ', "Il reste", 0 + @poss, "possibilités";
+    }
+  }
 }
 sub entropie_et_max {
   my ($N, $n_log_n, $max) = (0, 0, 0);
