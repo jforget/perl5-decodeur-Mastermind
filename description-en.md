@@ -834,6 +834,68 @@ removed?  No.  The  `EFGH`,  `IJKL`  and  other  codes  are  still  in
 competition with  the compatible  codes (`ABC[A-CF-Z]` in  the example
 above).
 
+### More About the Cache
+
+The basic way of work of the  cache is the following. When the program
+calls the  `noter` function to  match propositions `ABCD`  and `BDEF`,
+the `noter` function  first searchs the `%notes` hashtable  to find an
+element  `$notes{ABCD}{BDEF}`.  Failing  that, it  looks  for  element
+`$notes{BDEF}{ABCD}`. Failing  that, it  computes the number  of black
+and white marks and stores them into `$notes{ABCD}{BDEF}`.
+
+First  special  case. During  the  interlude,  the program  calls  the
+`noter` subroutine with partial codes and with the synthetic code. The
+results  are stored  into  the cache,  but they  are  useless for  the
+endgame. For example, the cache may contain:
+
+```
+$notes{ABCD}{'...A'}
+$notes{ABCD}{'..AA'}
+$notes{ABCD}{'...B'}
+$notes{ABCDEFGHIJKL}{'...A'}
+$notes{ABCDEFGHIJKL}{'..AA'}
+```
+
+Other  elements involve  a  real code  which has  been  played in  the
+overture (`ABCD`,  `EFGH`, ...) with  a full proposition that  will be
+added  to variable  `@poss`. Even  these cache  elements are  useless,
+because  the overture  codes will  never be  used after  the interlude
+ends.  For these  reasons, the  cache  is emptied  at the  end of  the
+interlude.
+
+Second  special  case.  During  the  endgame,  the  list  of  possible
+propositions is  regularly filtered,  to remove propositions  which do
+not match the  most recent game turn. Theoretically,  we should remove
+these  filtered-out  propositions from  the  cache.  Suppose that  the
+filtered-out code is `BCBF`. This code  may appear as a level-1 key or
+as a level-2 key in the cache:
+
+```
+$notes{BCBF}{AEDF}
+$notes{BCBF}{BADE}
+$notes{CDAF}{BCBF}
+$notes{AADF}{BCBF}
+```
+
+The `filter` subroutine  deletes the elements in  which `BCBF` appears
+at level 1, because we need a single
+
+```
+delete $notes{BCBF};
+```
+
+to   remove  in   a  single   strike  elements   `$notes{BCBF}{AEDF}`,
+`$notes{BCBF}{BADE}` and  the like. On the  other hand, if we  want to
+remove `$notes{CDAF}{BCBF}`, `$notes{AADF}{BCBF}` and similar, we need
+to  loop over  the cache,  which wastes  time. So  we prefer  to waste
+memory.  Anyway,  these  elements  will be  deleted  and  their  space
+recovered when `CADF` and `AADF` are filtered out.
+
+In  the same  way,  once the  filtering is  done,  the cache  elements
+containing the most recently played code are useless, so the `filtrer`
+subroutine deletes the  cache elements in which the played  code is at
+key level 1.
+
 ## Annex: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart

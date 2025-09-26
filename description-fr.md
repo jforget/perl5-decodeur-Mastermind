@@ -871,6 +871,69 @@ discriminant. Qui sera `IJKL` dans  le cas de l'exemple, ex-aequo avec
 `MNOP`, `QRST`  et `UVWX`. Mais  dans d'autres parties,  cela pourrait
 être l'un des codes compatibles.
 
+### Fonctionnement du cache
+
+Le fonctionnement basique est le suivant. Lorsque le programme appelle
+la fonction `noter`  pour comparer les propositions  `ABCD` et `BDEF`,
+la  fonction `noter`  commence  par chercher  si  le hachage  `%notes`
+contient un élément `$notes{ABCD}{BDEF}`.  En cas d'échec, la fonction
+cherche  l'élément `$notes{BDEF}{ABCD}`.  Si cette  deuxième tentative
+échoue, la fonction effectue le calcul du nombre de noirs et du nombre
+de blancs, puis stocke le résultat dans `$notes{ABCD}{BDEF}`.
+
+Premier cas particulier. Pendant  l'interlude, le programme appelle la
+fonction `noter` avec des codes  partiels et avec le coup synthétique,
+qui ne seront pas utilisés  ultérieurement. Le cache peut contenir par
+exemple :
+
+```
+$notes{ABCD}{'...A'}
+$notes{ABCD}{'..AA'}
+$notes{ABCD}{'...B'}
+$notes{ABCDEFGHIJKL}{'...A'}
+$notes{ABCDEFGHIJKL}{'..AA'}
+```
+
+Certains  éléments font  intervenir un  coup réel  du début  de partie
+(`ABCD`, `EFGH`, ...) avec une proposition complète qui sera ajoutée à
+la variable  `@poss`. Même ces  éléments sont inutiles. En  effet, les
+coups du  du début de  partie ne seront pas  utilisés après la  fin de
+l'interlude. En conséquence,  le cache est complètement vidé  à la fin
+de l'interlude.
+
+Deuxième cas particulier.  Pendant la fin de partie, il  y a une étape
+de  filtrage,  qui  supprime  les  possibilités  qui  viennent  d'être
+invalidées par le dernier coup. Pour bien faire, il faudrait supprimer
+les éléments correspondants  du cache. Supposons que  le code supprimé
+soit `BCBF`. Ce code peut apparaître en première position de la double
+clé ou en deuxième position :
+
+```
+$notes{BCBF}{AEDF}
+$notes{BCBF}{BADE}
+$notes{CDAF}{BCBF}
+$notes{AADF}{BCBF}
+```
+
+La  fonction `filtrer`  supprime les  éléments  où le  code figure  en
+première position, car il suffit d'un simple
+
+```
+delete $notes{BCBF};
+```
+
+pour supprimer les éléments `$notes{BCBF}{AEDF}`, `$notes{BCBF}{BADE}`
+et similaires  en une seule  instruction. En revanche,  pour supprimer
+`$notes{CDAF}{BCBF}`,  `$notes{AADF}{BCBF}` et  associés, il  faudrait
+effectuer  une boucle,  ce  qui  ferait perdre  du  temps. On  préfère
+gaspiller de la place. Surtout  que cette place sera récupérée lorsque
+`CADF` et `AADF` seront éliminés par le filtre.
+
+De la même manière, une fois qu'un  code est joué et que le filtre est
+terminé,  les enregistrements  du cache  contenant ce  code joué  sont
+inutiles.  Le sous-programme  `filtrer` élimine  donc les  éléments du
+cache où le code joué figure au niveau 1.
+
 ## Annexe : entropie ou pas ?
 
 Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
