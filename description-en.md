@@ -529,13 +529,13 @@ In other words, the program will take:
 
 * the proposition at index 0,
 
-* the proposition at index 2.34, rounded to 2,
+* the proposition at index 2.34, rounded down to 2,
 
-* the proposition at index 2 × 2.34 = 4.68, rounded to 4,
+* the proposition at index 2 × 2.34 = 4.68, rounded down to 4,
 
-* the proposition at index 3 × 2.34 = 7.02, rounded to 7,
+* the proposition at index 3 × 2.34 = 7.02, rounded down to 7,
 
-* the proposition at index 4 × 2.34 = 9.36, rounded to 9,
+* the proposition at index 4 × 2.34 = 9.36, rounded down to 9,
 
 and so on. The sample is stored into `@echantillon_poss`.
 
@@ -896,7 +896,7 @@ containing the most recently played code are useless, so the `filtrer`
 subroutine deletes the  cache elements in which the played  code is at
 key level 1.
 
-## Annex: Entropy or not Entropy?
+## Annex 1: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart
 and J.  Cohen, the authors  say that  Shannon called the  new quantity
@@ -934,6 +934,34 @@ and most certainly many other meanings...
 So if the  word _tension_ has several different  meanings depending on
 the context, why  not use the word "entropy" in  different contexts to
 designate different concepts?
+
+## Annex 2: Mastermind with understandable words
+
+In this repo, codes are nothing  more than lumps of 5 letters, without
+any meaning in any language. On the other hand, Mastermind has a
+[variant](https://boardgamegeek.com/boardgame/5662/word-mastermind)
+in which the hidden code and  the various propositions must be present
+in some dictionnary.
+
+I made an experiment, using the
+[word list](https://github.com/ascherer/sgb/blob/master/words.dat)
+from [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html)
+and the list of words used in the game "Master Mot" from the French magazine Télé 7 Jeux.
+(see [another project](https://github.com/jforget/apl-Master-Mot/blob/master/master.en.md)).
+
+The  word list  from  Stanford GraphBase  includes  5757 words,  which
+corresponds to 12.5 bits. For a  game with both black and white marks,
+the  best word  is  "tares" giving  3.48 bits  or  "areas" giving  the
+800-word minimax. For a game with only black marks without white ones,
+the  best word  is  "cares" providing  1.69 bit  or  "bares" with  the
+2331-word minimax.
+
+The  list of  words  from the  various Master  Mot  problems from  T7J
+includes 1569 words, which gives 10.6 bits. For a game with both black
+and white marks, the best word  is "serie" giving 3.52 bits or "tuees"
+giving the 224-word minimax. For a  game with only black marks without
+white  ones, the  best  word is  "panee" providing  1.60  bit and  the
+665-word minimax.
 
 # License and Copyright
 

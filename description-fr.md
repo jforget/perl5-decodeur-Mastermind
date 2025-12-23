@@ -934,7 +934,7 @@ terminé,  les enregistrements  du cache  contenant ce  code joué  sont
 inutiles.  Le sous-programme  `filtrer` élimine  donc les  éléments du
 cache où le code joué figure au niveau 1.
 
-## Annexe : entropie ou pas ?
+## Annexe 1 : entropie ou pas ?
 
 Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
 Stewart et J. Cohen, les auteurs font remarquer que Shannon a nommé sa
@@ -972,6 +972,34 @@ Donc,  si   le  mot  « tension »  peut   désigner  plusieurs  concepts
 différents en fonction du contexte,  pourquoi ne pas utiliser le terme
 « entropie »  dans différents  contextes pour  désigner des  contextes
 différents ?
+
+## Annexe 2 : Mastermind avec des mots intelligibles
+
+Dans ce  dépôt, les  codes sont  des arrangements  de 5  lettres, sans
+aucune signification intelligible. Il existe une
+[variante](https://boardgamegeek.com/boardgame/5662/word-mastermind)
+de  Mastermind où  les mots  doivent être  des mots  existant dans  un
+dictionnaire donné.
+
+À titre d'expérience, j'ai essayé avec la
+[liste de mots](https://github.com/ascherer/sgb/blob/master/words.dat)
+de [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html)
+et avec les mots utilisés dans le jeu Master Mot de la revue Télé 7 Jeux
+(cf. [un autre projet](https://github.com/jforget/apl-Master-Mot/blob/master/master.fr.md)).
+
+La liste  de mots  de Stanford  GraphBase comporte  5757 mots,  ce qui
+représente 12,5 bits. Pour un jeu avec des marques noires et blanches,
+le  meilleur mot  est « tares »  donnant 3,48  bits ou  bien « areas »
+donnant le minimax  de 800 mots. Pour un jeu  avec des marques noires,
+mais sans marques blanches, le meilleur mot est « cares » donnant 1,69
+bit ou « bares » donnant un minimax de 2331 mots.
+
+La liste de  mots des problèmes Master Mot de  T7J comporte 1569 mots,
+ce qui  représente 10,6 bits. Pour  un jeu avec des  marques noires et
+blanches,  le meilleur  mot est  « serie » donnant  3,52 bits  ou bien
+« tuees » donnant le minimax de 224 mots. Pour un jeu avec des marques
+noires,  mais sans  marques blanches,  le meilleur  mot est  « panee »
+donnant 1,60 bit et un minimax de 665 mots.
 
 # LICENCE ET COPYRIGHT
 
