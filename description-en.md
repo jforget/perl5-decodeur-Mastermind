@@ -177,6 +177,19 @@ is usually  displayed with the first  turn at the bottom  and the last
 turn at  the top. This  is the way games  are printed in  Tricot's and
 Meirovitz' book. I do the same in this documentation.
 
+Second note: when typing the  program parameters, the user can specify
+the path  for a text file  containing words. With this  parameter, the
+program acts as a codebreaker for
+[Word Mastermind](https://boardgamegeek.com/boardgame/5662/word-mastermind).
+In this case, there are neither  overture nor interlude, but a prelude
+which reads  the text files and  stores into its memory  the available
+words.  If the  user  has typed  a "number  of  slots" parameter,  the
+program filters  the text file  to keep only  the words with  a length
+matching this  parameter. If the  use has  typed no "number  of slots"
+parameter, the program checks that all words in the text file have the
+same  length  (which will  give  a  value  to  the "number  of  slots"
+parameter).
+
 ## Overture
 
 The  book from  Tricot  and Meirovitz  examines  the various  starting
@@ -965,7 +978,7 @@ white  ones, the  best  word is  "panee" providing  1.60  bit and  the
 
 # License and Copyright
 
-(c) Jean Forget, 2025, all rights reserved.
+(c) Jean Forget, 2025, 2026, all rights reserved.
 
 This  text is  licensed  under  the terms  of  Creative Commons,  with
 attribution and share-alike (CC-BY-SA).

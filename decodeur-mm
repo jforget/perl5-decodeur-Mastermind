@@ -3,7 +3,8 @@
 #
 # Décodeur mastermind
 #
-# Copyright 2011, 2023, 2025 Jean Forget, tous droits réservés
+# Copyright 2011, 2023, 2025, 2026 Jean Forget, tous droits réservés
+#
 
 
 =encoding utf8
@@ -61,6 +62,15 @@ des listes à 50 éléments :
 
   decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
 
+Partie utilisant un dictionnaire contenant des mots de longueur identique :
+
+  decodeur-mm -d word-list/dict-fr.txt
+
+Si  ce dictionnaire  contient des  mots de  longueurs différentes,  le
+paramètre nombre de trous est obligatoire :
+
+  decodeur-mm -t 5 -d word-list/dict-fr.txt
+
 
 =head1 PARAMÈTRES D'APPEL
 
@@ -78,6 +88,17 @@ de 'A' à 'Z'.
 
 Nombre de trous, c'est-à-dire longueur du code à découvrir et longueur
 des propositions. Ce nombre doit être compris entre 2 et 5.
+
+=item * dict
+
+Chemin d'accès pour  un fichier dictionnaire. Ce  fichier contient une
+liste  de  mots, un  par  ligne,  sans  rien  d'autre (ni  blancs,  ni
+ponctuation).
+
+Si  les  mots du  dictionnaire  sont  tous  de  la même  longueur,  le
+paramètre  C<trous>  est  facultatif et  alimenté  automatiquement  en
+fonction du  contenu du  dictionnaire. Si les  mots sont  de longueurs
+différentes, le paramètre C<trous> est obligatoire.
 
 =item * reponse
 
@@ -830,7 +851,7 @@ use warnings;
 use Getopt::Long;
 use YAML;
 
-my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $verbeux, $lg_liste);
+my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $verbeux, $lg_liste, $path_dict);
 GetOptions("couleurs=i" => \$nb_coul,
            "trous=i"    => \$nb_trous,
            "reponse=s"  => \$reponse,
@@ -838,7 +859,54 @@ GetOptions("couleurs=i" => \$nb_coul,
            "minimax"    => \$b_minimax,
            "verbeux"    => \$verbeux,
            "longueur=i" => \$lg_liste,
+           "dict=s"     => \$path_dict,
   ) or die "Problème avec les options";
+
+my @poss;
+if ($path_dict) {
+  if (defined $nb_trous) {
+    prelude1($nb_trous, $path_dict);
+  }
+  else {
+    prelude2($path_dict);
+  }
+  die "Aucune possibilité trouvée dans le dictionnaire"
+    if 0 == @poss;
+}
+
+sub prelude1 {
+  my ($len, $path) = @_;
+  open my $f, '<', $path
+    or die "ouverture $path : $!";
+  while (<$f>) {
+    chomp;
+    if (length($_) == $len) {
+      push @poss, uc($_);
+    }
+  }
+  close $f
+    or die "fermeture $path : $!";
+}
+
+sub prelude2 {
+  my ($path) = @_;
+  my $len;
+  open my $f, '<', $path
+    or die "ouverture $path : $!";
+  while (<$f>) {
+    chomp;
+    unless ($len) {
+      $len = length($_);
+    }
+    if (length($_) != $len) {
+      die "Longueurs incohérentes pour les mots de $path";
+    }
+    push @poss, uc($_);
+  }
+  close $f
+    or die "fermeture $path : $!";
+  $nb_trous = $len;
+}
 
 $nb_coul  //= 6;
 $nb_trous //= 4;
@@ -870,19 +938,35 @@ if ($reponse ne '') {
     unless length($reponse) == $nb_trous;
 
   # vérification du contenu de la réponse
-  if ($reponse !~ join '', '^[', @coul, ']*$') {
+  if ($path_dict) {
+    my $trouve = 0;
+    for my $poss (@poss) {
+      if ($reponse eq $poss) {
+        $trouve = 1;
+        last;
+      }
+    }
+    if (0 == $trouve) {
+      die "La réponse $reponse ne figure pas dans le dictionnaire $path_dict";
+    }
+  }
+  elsif ($reponse !~ join '', '^[', @coul, ']*$') {
     die "Couleur incorrecte dans '$reponse'";
   }
 }
 
 my $limite_notes = 2000; # limite du nombre de possibilités restantes pour générer %notes
 my @partie;
-my @poss;
 my %notes;
 my ($cache_hit, $cache_miss) = (0, 0); # statistiques sur le cache
 my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
 my @suppl; # codes supplémentaires, qui ne sont pas compatibles avec les coups
            # déjà joués, mais qui peuvent accélérer la partie
+
+if ($path_dict) {
+  fin_de_partie();
+  exit(0);
+}
 
 debut_de_partie()
 || interlude()

@@ -197,6 +197,19 @@ premier  coup en  bas et  le  dernier coup  en haut.  C'est ainsi  que
 procèdent Tricot et Meirovitz dans leur livre, c'est ainsi que je fais
 dans la présente documentation.
 
+Autre remarque : parmi les paramètres du programme, il est possible de
+donner le nom d'un fichier contenant une liste de mots. Cela permet de
+faire fonctionner le programme comme un décodeur pour le
+[Mastermind des mots](https://boardgamegeek.com/boardgame/5662/word-mastermind).
+Dans ce  cas, il  n'y a pas  de début de  partie ou  d'interlude, mais
+simplement un prélude consistant à charger le contenu de ce fichier en
+mémoire. Si l'utilisateur a spécifié  un nombre de trous, le programme
+filtre le  fichier pour ne  conserver que les  mots dont le  nombre de
+lettres  correspond  au nombre  de  trous.  Si l'utilisateur  n'a  pas
+spécifié de  nombre de trous, le  programme vérifie que tous  les mots
+contenus  dans le  fichier ont  la même  longueur (ce  qui donnera  le
+nombre de trous).
+
 ## Début de partie
 
 Le  livre de  Jean Tricot  et Marco  Meirovitz analyse  les différents
@@ -1003,7 +1016,7 @@ donnant 1,60 bit et un minimax de 665 mots.
 
 # LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2011, 2023, 2025, tous droits réservés.
+(C) Jean Forget, 2011, 2023, 2025, 2026, tous droits réservés.
 
 Texte diffusé sous la licence CC-BY-SA : Creative Commons, Attribution -
 Partage dans les Mêmes Conditions (CC BY-SA).
