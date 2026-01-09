@@ -35,3 +35,28 @@ available  in the  Github  repository is  not  convenient, because  it
 includes several  technical additions and a  few administrative lines.
 The  copyright notice  can  be found  in this  file.  The author  also
 explains that copying the file is allowed, but not modifying it.
+
+Freelang.com
+============
+
+The [Freelang.com](https://www.freelang.com/) website offers several
+[free dictionnaries](https://www.freelang.com/dictionnaire/dic-features.php)
+(Windows programs),
+[online dictionnaries](https://www.freelang.com/enligne/index.php)
+and a
+[French word list](https://www.freelang.com/dictionnaire/dic-francais.php),
+seemingly free. By running the following commands,
+
+```
+wget https://www.freelang.com/download/misc/liste_francais.rar
+unrar-free -x liste_francais.rar
+iconv --from-code=windows-1252 --to-code=utf-8 liste_francais.txt | perl -p -e 's/\cM//' > liste_francais_utf.txt
+```
+
+you obtain a file containing 22735 French words, encoded in UTF-8. The
+words  have  varying lengths.  The  file  needs  some tweaking  to  be
+compatible with the Mastermind codebreaker `decodeur-mm`, so run
+
+```
+perl adapt-freelang.pl
+```

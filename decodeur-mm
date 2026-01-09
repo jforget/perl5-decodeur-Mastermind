@@ -64,12 +64,12 @@ des listes à 50 éléments :
 
 Partie utilisant un dictionnaire contenant des mots de longueur identique :
 
-  decodeur-mm -d word-list/dict-fr.txt
+  decodeur-mm -d word-list/sgb-words.txt
 
 Si  ce dictionnaire  contient des  mots de  longueurs différentes,  le
 paramètre nombre de trous est obligatoire :
 
-  decodeur-mm -t 5 -d word-list/dict-fr.txt
+  decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
 
 
 =head1 PARAMÈTRES D'APPEL
