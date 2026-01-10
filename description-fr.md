@@ -996,23 +996,36 @@ dictionnaire donné.
 
 À titre d'expérience, j'ai essayé avec la
 [liste de mots](https://github.com/ascherer/sgb/blob/master/words.dat)
-de [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html)
-et avec les mots utilisés dans le jeu Master Mot de la revue Télé 7 Jeux
-(cf. [un autre projet](https://github.com/jforget/apl-Master-Mot/blob/master/master.fr.md)).
+de [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+avec les mots utilisés dans le jeu Master Mot de la revue Télé 7 Jeux
+(cf. [un autre projet](https://github.com/jforget/apl-Master-Mot/blob/master/master.fr.md))
+et avec la liste de mots français fournie par
+[Freelang.com](https://www.freelang.com/).
 
 La liste  de mots  de Stanford  GraphBase comporte  5757 mots,  ce qui
 représente 12,5 bits. Pour un jeu avec des marques noires et blanches,
-le  meilleur mot  est « tares »  donnant 3,48  bits ou  bien « areas »
-donnant le minimax  de 800 mots. Pour un jeu  avec des marques noires,
-mais sans marques blanches, le meilleur mot est « cares » donnant 1,69
+le  meilleur mot  est « tares »  donnant 3,39  bits ou  bien « tales »
+donnant le minimax  de 924 mots. Pour un jeu  avec des marques noires,
+mais sans marques blanches, le meilleur mot est « cares » donnant 1,60
 bit ou « bares » donnant un minimax de 2331 mots.
 
 La liste de  mots des problèmes Master Mot de  T7J comporte 1569 mots,
 ce qui  représente 10,6 bits. Pour  un jeu avec des  marques noires et
-blanches,  le meilleur  mot est  « serie » donnant  3,52 bits  ou bien
-« tuees » donnant le minimax de 224 mots. Pour un jeu avec des marques
+blanches, le  meilleur mot  est « serie »  donnant une  information de
+3,22 bits  et un  minimax de 277  mots. Pour un  jeu avec  des marques
 noires,  mais sans  marques blanches,  le meilleur  mot est  « panee »
-donnant 1,60 bit et un minimax de 665 mots.
+donnant  1,60 bit  et un  minimax de  665 mots.  Mais à  moins d'avoir
+recopié  (à titre  personnel) les  mêmes  problèmes que  moi, vous  ne
+pourrez pas reproduire exactement le même test.
+
+Parmi les 930  mots de 4 lettres  de la liste de  mots de Freeland.com
+(soit  9,86 bits),  le  meilleur est  « raie » avec  2,92  bits et  le
+minimax de  199 mots (règles avec  pions noirs et blancs)  ou « pare »
+avec 1,54  bit et « soie »  avec le minimax  de 421 mots  (pions noirs
+seulement). Pour les  1939 mots de 5 lettres (soit  10,92 bits), c'est
+« serie » avec  3,33 bits  et « porte »  pour le  minimax de  801 mots
+(pions noirs et blancs) ou « carte », « perte » et « porte » avec 1,69
+bits et « caire » avec le minimax de 770 mots (pions noirs seulement).
 
 # LICENCE ET COPYRIGHT
 

@@ -958,23 +958,35 @@ in some dictionnary.
 
 I made an experiment, using the
 [word list](https://github.com/ascherer/sgb/blob/master/words.dat)
-from [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html)
-and the list of words used in the game "Master Mot" from the French magazine Télé 7 Jeux.
-(see [another project](https://github.com/jforget/apl-Master-Mot/blob/master/master.en.md)).
+from [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+the list of words used in the game "Master Mot" from the French magazine Télé 7 Jeux.
+(see [another project](https://github.com/jforget/apl-Master-Mot/blob/master/master.en.md))
+and the list of French words from
+[Freelang.com](https://www.freelang.com/).
 
 The  word list  from  Stanford GraphBase  includes  5757 words,  which
 corresponds to 12.5 bits. For a  game with both black and white marks,
-the  best word  is  "tares" giving  3.48 bits  or  "areas" giving  the
-800-word minimax. For a game with only black marks without white ones,
+the  best word  is  "tares" giving  3.39 bits  or  "tales" giving  the
+924-word minimax. For a game with only black marks without white ones,
 the  best word  is  "cares" providing  1.69 bit  or  "bares" with  the
 2331-word minimax.
 
 The  list of  words  from the  various Master  Mot  problems from  T7J
 includes 1569 words, which gives 10.6 bits. For a game with both black
-and white marks, the best word  is "serie" giving 3.52 bits or "tuees"
-giving the 224-word minimax. For a  game with only black marks without
-white  ones, the  best  word is  "panee" providing  1.60  bit and  the
-665-word minimax.
+and white  marks, the best  word is "serie"  giving 3.22 bits  and the
+277-word minimax. For a game with only black marks without white ones,
+the best word is "panee" providing  1.60 bit and the 665-word minimax.
+But unless you  have copied (for personal purposes) the  very same T7J
+problems as me, you cannot reproduce this test.
+
+For the 930 4-letter words in  the Freeland.com word list, the entropy
+is 9.86  bits. The  best word is  "raie" with 2.92  bits and  with the
+199-word minimax (B&W marks), or "pare"  with 1.54 bit and "soie" with
+the 421-word minimax  (black marks only). For the  1939 5-letter words
+(10.92 bits),  the best words are  "serie" with 3.33 bits  and "porte"
+with the 801-word minimax (B&W  marks) or "carte", "perte" and "porte"
+with  1.69 bit  and "caire"  with  the 770-word  minimax (black  marks
+only).
 
 # License and Copyright
 
