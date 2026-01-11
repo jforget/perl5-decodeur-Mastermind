@@ -11,7 +11,7 @@
 
 =head1 NOM
 
-decode-mm -- un programme pour jouer au Mastermind en tant que décodeur
+decodeur-mm -- un programme pour jouer au Mastermind en tant que décodeur
 
 =head1 UTILISATION
 
@@ -42,7 +42,7 @@ qu'il vous indique. Exemple commenté :
   0 3                           l'utilisateur répond avec 0 noir et 3 blancs
   DAAE                          cinquième coup du programme
   XXXX                          l'utilisateur répond avec 4 noirs
-  Gagné !                       message final du programme
+  Gagné en 5 coups !            message final du programme
 
 (*) pour  éviter les  erreurs de saisie,  l'utilisateur doit  taper la
 chaîne C<rien>  (ou avec des  parenthèses, C<(rien)>), car  une chaîne
@@ -833,11 +833,11 @@ discriminant peut être très long.
 
 =head1 AUTEUR
 
-Jean Forget, JFORGET (à) cpan.org
+Jean Forget, J2N-FORGET (à) orange.fr
 
 =head1 LICENCE ET COPYRIGHT
 
-(C) Jean Forget, 2011, 2023, tous droits réservés.
+(C) Jean Forget, 2011, 2023, 2025, 2026 tous droits réservés.
 
 Les termes de licence de ce script sont les mêmes termes que pour Perl
 : GNU General Public License (GPL) et Artistic License.
@@ -979,7 +979,9 @@ sub debut_de_partie {
     my $prop = join '', @coul[$pointeur .. $pointeur + $nb_trous - 1];
     my ($n, $b, $nb, $res) = jouer($prop);
     if ($n == $nb_trous) {
-      say "Gagné ! mais j'ai eu de la chance...";
+      my $pluriel = '';
+      $pluriel = 's' if (@partie > 0);
+      printf("Gagné en %d coup%s ! mais j'ai eu de la chance...\n", 1 + @partie, $pluriel);
       return 1;
     }
     if ($nb == 0) {
@@ -1082,7 +1084,7 @@ sub fin_de_partie {
     my $prop = choisir();
     my ($n, $b, $nb, $res) = jouer($prop);
     if ($n == $nb_trous) {
-      say "Gagné !";
+      printf("Gagné en %d coups !\n", 1 + @partie);
       if ($verbeux) {
         say "statistiques du cache : $cache_hit trouvés, $cache_miss pas trouvés";
       }
