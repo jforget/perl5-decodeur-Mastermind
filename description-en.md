@@ -1,5 +1,181 @@
 -*- encoding: utf-8; indent-tabs-mode: nil -*-
 
+# MANUAL PAGE
+
+When I wrote the `decodeur-mm`  program, I used French variable names,
+French  keywords  for  command-line parameters,  French  comments  and
+French documentation. To  ease the use of my program  for users who do
+not  read French,  but understand  the English  language, here  is the
+manpage translated  into English. On  the first reading,  some notions
+may puzzle you, but they are explained later in the
+[chapter DESCRIPTION](#user-content-description).
+
+## Name
+
+`decodeur-mm` -- a program which plays Mastermind as a codebreaker
+
+## Usage
+
+Autonomous run:
+
+```
+  decodeur-mm -r BEEF
+```
+
+The program attempts  to find a 4-slot code using  6 possible colours.
+It does not stop  to ask you to evaluate such  and such possible code,
+since the answer is `BEEF`. Yet, the program does not cheat.
+
+Interactive run:
+
+```
+  decodeur-mm
+```
+
+With no parameters  at all, the program solves a  problem with 4 slots
+and 6 colours. Each turn, it  asks you to evaluate some proposal. Here
+is an example with comments:
+
+```
+  > decodeur-mm                 command line from the human user
+  ABCD                          first proposal by the program
+  0 2                           the user answers: 0 black mark and 2 white marks
+  EFAB                          second proposal by the program
+  XO                            the user answers: 1 black mark and 1 white mark
+  CFBF                          third proposal by the program
+  rien                          the user answers: 0 black mark and 0 white mark (*)
+  EDEA                          fourth proposal by the program
+  0 3                           the user answers: 0 black mark and 3 white marks
+  DAAE                          fifth proposal by the program
+  XXXX                          the user answers: 4 black marks
+  Gagné en 5 coups !            final message: "I won in 5 turns!"
+```
+
+(*) to  prevent entry typos, the  user must type the  string `rien` or
+`(rien)` ("nothing"  in French). An  empty answer, meaning  zero black
+marks `X` and  zero white marks `O` is most  certainly an entry error.
+Another possible answer is `0 0`.
+
+Variants:
+
+Super Mastermind is played with 5 slots and 8 colours. Here is the command line:
+
+```
+  decodeur-mm -t 5 -c 8 -r DEADB
+```
+
+Here  is the  same game,  using Knuth's  minimax instead  of Shannon's
+entropy, and in verbose  mode, displaying many additional informations
+(yet, lists of possible codes are truncated to 50 elements):
+
+```
+  decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
+```
+
+A game of Word Mastermind, using a dictionary in which all words have the same length:
+
+```
+  decodeur-mm -d word-list/sgb-words.txt
+```
+
+A game of Word Mastermind, using a dictionary in which the words have different lengths:
+
+```
+  decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
+```
+
+## Call Parameters
+
+* couleurs
+
+  The number of  colours available for the code  and the propositions.
+  This  number must  be  in  the 3..26  range.  Actually, colours  are
+  implemented as  letters. If using  3 colours, these colours  will be
+  `'A'`, `'B'` and  `'C'`. If using 26 colours, all  the letters `'A'`
+  to `'Z'` are available.
+
+* trous
+
+  The number of slots.  In other words, the length of  the code and of
+  the various propositions. This number must be in the range 2..5.
+
+* dict
+
+  The pathname for  a dictionary. The file corresponding  to this path
+  must contain  a list of words,  one word per line,  and nothing else
+  (no whitespace except for the linefeeds, no punctuation).
+
+  If  all words  in the  dictionary  have the  same length,  parameter
+  `trous` (slots) is optional and is automatically filled with what is
+  in  the  dictionary.  If  the file  contains  words  with  different
+  lengths, parameter `trous` is mandatory.
+
+* reponse
+
+  The final  answer, that is, the  code the program must  find. But we
+  promise, the  program will  not use these  values when  choosing its
+  successive propositions. If  the command line does  not include this
+  parameter, the  program will  stop with each  proposition, prompting
+  the user for the number of black and white marks.
+
+* entropie | minimax
+
+  The tactic used in the  endgame: either Shannon's entropy or Knuth's
+  minimax. Defaults to Shannon's entropy.
+
+* verbeux
+
+  Verbose mode.  The program  displays several informations  about the
+  game, such  as the list  of compatible codes,  or the values  of the
+  minimax and of the entropy when playing a proposition.
+
+* longueur
+
+  The maximum length  of lists in verbose mode. From  time to time, in
+  verbose mode,  the program displays  the list of  remaining possible
+  codes. This  list can be very  long. So the `longueur`  parameter is
+  used to  truncate this  list when printed.  Internally, the  list is
+  still stored  in totality. If you  do not want list  truncation, you
+  can give value `0` to this parameter.
+
+## Description
+
+See [below](#user-content-description).
+
+## Configuration and Environment
+
+None.
+
+## Requirements
+
+YAML: some debugging statements, usually commented-out with `#`.
+
+v5.10: for statement `say` and operator "defined-or" (`//`).
+
+## Incompatibilities
+
+No known incompatibilities.
+
+## Bugs and Limitations
+
+Entropy values are displayed with an outrageous number of digits after
+the decimal point.
+
+When there remains  many compatible codes (for example  when there are
+many allowed  colours), choosing  the best proposition  can be  a very
+long process.
+
+## Author
+
+Jean Forget, J2N-FORGET (at) orange (dot) fr
+
+## License and Copyright
+
+Copyright (C) Jean Forget, 2011, 2023, 2025, 2026 all rights reserved.
+
+The  script is  licensed  under the  same terms  as  Perl: GNU  Public
+License version 1 or later and Perl Artistic License.
+
 # DESCRIPTION
 
 ## Foreword
@@ -954,7 +1130,7 @@ In this repo, codes are nothing  more than lumps of 5 letters, without
 any meaning in any language. On the other hand, Mastermind has a
 [variant](https://boardgamegeek.com/boardgame/5662/word-mastermind)
 in which the hidden code and  the various propositions must be present
-in some dictionnary.
+in some dictionary.
 
 I made an experiment, using the
 [word list](https://github.com/ascherer/sgb/blob/master/words.dat)
@@ -990,7 +1166,7 @@ only).
 
 # License and Copyright
 
-(c) Jean Forget, 2025, 2026, all rights reserved.
+Copyright (c) Jean Forget, 2025, 2026, all rights reserved.
 
 This  text is  licensed  under  the terms  of  Creative Commons,  with
 attribution and share-alike (CC-BY-SA).
