@@ -138,7 +138,7 @@ A game of Word Mastermind, using a dictionary in which the words have different 
   still stored  in totality. If you  do not want list  truncation, you
   can give value `0` to this parameter.
 
-## Description
+## Program Description
 
 See [below](#user-content-description).
 
