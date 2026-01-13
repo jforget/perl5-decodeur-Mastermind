@@ -17,7 +17,8 @@ decodeur-mm -- un programme pour jouer au Mastermind en tant que décodeur
 
 Utilisation autonome :
 
-  decodeur-mm -r BEEF
+            $ perl decodeur-mm -r BEEF
+  (ou bien) $ perl decodeur-mm --reponse=BEEF
 
 Le programme  résoud un problème  à 4 trous  et 6 couleurs,  sans vous
 demander de noter ses propositions, puisque le code secret est C<BEEF>
@@ -25,13 +26,13 @@ demander de noter ses propositions, puisque le code secret est C<BEEF>
 
 Utilisation interactive :
 
-  decodeur-mm
+  perl decodeur-mm
 
 Sans aucun paramètre,  le programme résoud un problème à  4 trous et 6
 couleurs,  en vous  demandant à  chaque fois  de noter  la proposition
 qu'il vous indique. Exemple commenté :
 
-  > decodeur-mm                 ligne de commande écrite par l'utilisateur
+  $ perl decodeur-mm            ligne de commande écrite par l'utilisateur
   ABCD                          premier coup du programme
   0 2                           réponse de l'utilisateur : 0 noir et deux blancs
   EFAB                          deuxième coup du programme
@@ -54,22 +55,26 @@ Variantes :
 
 Le super Mastermind se joue avec 5 trous et 8 couleurs. Cela donne :
 
-  decodeur-mm -t 5 -c 8 -r DEADB
+            $ perl decodeur-mm -t 5 -c 8 -r DEADB
+  (ou bien) $ perl decodeur-mm --trous 5 --couleurs 8 --reponse DEADB
 
 Et  la même  partie,  en utilisant  le  minimax de  Knuth  au lieu  de
 l'entropie de Shannon et en mode verbeux, tout en limitant l'affichage
 des listes à 50 éléments :
 
-  decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
+            $ perl decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
+  (ou bien) $ perl decodeur-mm --trous 5 --couleurs 8 --reponse DEADB --minimax --verbeux --longueur 50
 
 Partie utilisant un dictionnaire contenant des mots de longueur identique :
 
-  decodeur-mm -d word-list/sgb-words.txt
+            $ perl decodeur-mm -d word-list/sgb-words.txt
+  (ou bien) $ perl decodeur-mm --dict word-list/sgb-words.txt
 
 Si  ce dictionnaire  contient des  mots de  longueurs différentes,  le
 paramètre nombre de trous est obligatoire :
 
-  decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
+            $ perl decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
+  (ou bien) $ perl decodeur-mm --trous 5 --dict word-list/liste_francais_asc.txt
 
 
 =head1 PARAMÈTRES D'APPEL

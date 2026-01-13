@@ -19,7 +19,7 @@ may puzzle you, but they are explained later in the
 Autonomous run:
 
 ```
-  decodeur-mm -r BEEF
+  perl decodeur-mm -r BEEF
 ```
 
 The program attempts  to find a 4-slot code using  6 possible colours.
@@ -29,7 +29,7 @@ since the answer is `BEEF`. Yet, the program does not cheat.
 Interactive run:
 
 ```
-  decodeur-mm
+  perl decodeur-mm
 ```
 
 With no parameters  at all, the program solves a  problem with 4 slots
@@ -37,7 +37,7 @@ and 6 colours. Each turn, it  asks you to evaluate some proposal. Here
 is an example with comments:
 
 ```
-  > decodeur-mm                 command line from the human user
+  $ perl decodeur-mm            command line from the human user
   ABCD                          first proposal by the program
   0 2                           the user answers: 0 black mark and 2 white marks
   EFAB                          second proposal by the program
@@ -61,7 +61,8 @@ Variants:
 Super Mastermind is played with 5 slots and 8 colours. Here is the command line:
 
 ```
-  decodeur-mm -t 5 -c 8 -r DEADB
+            $ perl decodeur-mm -t 5 -c 8 -r DEADB
+  (or else) $ perl decodeur-mm --trous 5 --couleurs 8 --reponse DEADB
 ```
 
 Here  is the  same game,  using Knuth's  minimax instead  of Shannon's
@@ -69,19 +70,22 @@ entropy, and in verbose  mode, displaying many additional informations
 (yet, lists of possible codes are truncated to 50 elements):
 
 ```
-  decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
+            $ perl decodeur-mm -t 5 -c 8 -r DEADB -m -v -l 50
+  (or else) $ perl decodeur-mm --trous 5 --couleurs 8 --reponse DEADB --minimax --verbeux --longueur 50
 ```
 
 A game of Word Mastermind, using a dictionary in which all words have the same length:
 
 ```
-  decodeur-mm -d word-list/sgb-words.txt
+            $ perl decodeur-mm -d word-list/sgb-words.txt
+  (or else) $ perl decodeur-mm --dict word-list/sgb-words.txt
 ```
 
 A game of Word Mastermind, using a dictionary in which the words have different lengths:
 
 ```
-  decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
+            $ perl decodeur-mm -t 5 -d word-list/liste_francais_asc.txt
+  (or else) $ perl decodeur-mm --trous 5 --dict word-list/liste_francais_asc.txt
 ```
 
 ## Call Parameters

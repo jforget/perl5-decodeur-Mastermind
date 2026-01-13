@@ -154,6 +154,9 @@ Pathname of the SQLite database storing the results of the exploration.
 
 =item * config
 
+Key used in  the database, to tell apart records  coming e.g. from the
+Stanford Graph  Base from records  coming from standard  Mastermind (4
+slots, 6 colours).
 
 =item * colours
 
@@ -183,6 +186,8 @@ parameter `slots` is mandatory.
 
 =head1 DESCRIPTION
 
+This program stores into the database all possible codes applying to a
+configuration.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
