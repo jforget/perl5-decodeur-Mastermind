@@ -31,8 +31,11 @@ unless ($config) {
 }
 
 my @command = qw(perl ../decodeur-mm);
-my $end_time = DateTime->now->add(DateTime::Duration->new(minutes => $duration));
-my $commit_length = 50;
+my $end_time        = DateTime->now + DateTime::Duration->new(minutes => $duration);
+my $commit_length   = 50;
+my $commit_duration = DateTime::Duration->new(minutes => 5);
+my $next_commit_dt  = DateTime->now + $commit_duration;
+my $next_commit_nb  = $commit_length;
 
 say $end_time;
 
@@ -78,7 +81,7 @@ where  config = ?
 and    datetime is null
 SQL
 $result = $read_codes->execute($config);
-my $n = 0;
+my $nb = 0;
 while (my $hash = $read_codes->fetchrow_hashref) {
   my $code = $hash->{code};
   my $entropy = 0;
@@ -100,14 +103,17 @@ while (my $hash = $read_codes->fetchrow_hashref) {
 
   my $now = DateTime->now;
   $upd_code->execute($entropy, $minimax, $now->strftime("%Y-%m-%dT%H:%M:%S"), $config, $code);
-  $n++;
-  if ($n % $commit_length == 0) {
+  $nb++;
+
+  if ($nb >= $next_commit_nb or $now > $next_commit_dt) {
     $dbh->commit;
-    say "commit after $code";
+    $next_commit_nb = $nb  + $commit_length;
+    $next_commit_dt = $now + $commit_duration;
+    say  $now->strftime("%Y-%m-%dT%H:%M:%S"), ", commit after $code, next commit at ", $next_commit_dt->strftime("%Y-%m-%dT%H:%M:%S");
     $dbh->begin_work;
   }
   if ($now > $end_time) {
-    say "Timed-out";
+    say "Timed-out at ", $now;
     last;
   }
 }
@@ -152,8 +158,8 @@ This program  explores each code  not yet  explored, to find  how many
 turns a game would spend if using  the entropy method and if using the
 minimax method. The results are stored into the database.
 
-When some configuration have been completely explored, you can run the
-following SQL statements to compare entropy and minimax.
+When some  configurations have been  completely explored, you  can run
+the following SQL statements to compare entropy and minimax.
 
   select config, max(entropy) as max_ent
                , max(minimax) as max_mm
@@ -162,12 +168,18 @@ following SQL statements to compare entropy and minimax.
   from Code
   group by config
 
-  select   config, 'minimax better', count(*)
+  select   config, count(*)
+                 , 'minimax faster' as 'which is faster'
+                 , avg(entropy)     as avg_ent
+                 , avg(minimax)     as avg_mm
   from     Code
   where    entropy > minimax
   group by config
   union
-  select   config, 'entropy better', count(*)
+  select   config, count(*)
+                 , 'entropy faster'
+                 , avg(entropy)
+                 , avg(minimax)
   from     Code
   where    entropy < minimax
   group by config
@@ -192,10 +204,12 @@ No known incompatibilities.
 =head1 BUGS AND LIMITS
 
 Exploring a  configuration with  a dictionary  is rather  lengthy. For
-example, the 4-letter words from the list of French words needs (on my
-computer) around 8 seconds per code.  The reason is that the text file
-containing the list of  words is read twice per code  (once for a game
-with the entropy method, once for a game with the minimax method).
+example, on my computer, the 930 words with 4 letters from the list of
+French words  need around 8 seconds  per code and the  5757 words from
+the Stanford Graph Base need about one minute each. The reason is that
+the text  file containing  the list  of words is  read twice  per code
+(once for  a game with  the entropy method, once  for a game  with the
+minimax method).
 
 =head1 AUTHOR
 
