@@ -827,7 +827,7 @@ le même nombre d'éléments.   En revanche, lorsque le critère principal
 est  le  minimax,  l'utilisation  de l'entropie  pour  départager  les
 ex-aequo se révèle utile.
 
-### Remarque
+### Remarque : utiliser des codes déjà éliminés
 
 L'une des hypothèses que j'ai faites était que l'on pouvait limiter la
 recherche  des codes  les  plus  discriminants à  la  liste des  codes
@@ -978,21 +978,58 @@ bit ou « bares » donnant un minimax de 2331 mots.
 
 La liste de  mots des problèmes Master Mot de  T7J comporte 1569 mots,
 ce qui  représente 10,6 bits. Pour  un jeu avec des  marques noires et
-blanches, le  meilleur mot  est « serie »  donnant une  information de
+blanches, le  meilleur mot  est « SERIE »  donnant une  information de
 3,22 bits  et un  minimax de 277  mots. Pour un  jeu avec  des marques
-noires,  mais sans  marques blanches,  le meilleur  mot est  « panee »
+noires,  mais sans  marques blanches,  le meilleur  mot est  « PANEE »
 donnant  1,60 bit  et un  minimax de  665 mots.  Mais à  moins d'avoir
 recopié  (à titre  personnel) les  mêmes  problèmes que  moi, vous  ne
 pourrez pas reproduire exactement le même test.
 
 Parmi les 930  mots de 4 lettres  de la liste de  mots de Freeland.com
-(soit  9,86 bits),  le  meilleur est  « raie » avec  2,92  bits et  le
-minimax de  199 mots (règles avec  pions noirs et blancs)  ou « pare »
-avec 1,54  bit et « soie »  avec le minimax  de 421 mots  (pions noirs
+(soit  9,86 bits),  le  meilleur est  « RAIE » avec  2,92  bits et  le
+minimax de  199 mots (règles avec  pions noirs et blancs)  ou « PARE »
+avec 1,54  bit et « SOIE »  avec le minimax  de 421 mots  (pions noirs
 seulement). Pour les  1939 mots de 5 lettres (soit  10,92 bits), c'est
-« serie » avec  3,33 bits  et « porte »  pour le  minimax de  801 mots
-(pions noirs et blancs) ou « carte », « perte » et « porte » avec 1,69
-bits et « caire » avec le minimax de 770 mots (pions noirs seulement).
+« SERIE » avec  3,33 bits  et « PORTE »  pour le  minimax de  801 mots
+(pions noirs et blancs) ou « CARTE », « PERTE » et « PORTE » avec 1,69
+bits et « CAIRE » avec le minimax de 770 mots (pions noirs seulement).
+
+Remarque : dans la  liste de mots de Freeland.com, il y  a en fait 993
+mots de  4 lettres,  en supposant que  « gène », « gêne »  et « gêné »
+sont trois mots  différents. Pour les besoins du  Mastermind des mots,
+ces trois mots sont fusionnés en un seul, « GENE ».
+
+En utilisant  les mots de 4  lettres de la liste  Freeland.com, le mot
+provoquant  la partie  la  plus longue  est  « RAYE », nécessitant  10
+coups.  Comme  indiqué  ci-dessus,  le premier  coup  utilise  le  mot
+« RAIE ».  La note  obtenue est  `XXX`, ce  qui donne  16 possibilités
+réparties en trois cliques :
+
+1. BAIE, HAIE, PAIE, TAIE
+
+2. RACE, RADE, RAGE, RAME, RAPE, RARE, RASE, RATE, RAYE
+
+3. RAID, RAIL, RAIS
+
+Voir en [annexe 2](#Annexe-2--notion-de-clique) la notion de clique.
+
+Le deuxième tour  utilise le code « RADE », qui  permet d'éliminer les
+cliques 1  et 3 et  de réduire la  clique 2 à  8 mots. Ensuite,  les 8
+coups suivants consistent  à tester individuellement chaque  mot de la
+clique, jusqu'à trouver le bon.
+
+On peut  noter également que la  liste Freeland.com a oublié  les mots
+« RALE » et « RAVE ». Si ces deux mots avaient figuré dans la liste de
+mots, la partie aurait duré 12 coups.
+
+Ce problème est similaire à celui
+[que j'ai déjà évoqué](#Remarque--utiliser-des-codes-déjà-éliminés)
+pour le  Mastermind des  couleurs. Il avait  été résolu  en conservant
+dans la  fin de  partie les  codes utilisés  dans l'ouverture.  Ici ce
+n'est pas  possible, il  n'y a  pas d'ouverture, donc  on ne  peut pas
+récupérer les  codes de  l'ouverture. Les codes  à jouer  doivent être
+présents dans le  dictionnaire utilisé, donc il est  impossible de les
+générer automatiquement.
 
 ## Annexe 1 : entropie ou pas ?
 
@@ -1042,6 +1079,41 @@ Programming_, par Donald Knuth.
 > the data several orders of magnitude faster.
 
 > He was sort of out of sorts after sorting that sort of data.
+
+## Annexe 2 : notion de clique
+
+En théorie des graphes, une clique concerne un graphe non orienté. Une
+clique est un sous-ensemble de sommets de ce graphe, tel que le graphe
+induit soit un graphe complet. Par abus de langage, on utilise souvent
+le terme « clique » pour désigner ce graphe induit.
+
+Dans _The Stanford  GraphBase_, l'un des exemples  présentés par Knuth
+est le jeu _Word Ladders_, consistant à  passer d'un mot à un autre en
+changeant  une seule  lettre à  la  fois. Exemple  (en français,  avec
+seulement 4 lettres) :
+
+```
+TARE
+TARN
+TAON
+PAON
+PION
+```
+
+Pour ce faire, il construit un graphe dans lequel les sommets sont les
+mots autorisés et  dans lequel deux sommets sont reliés  par une arête
+s'ils ont une seule lettre de différence.
+
+Il  est facile  de  vérifier  que dans  ce  graphe,  les cliques  sont
+associées  à dse  expressions  régulières contenant  _n_  - 1  lettres
+imposées et 1 lettre générique. Par exemple, la clique
+
+```
+RACE, RADE, RAGE, RAIE, RALE, RAME, RAPE, RARE, RASE, RATE, RAVE, RAYE
+```
+
+est associée à l'expression régulière `/^RA[CDGILMPRSTVY]E$/` ou
+plus simplement `/^RA.E$/`.
 
 # LICENCE ET COPYRIGHT
 

@@ -980,7 +980,7 @@ if the  main criterion is  entropy, if  two compatible codes  have the
 same entropy within  one ten-billionth bit, that means  that they have
 the same histogram of markings, therefore the same minimax value.
 
-## Remark
+### Remark: Using Already Discarded Possible Codes
 
 When designing  this program, I posited  that the search for  the most
 selective proposition  could be  restricted to  the list  of remaining
@@ -1113,27 +1113,66 @@ and the list of French words from
 
 The  word list  from  Stanford GraphBase  includes  5757 words,  which
 corresponds to 12.5 bits. For a  game with both black and white marks,
-the  best word  is  "tares" giving  3.39 bits  or  "tales" giving  the
+the  best word  is  "TARES" giving  3.39 bits  or  "TALES" giving  the
 924-word minimax. For a game with only black marks without white ones,
-the  best word  is  "cares" providing  1.69 bit  or  "bares" with  the
+the  best word  is  "CARES" providing  1.69 bit  or  "BARES" with  the
 2331-word minimax.
 
 The  list of  words  from the  various Master  Mot  problems from  T7J
 includes 1569 words, which gives 10.6 bits. For a game with both black
-and white  marks, the best  word is "serie"  giving 3.22 bits  and the
+and white  marks, the best  word is "SERIE"  giving 3.22 bits  and the
 277-word minimax. For a game with only black marks without white ones,
-the best word is "panee" providing  1.60 bit and the 665-word minimax.
+the best word is "PANEE" providing  1.60 bit and the 665-word minimax.
 But unless you  have copied (for personal purposes) the  very same T7J
 problems as me, you cannot reproduce this test.
 
 For the 930 4-letter words in  the Freeland.com word list, the entropy
-is 9.86  bits. The  best word is  "raie" with 2.92  bits and  with the
-199-word minimax (B&W marks), or "pare"  with 1.54 bit and "soie" with
+is 9.86  bits. The  best word is  "RAIE" with 2.92  bits and  with the
+199-word minimax (B&W marks), or "PARE"  with 1.54 bit and "SOIE" with
 the 421-word minimax  (black marks only). For the  1939 5-letter words
-(10.92 bits),  the best words are  "serie" with 3.33 bits  and "porte"
-with the 801-word minimax (B&W  marks) or "carte", "perte" and "porte"
-with  1.69 bit  and "caire"  with  the 770-word  minimax (black  marks
+(10.92 bits),  the best words are  "SERIE" with 3.33 bits  and "porte"
+with the 801-word minimax (B&W  marks) or "CARTE", "PERTE" and "PORTE"
+with  1.69 bit  and "CAIRE"  with  the 770-word  minimax (black  marks
 only).
+
+Actually, the  word list from  Freeland.com contains 993 words  with 4
+letters, such  as _gène_ (chromosome subpart),  _gêne_ (hindrance) and
+_gêné_  (hindered). For  the needs  of the  Mastermind program,  these
+three words are  merged into a single word _GENE_.  So, there are only
+930 useful words.
+
+Using the words  from Freeland.com with 4 letters,  the word requiring
+the longest time  is _RAYE_, with 10 turns. As  shown above, the first
+game turn uses _RAIE_. This gives mark `XXX`, which translates into 16
+possible codes, split into 3 cliques:
+
+1. BAIE, HAIE, PAIE, TAIE
+
+2. RACE, RADE, RAGE, RAME, RAPE, RARE, RASE, RATE, RAYE
+
+3. RAID, RAIL, RAIS
+
+See in [annex 2](Annex-2-cliques-in-a-graph) what is a clique.
+
+Turn  2  uses  _RADE_,  which produces  marking  `XXX`  and  therefore
+eliminates cliques  1 and  3, while  reducing clique  2 to  8 possible
+codes. Then,  the remaining 8 game  turns check each possible  code in
+turn, until finding the solution.
+
+If you  known enough  French, you  may have  noticed that  some actual
+French words  are missing from  the Freeland.com list, such  as _RALE_
+(either  some groaning  or a  bird leaving  near the  sea) and  _RAVE_
+(vegetable). If the list had contained these two words, the game would
+have lasted for 12 game turns.
+
+The problem is similar to the
+[problem](#Remark-Using-Already-Discarded-Possible-Codes)
+mentioned  about  the standard  Mastermind.  Then,  it was  solved  by
+keeping in  the endgame the codes  that could have been  played during
+the  overture. Here,  with the  Word  Mastermind, it  is not  possible
+because there is no overture, so there are no codes to keep. And since
+the played  codes must be  present in  the dictionary, they  cannot be
+generated like they were in the standard Mastermind.
 
 ## Annex 1: Entropy or not Entropy?
 
@@ -1183,6 +1222,44 @@ volume 3 (sorting and searching) or _The Art of Computer Programming_.
 So  if the  words _tension_,  "set", "order"  and "sort"  have several
 different meanings each depending on the context, why not use the word
 "entropy" in different contexts to designate different concepts?
+
+## Annex 2: cliques in a graph
+
+In graph theory,  a clique is a notion linked  to undirected graphs. A
+clique is a subset  of graph nodes, such as the  induced subgraph is a
+complete graph. Sometimes, the word "clique" is used to designate this
+subgraph instead of the subset of nodes.
+
+In _The Stanford  GraphBase_, one of the examples Knuth  deals with is
+the game _Word  Ladders_, in which the player has  to convert one word
+into another  by replacing only one  letter at each step.  Here is the
+example given by the author:
+
+```
+WORDS
+WOLDS
+GOLDS
+GOADS
+GRADS
+GRADE
+GRAPE
+GRAPH
+```
+
+To analyse this game, Knuth builds a  graph in which the nodes are the
+allowed 5-letter words and in which two nodes are linked if there is a
+single-letter difference between them.
+
+You  can  easily  understand  that  in  this  graph,  cliques  may  be
+associated with regexps containing _n_ -  1 fixed letters and a single
+generic letter. For example, the clique:
+
+```
+RACE, RADE, RAGE, RAIE, RALE, RAME, RAPE, RARE, RASE, RATE, RAVE, RAYE
+```
+
+is  associated  with  regexp `/^RA[CDGILMPRSTVY]E$/`  or  more  simply
+`/^RA.E$/`.
 
 # License and Copyright
 
