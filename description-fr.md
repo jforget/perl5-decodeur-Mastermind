@@ -134,8 +134,10 @@ Enfin, d'autres variantes changent les mécanismes du jeu :
 [utilisation de lettres](https://boardgamegeek.com/boardgame/5662/word-mastermind),
 le code secret  devant être un mot intelligible en  français,
 [etc](https://boardgamegeek.com/boardgamefamily/142/game-mastermind).
-Ces  variantes ne  sont pas  prises en  considération dans  le présent
-programme.
+En plus de la variante standard avec des couleurs,
+[la variante utilisant les mots du dictionnaire](#variante--Mastermind-avec-des-mots-intelligibles)
+est traitée dans ce projet. Les autres variantes ne sont pas prises en
+considération.
 
 ## Déroulement d'une partie
 
@@ -947,6 +949,51 @@ terminé,  les enregistrements  du cache  contenant ce  code joué  sont
 inutiles.  Le sous-programme  `filtrer` élimine  donc les  éléments du
 cache où le code joué figure au niveau 1.
 
+## Variante : Mastermind avec des mots intelligibles
+
+Dans ce  dépôt, les  codes sont  des arrangements  de 5  lettres, sans
+aucune signification intelligible. Il existe une
+[variante](https://boardgamegeek.com/boardgame/5662/word-mastermind)
+de  Mastermind où  les mots  doivent être  des mots  existant dans  un
+dictionnaire donné.
+
+Le programme  a été  adapté pour récupérer  la liste  des possibilités
+dans un fichier texte. Ainsi, il n'y a plus d'ouverture et l'interlude
+devient un prélude.
+
+À titre d'expérience, j'ai essayé avec la
+[liste de mots](https://github.com/ascherer/sgb/blob/master/words.dat)
+de [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+avec les mots utilisés dans le jeu Master Mot de la revue Télé 7 Jeux
+(cf. [un autre projet](https://github.com/jforget/apl-Master-Mot/blob/master/master.fr.md))
+et avec la liste de mots français fournie par
+[Freelang.com](https://www.freelang.com/).
+
+La liste  de mots  de Stanford  GraphBase comporte  5757 mots,  ce qui
+représente 12,5 bits. Pour un jeu avec des marques noires et blanches,
+le  meilleur mot  est « tares »  donnant 3,39  bits ou  bien « tales »
+donnant le minimax  de 924 mots. Pour un jeu  avec des marques noires,
+mais sans marques blanches, le meilleur mot est « cares » donnant 1,60
+bit ou « bares » donnant un minimax de 2331 mots.
+
+La liste de  mots des problèmes Master Mot de  T7J comporte 1569 mots,
+ce qui  représente 10,6 bits. Pour  un jeu avec des  marques noires et
+blanches, le  meilleur mot  est « serie »  donnant une  information de
+3,22 bits  et un  minimax de 277  mots. Pour un  jeu avec  des marques
+noires,  mais sans  marques blanches,  le meilleur  mot est  « panee »
+donnant  1,60 bit  et un  minimax de  665 mots.  Mais à  moins d'avoir
+recopié  (à titre  personnel) les  mêmes  problèmes que  moi, vous  ne
+pourrez pas reproduire exactement le même test.
+
+Parmi les 930  mots de 4 lettres  de la liste de  mots de Freeland.com
+(soit  9,86 bits),  le  meilleur est  « raie » avec  2,92  bits et  le
+minimax de  199 mots (règles avec  pions noirs et blancs)  ou « pare »
+avec 1,54  bit et « soie »  avec le minimax  de 421 mots  (pions noirs
+seulement). Pour les  1939 mots de 5 lettres (soit  10,92 bits), c'est
+« serie » avec  3,33 bits  et « porte »  pour le  minimax de  801 mots
+(pions noirs et blancs) ou « carte », « perte » et « porte » avec 1,69
+bits et « caire » avec le minimax de 770 mots (pions noirs seulement).
+
 ## Annexe 1 : entropie ou pas ?
 
 Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
@@ -986,46 +1033,15 @@ différents en fonction du contexte,  pourquoi ne pas utiliser le terme
 « entropie »  dans différents  contextes pour  désigner des  contextes
 différents ?
 
-## Annexe 2 : Mastermind avec des mots intelligibles
+Si vous voulez un exemple en  anglais, voici deux phrases provenant du
+tout début  du volume 3 (tris  et recherches) de _The  Art of Computer
+Programming_, par Donald Knuth.
 
-Dans ce  dépôt, les  codes sont  des arrangements  de 5  lettres, sans
-aucune signification intelligible. Il existe une
-[variante](https://boardgamegeek.com/boardgame/5662/word-mastermind)
-de  Mastermind où  les mots  doivent être  des mots  existant dans  un
-dictionnaire donné.
+> Since  only two  of our  tape drives  were in  working order,  I was
+> ordered to order  more tape units in short order,  in order to order
+> the data several orders of magnitude faster.
 
-À titre d'expérience, j'ai essayé avec la
-[liste de mots](https://github.com/ascherer/sgb/blob/master/words.dat)
-de [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
-avec les mots utilisés dans le jeu Master Mot de la revue Télé 7 Jeux
-(cf. [un autre projet](https://github.com/jforget/apl-Master-Mot/blob/master/master.fr.md))
-et avec la liste de mots français fournie par
-[Freelang.com](https://www.freelang.com/).
-
-La liste  de mots  de Stanford  GraphBase comporte  5757 mots,  ce qui
-représente 12,5 bits. Pour un jeu avec des marques noires et blanches,
-le  meilleur mot  est « tares »  donnant 3,39  bits ou  bien « tales »
-donnant le minimax  de 924 mots. Pour un jeu  avec des marques noires,
-mais sans marques blanches, le meilleur mot est « cares » donnant 1,60
-bit ou « bares » donnant un minimax de 2331 mots.
-
-La liste de  mots des problèmes Master Mot de  T7J comporte 1569 mots,
-ce qui  représente 10,6 bits. Pour  un jeu avec des  marques noires et
-blanches, le  meilleur mot  est « serie »  donnant une  information de
-3,22 bits  et un  minimax de 277  mots. Pour un  jeu avec  des marques
-noires,  mais sans  marques blanches,  le meilleur  mot est  « panee »
-donnant  1,60 bit  et un  minimax de  665 mots.  Mais à  moins d'avoir
-recopié  (à titre  personnel) les  mêmes  problèmes que  moi, vous  ne
-pourrez pas reproduire exactement le même test.
-
-Parmi les 930  mots de 4 lettres  de la liste de  mots de Freeland.com
-(soit  9,86 bits),  le  meilleur est  « raie » avec  2,92  bits et  le
-minimax de  199 mots (règles avec  pions noirs et blancs)  ou « pare »
-avec 1,54  bit et « soie »  avec le minimax  de 421 mots  (pions noirs
-seulement). Pour les  1939 mots de 5 lettres (soit  10,92 bits), c'est
-« serie » avec  3,33 bits  et « porte »  pour le  minimax de  801 mots
-(pions noirs et blancs) ou « carte », « perte » et « porte » avec 1,69
-bits et « caire » avec le minimax de 770 mots (pions noirs seulement).
+> He was sort of out of sorts after sorting that sort of data.
 
 # LICENCE ET COPYRIGHT
 

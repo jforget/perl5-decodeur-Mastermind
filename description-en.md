@@ -298,7 +298,9 @@ Lastly,  other variants  alter  the game  mechanisms:
 and requiring  that the code  is a valid  word in the  players' native
 language,
 [etc](https://boardgamegeek.com/boardgamefamily/142/game-mastermind).
-These variants are not implemented in the program.
+Of these variants, only the
+[Word Mastermind](#variant-mastermind-with-understandable-words)
+is implemented. The other variants are not implemented in the program.
 
 ## Timeline of a Typical Game
 
@@ -1089,6 +1091,50 @@ containing the most recently played code are useless, so the `filtrer`
 subroutine deletes the  cache elements in which the played  code is at
 key level 1.
 
+## Variant: Mastermind with understandable words
+
+In this repo, codes are nothing  more than lumps of 5 letters, without
+any meaning in any language. On the other hand, Mastermind has a
+[variant](https://boardgamegeek.com/boardgame/5662/word-mastermind)
+in which the hidden code and  the various propositions must be present
+in some dictionary.
+
+The program has been updated to read the list of possible codes from a
+text file  if using this variant.  There is no longer  an overture and
+the interlude becomes a prelude.
+
+I made an experiment, using the
+[word list](https://github.com/ascherer/sgb/blob/master/words.dat)
+from [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+the list of words used in the game "Master Mot" from the French magazine Télé 7 Jeux.
+(see [another project](https://github.com/jforget/apl-Master-Mot/blob/master/master.en.md))
+and the list of French words from
+[Freelang.com](https://www.freelang.com/).
+
+The  word list  from  Stanford GraphBase  includes  5757 words,  which
+corresponds to 12.5 bits. For a  game with both black and white marks,
+the  best word  is  "tares" giving  3.39 bits  or  "tales" giving  the
+924-word minimax. For a game with only black marks without white ones,
+the  best word  is  "cares" providing  1.69 bit  or  "bares" with  the
+2331-word minimax.
+
+The  list of  words  from the  various Master  Mot  problems from  T7J
+includes 1569 words, which gives 10.6 bits. For a game with both black
+and white  marks, the best  word is "serie"  giving 3.22 bits  and the
+277-word minimax. For a game with only black marks without white ones,
+the best word is "panee" providing  1.60 bit and the 665-word minimax.
+But unless you  have copied (for personal purposes) the  very same T7J
+problems as me, you cannot reproduce this test.
+
+For the 930 4-letter words in  the Freeland.com word list, the entropy
+is 9.86  bits. The  best word is  "raie" with 2.92  bits and  with the
+199-word minimax (B&W marks), or "pare"  with 1.54 bit and "soie" with
+the 421-word minimax  (black marks only). For the  1939 5-letter words
+(10.92 bits),  the best words are  "serie" with 3.33 bits  and "porte"
+with the 801-word minimax (B&W  marks) or "carte", "perte" and "porte"
+with  1.69 bit  and "caire"  with  the 770-word  minimax (black  marks
+only).
+
 ## Annex 1: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart
@@ -1124,49 +1170,19 @@ tension_, possible shortage of manpower in a profession),
 
 and most certainly many other meanings...
 
-So if the  word _tension_ has several different  meanings depending on
-the context, why  not use the word "entropy" in  different contexts to
-designate different concepts?
+I have  not tried to create  a similar example in  English. Instead, I
+use two  examples written by  Donald Knuth,  at the very  beginning of
+volume 3 (sorting and searching) or _The Art of Computer Programming_.
 
-## Annex 2: Mastermind with understandable words
+> Since  only two  of our  tape drives  were in  working order,  I was
+> ordered to order  more tape units in short order,  in order to order
+> the data several orders of magnitude faster.
 
-In this repo, codes are nothing  more than lumps of 5 letters, without
-any meaning in any language. On the other hand, Mastermind has a
-[variant](https://boardgamegeek.com/boardgame/5662/word-mastermind)
-in which the hidden code and  the various propositions must be present
-in some dictionary.
+> He was sort of out of sorts after sorting that sort of data.
 
-I made an experiment, using the
-[word list](https://github.com/ascherer/sgb/blob/master/words.dat)
-from [Stanford GraphBase](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
-the list of words used in the game "Master Mot" from the French magazine Télé 7 Jeux.
-(see [another project](https://github.com/jforget/apl-Master-Mot/blob/master/master.en.md))
-and the list of French words from
-[Freelang.com](https://www.freelang.com/).
-
-The  word list  from  Stanford GraphBase  includes  5757 words,  which
-corresponds to 12.5 bits. For a  game with both black and white marks,
-the  best word  is  "tares" giving  3.39 bits  or  "tales" giving  the
-924-word minimax. For a game with only black marks without white ones,
-the  best word  is  "cares" providing  1.69 bit  or  "bares" with  the
-2331-word minimax.
-
-The  list of  words  from the  various Master  Mot  problems from  T7J
-includes 1569 words, which gives 10.6 bits. For a game with both black
-and white  marks, the best  word is "serie"  giving 3.22 bits  and the
-277-word minimax. For a game with only black marks without white ones,
-the best word is "panee" providing  1.60 bit and the 665-word minimax.
-But unless you  have copied (for personal purposes) the  very same T7J
-problems as me, you cannot reproduce this test.
-
-For the 930 4-letter words in  the Freeland.com word list, the entropy
-is 9.86  bits. The  best word is  "raie" with 2.92  bits and  with the
-199-word minimax (B&W marks), or "pare"  with 1.54 bit and "soie" with
-the 421-word minimax  (black marks only). For the  1939 5-letter words
-(10.92 bits),  the best words are  "serie" with 3.33 bits  and "porte"
-with the 801-word minimax (B&W  marks) or "carte", "perte" and "porte"
-with  1.69 bit  and "caire"  with  the 770-word  minimax (black  marks
-only).
+So  if the  words _tension_,  "set", "order"  and "sort"  have several
+different meanings each depending on the context, why not use the word
+"entropy" in different contexts to designate different concepts?
 
 # License and Copyright
 
