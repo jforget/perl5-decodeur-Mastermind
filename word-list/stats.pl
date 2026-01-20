@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; indent-tabs-mode: nil -*-
 #
 # Calcul des statistiques sur les mots d'une liste : entropie, minimax
-# Computing the Mastermind-related stats on a word lis: entropy, minimax
+# Computing the Mastermind-related stats on a word list: entropy, minimax
 #
 # Copyright (c) 2026 Jean Forget
 #
