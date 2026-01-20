@@ -1031,6 +1031,33 @@ récupérer les  codes de  l'ouverture. Les codes  à jouer  doivent être
 présents dans le  dictionnaire utilisé, donc il est  impossible de les
 générer automatiquement.
 
+La solution  consiste à choisir  quelques codes permettant  de scinder
+les cliques  les plus longues, puis  à créer un fichier  contenant les
+codes   d'accélération.  Ensuite,   lors  de   l'appel  du   programme
+`decodeur-mm`, l'utilisateur spécifie le  chemin d'accès de ce fichier
+dans le paramètre `--accel`. Le  programme charge alors ces codes dans
+la variable `@suppl`,  déjà utilisée pour le  Mastermind standard avec
+des couleurs. Ce fichier peut contenir des commentaires pour justifier
+la présence des différents codes. Par exemple
+
+```
+GARS  # pour la clique  RACE  RADE *RAGE* RAME   RAPE *RARE* *RASE* RATE RAYE
+CAMP  # pour la clique *RACE* RADE  RAGE *RAME* *RAPE* RARE   RASE  RATE RAYE
+BACHE # pour la clique *BELER* *CELER* FELER GELER *HELER* MELER
+```
+
+Comme on peut le voir, il est  possible de mélanger des codes pour des
+longueurs différentes. En revanche, il  n'est pas possible de mélanger
+des codes  accélérateurs pour des dictionnaires  différents. Ou alors,
+il  faudrait que  les codes  utilisés  soient corrects  pour les  deux
+langues.
+
+Avec les  deux codes accélérateurs  à quatre lettres, la  recherche de
+« RAYE » s'effectue en 6 coups au lieu de 10. Les codes d'accélération
+ne sont utiles que pour  des cliques suffisamment longues. Utiliser un
+code  d'accélération pour  une clique  de  3 mots  est inutile,  voire
+défavorable.
+
 ## Annexe 1 : entropie ou pas ?
 
 Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.
@@ -1089,8 +1116,9 @@ le terme « clique » pour désigner ce graphe induit.
 
 Dans _The Stanford  GraphBase_, l'un des exemples  présentés par Knuth
 est le jeu _Word Ladders_, consistant à  passer d'un mot à un autre en
-changeant  une seule  lettre à  la  fois. Exemple  (en français,  avec
-seulement 4 lettres) :
+changeant une seule lettre à la  fois. Le jeu existe en français, mais
+je ne  connais pas  son nom.  Exemple (en  français, avec  seulement 4
+lettres) :
 
 ```
 TARE
@@ -1100,12 +1128,12 @@ PAON
 PION
 ```
 
-Pour ce faire, il construit un graphe dans lequel les sommets sont les
-mots autorisés et  dans lequel deux sommets sont reliés  par une arête
-s'ils ont une seule lettre de différence.
+Pour  explorer ce  jeu,  Knuth  construit un  graphe  dans lequel  les
+sommets  sont les  mots autorisés  et  dans lequel  deux sommets  sont
+reliés par une arête s'ils ont une seule lettre de différence.
 
 Il  est facile  de  vérifier  que dans  ce  graphe,  les cliques  sont
-associées  à dse  expressions  régulières contenant  _n_  - 1  lettres
+associées  à des  expressions  régulières contenant  _n_  - 1  lettres
 imposées et 1 lettre générique. Par exemple, la clique
 
 ```

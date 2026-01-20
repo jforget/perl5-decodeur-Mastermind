@@ -114,6 +114,11 @@ A game of Word Mastermind, using a dictionary in which the words have different 
   in  the  dictionary.  If  the file  contains  words  with  different
   lengths, parameter `trous` is mandatory.
 
+* accel
+
+  The pathname for a text  file containing codes that might accelerate
+  the search.
+
 * reponse
 
   The final  answer, that is, the  code the program must  find. But we
@@ -1152,16 +1157,16 @@ possible codes, split into 3 cliques:
 
 3. RAID, RAIL, RAIS
 
-See in [annex 2](Annex-2-cliques-in-a-graph) what is a clique.
+See in [annex 2](#Annex-2-Cliques-in-a-Graph) what is a clique.
 
 Turn  2  uses  _RADE_,  which produces  marking  `XXX`  and  therefore
 eliminates cliques  1 and  3, while  reducing clique  2 to  8 possible
 codes. Then,  the remaining 8 game  turns check each possible  code in
 turn, until finding the solution.
 
-If you  known enough  French, you  may have  noticed that  some actual
+If  you know  enough French,  you may  have noticed  that some  actual
 French words  are missing from  the Freeland.com list, such  as _RALE_
-(either  some groaning  or a  bird leaving  near the  sea) and  _RAVE_
+(either some  groaning or a  bird leaving  on the seaside)  and _RAVE_
 (vegetable). If the list had contained these two words, the game would
 have lasted for 12 game turns.
 
@@ -1173,6 +1178,29 @@ the  overture. Here,  with the  Word  Mastermind, it  is not  possible
 because there is no overture, so there are no codes to keep. And since
 the played  codes must be  present in  the dictionary, they  cannot be
 generated like they were in the standard Mastermind.
+
+The solution consists in choosing a few codes that will split cliques,
+and then storing them into a text file. When running the `decodeur-mm`
+program, the  user adds  an `--accel` parameter  with the  pathname of
+this  new file.  The  program loads  the contents  of  this file  into
+variable `@suppl`  (already used for  this purpose in  standard colour
+Mastermind).  The file  may include  comments reminding  the targetted
+clique. Example:
+
+```
+GARS  # for the clique  RACE  RADE *RAGE* RAME   RAPE *RARE* *RASE* RATE RAYE
+CAMP  # for the clique *RACE* RADE  RAGE *RAME* *RAPE* RARE   RASE  RATE RAYE
+BACHE # for the clique *BELER* *CELER* FELER GELER *HELER* MELER
+```
+
+As you can see, you can mix codes with different lengths. On the other
+hand, you should not mix codes  from different languages. Or you would
+need to choose only words belonging to both languages simultaneously.
+
+With  the two  acceleration codes  `GARS` and  `CAMP`, the  search for
+`RAYE`  is  done in  6  turns  instead of  10.  Please  note that  the
+acceleration codes are useful only for sufficiently long cliques. They
+are useless, may be even detrimental, for cliques with only 3 words.
 
 ## Annex 1: Entropy or not Entropy?
 
@@ -1223,7 +1251,7 @@ So  if the  words _tension_,  "set", "order"  and "sort"  have several
 different meanings each depending on the context, why not use the word
 "entropy" in different contexts to designate different concepts?
 
-## Annex 2: cliques in a graph
+## Annex 2: Cliques in a Graph
 
 In graph theory,  a clique is a notion linked  to undirected graphs. A
 clique is a subset  of graph nodes, such as the  induced subgraph is a

@@ -105,6 +105,11 @@ paramètre  C<trous>  est  facultatif et  alimenté  automatiquement  en
 fonction du  contenu du  dictionnaire. Si les  mots sont  de longueurs
 différentes, le paramètre C<trous> est obligatoire.
 
+=item * accel
+
+Chemin  d'accès  pour  un   fichier  contenant  les  codes  permettant
+d'accélérer la recherche.
+
 =item * reponse
 
 Code  secret à  découvrir. Mais  c'est  promis, le  programme ne  s'en
@@ -856,7 +861,7 @@ use warnings;
 use Getopt::Long;
 use YAML;
 
-my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $verbeux, $lg_liste, $path_dict);
+my (@coul, $nb_coul, $nb_trous, $reponse, $b_entropie, $b_minimax, $verbeux, $lg_liste, $path_dict, $path_accel);
 GetOptions("couleurs=i" => \$nb_coul,
            "trous=i"    => \$nb_trous,
            "reponse=s"  => \$reponse,
@@ -865,9 +870,12 @@ GetOptions("couleurs=i" => \$nb_coul,
            "verbeux"    => \$verbeux,
            "longueur=i" => \$lg_liste,
            "dict=s"     => \$path_dict,
+           "accel=s"    => \$path_accel,
   ) or die "Problème avec les options";
 
 my @poss;
+my @suppl; # codes supplémentaires, qui ne sont pas compatibles avec les coups
+           # déjà joués, mais qui peuvent accélérer la partie
 if ($path_dict) {
   if (defined $nb_trous) {
     prelude1($nb_trous, $path_dict);
@@ -877,6 +885,19 @@ if ($path_dict) {
   }
   die "Aucune possibilité trouvée dans le dictionnaire"
     if 0 == @poss;
+  if ($path_accel) {
+    open my $f, '<', $path_accel
+      or die "ouverture $path_accel : $!";
+    while (<$f>) {
+      chomp;
+      s/\s.*//;
+      if (length($_) == $nb_trous) {
+        push @suppl, uc($_);
+      }
+    }
+    close $f
+      or die "fermeture $path_accel : $!";
+  }
 }
 
 sub prelude1 {
@@ -922,7 +943,7 @@ die "Nombre de trous de 2 à 5"
 die "Nombre de couleurs de 3 à 26"
   unless $nb_coul >= 3 && $nb_coul <= 26;
 die "La longueur de la liste doit être au moins 10"
-    unless $lg_liste == 0 || $lg_liste >= 10;
+  unless $lg_liste == 0 || $lg_liste >= 10;
 
 $b_entropie //= 0;
 $b_minimax  //= 0;
@@ -965,8 +986,6 @@ my @partie;
 my %notes;
 my ($cache_hit, $cache_miss) = (0, 0); # statistiques sur le cache
 my %coup_synthetique = ( prop => '', nb => 0, n => 0, b => 0 );
-my @suppl; # codes supplémentaires, qui ne sont pas compatibles avec les coups
-           # déjà joués, mais qui peuvent accélérer la partie
 
 if ($path_dict) {
   fin_de_partie();
