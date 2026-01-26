@@ -1202,6 +1202,54 @@ With  the two  acceleration codes  `GARS` and  `CAMP`, the  search for
 acceleration codes are useful only for sufficiently long cliques. They
 are useless, may be even detrimental, for cliques with only 3 words.
 
+### Word Lists
+
+As written above, I have downloaded the list of 5-letter English words
+built by D. Knuth for _The Stanford GraphBase_. In the
+[Github repository](https://github.com/ascherer/sgb),
+the file is marked as "copyright (c) 1993, Stanford University" and we
+are free to copy it, but not to modify it. In
+[D. Knuth's webpage](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+I read that this  file (and others) is in the  public domain. The file
+is not  sorted. I  have sorted  it before  using it  in games  of Word
+Mastermind.
+
+For the French language, I have downloaded a
+[list of 22735 French words](https://www.freelang.com/dictionnaire/dic-francais.php)
+of various lengths, provided by
+[Freelang.com](https://www.freelang.com/).
+
+The webmaster states that, to his best knowledge, this list is free to
+use  (which is  not the  case of  the other  dictionaries on  the same
+website). The list has a few minor problems:
+
+* phrase entries and  not only word entries, such as  _agir en maître_
+(acting like a master) or _anémone de mer_ (sea anemone);
+
+* words which  differ from each  other if keeping the  diacritics, but
+which  are  similar when  removing  the  diacritices, such  as  _gène_
+(chromosom part),  _gêne_ (hindrance)  and _gêné_ (hindered);  this is
+not a  default, this  is rather  a quality  of the  list; yet,  for my
+present needs, this is an inconvenience;
+
+* inconsistent  forms;  for  example,  we  have  _abonné_  (masculine,
+singular),  _abonnée_ (feminine,  singular) and  _abonnés_ (masculine,
+plural), but we have no _abonnées_ (feminine, plural);
+
+* same thing with conjugated verbs.
+
+Anyhow, the list has a big advantage, which is, it exists. Thank you.
+
+I have found
+[another website](https://www.listesdemots.net/accueil.htm)
+providing  lists of  French words,  but downloading  the full  list of
+n-letter  words is  not convenient.  Since I  have already  a list  of
+words, I have not pressed the  subject any further. Especially, I have
+not looked for any mention of a license.
+
+And there  are still other websites  providing lists of words.  I have
+not checked them.
+
 ## Annex 1: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart

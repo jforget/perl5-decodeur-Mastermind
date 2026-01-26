@@ -951,7 +951,7 @@ cache où le code joué figure au niveau 1.
 
 ## Variante : Mastermind avec des mots intelligibles
 
-Dans ce  dépôt, les  codes sont  des arrangements  de 5  lettres, sans
+Dans ce dépôt, les codes sont des arrangements de 4 ou 5 lettres, sans
 aucune signification intelligible. Il existe une
 [variante](https://boardgamegeek.com/boardgame/5662/word-mastermind)
 de  Mastermind où  les mots  doivent être  des mots  existant dans  un
@@ -1057,6 +1057,56 @@ Avec les  deux codes accélérateurs  à quatre lettres, la  recherche de
 ne sont utiles que pour  des cliques suffisamment longues. Utiliser un
 code  d'accélération pour  une clique  de  3 mots  est inutile,  voire
 défavorable.
+
+### Listes de mots
+
+Ainsi que je l'ai déjà marqué,  j'ai récupéré la liste de mots anglais
+à 5 lettres créée par D. Knuth pour _The Stanford Graphbase_. Dans le
+[dépôt Github](https://github.com/ascherer/sgb),
+il  est  marqué  que  le  fichier est  copyright  (c)  1993,  Stanford
+University,  que  le  fichier  peut être  copié  librement,  mais  pas
+modifié. Dans la
+[page web de D. Knuth](https://www-cs-faculty.stanford.edu/~knuth/sgb.html),
+il  est marqué  que ce  fichier  (ainsi que  les autres)  est dans  le
+domaine public. Le fichier fourni dans cette page n'est pas trié, donc
+je l'ai trié avant de l'utiliser dans les parties de Word Mastermind.
+
+Pour le français, j'ai utilisé la
+[liste de 22735 mots français](https://www.freelang.com/dictionnaire/dic-francais.php)
+de longueurs variées, fournie par
+[Freelang.com](https://www.freelang.com/).
+
+Le  mainteneur du  site indique  que  cette liste  de mots  est, à  sa
+connaissance, libre de droits (ce qui  n'est pas forcément le cas pour
+les autres dictionnaires proposés). La liste a quelques défauts ou
+inconvénients. Par exemple :
+
+* présence d'expressions en plus des mots, comme « agir en maître » ou
+« anémone de mer »,
+
+* mots qui sont  différents tant que l'on garde les  accents, mais qui
+sont  identiques  dès  qu'on  supprime ces  accents,  comme  « gène »,
+« gêne »  et « gêné »  (ce  n'est pas  un défaut,  au  contraire ;  en
+revanche c'est  un inconvénient  compte tenu  de l'utilisation  que je
+veux en faire),
+
+* incohérence pour  les formes accordées, ainsi  nous avons « abonné »
+(MS),  « abonnée » (FS)  et  « abonnés » (MP),  mais pas  « abonnées »
+(FP),
+
+* idem pour les formes conjuguées des verbes.
+
+Mais le gros mérite de cette liste est d'exister. Merci.
+
+J'ai trouvé un
+[autre site](https://www.listesdemots.net/accueil.htm)
+proposant des  listes de mots  français, mais  il est moins  commode à
+télécharger. Comme j'avais déjà une liste de mots, je n'ai pas fouillé
+ce  site et  en  particulier,  je ne  connais  pas  les conditions  de
+copyright et de licence.
+
+Également, il y a d'autres sites proposant des listes de mots, mais je
+n'ai pas poussé plus avant mes recherches.
 
 ## Annexe 1 : entropie ou pas ?
 
