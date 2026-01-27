@@ -1250,6 +1250,133 @@ not looked for any mention of a license.
 And there  are still other websites  providing lists of words.  I have
 not checked them.
 
+## Comparison Entropy Versus Minimax
+
+The directory `exploration` contains a  few programs to run a thorough
+exploration of  both algorithms  for such  or such  configuration. For
+each possible  solution in  the configuration,  the program  lauches a
+first game  with entropy and another  game with minimax and  count how
+many game  turns were necessary.  The result  is stored into  a SQLite
+database.
+
+Of course, a thorough exploration needs  some time. Yet, this is quite
+acceptable with the standard Mastermind: 3  minutes and a half for the
+1296 solutions  in the  4-slot, 6-colour Mastermind,  6 minutes  and a
+half for the 2401 solutions in the 4-slot, 7-colour Mastermind. On the
+other hand, it  is much slower with Word Mastermind:  about 10 seconds
+_per_ solution  in the  case of  the 930  `freelang.com` words  with 4
+letters, nearly one minute _per_  solution for the 1939 `freelang.com`
+words  with 5  letters  and  for the  5757  words  from _The  Stanford
+GraphBase_. The reason is that  program `decodeur-mm` is run twice per
+possible solution and so the text file containing the allowed words is
+read twice.  Maybe I could  have improved program `decodeur-mm`  so it
+could run several  times in a row without reading  the dictionary file
+more than once. I did not implement this. Still, with much patience, I
+obtained  the  results  for   `freelang.com`  and  for  _The  Stanford
+GraphBase_.
+
+For Word Mastermind, the exploration  did not involve the accelerating
+words which aim at splitting cliques.
+
+The first SQL request is:
+
+```
+  select config, max(entropy) as max_ent
+               , max(minimax) as max_mm
+               , avg(entropy) as avg_ent
+               , avg(minimax) as avg_mm
+  from Code
+  group by config
+```
+
+The result is:
+
+| config | max_ent | max_mm | avg_ent          | avg_mm           |
+| :----- | ------: | -----: | :--------------- | :--------------- |
+| fr4    |      10 |     10 | 4.74838709677419 | 4.78172043010753 |
+| fr5    |       9 |      8 | 4.52294997421351 | 4.53945332645694 |
+| s4c6   |       7 |      6 | 4.49691358024691 | 4.52546296296296 |
+| s4c7   |       7 |      7 | 4.8350687213661  | 4.87213660974594 |
+| sgb-s  |      11 |     12 | 5.17960743442765 | 5.24943546986278 |
+
+As you  can see, on  average, entropy  gives a result  slightly better
+(that  is, faster)  than  minimax.  The difference  amounts  to a  few
+hudredths  of a  game turn.  If we  had computed  the averages  with a
+single  decimal digit,  the algorithms  would have  obtained the  same
+results.
+
+If we  consider the  worst cases,  entropy and  minimax have  the same
+results for  words with  4 letters  and for the  standard game  with 4
+slots and  7 colours. For  French words with  5 letters and  for games
+with 4 slots and 6 colours, minimax is a bit better. For English words
+with 5 letters, entropy is better in the worst case.
+
+The second SQL request extracts the  solutions for which the number of
+game turns differ between entropy and minimax. The request is:
+
+```
+  select   config, count(*)
+                 , 'minimax faster'       as 'faster_algo'
+                 , avg(entropy)           as avg_ent
+                 , avg(minimax)           as avg_mm
+                 , max(entropy - minimax) as diff
+  from     Code
+  where    entropy > minimax
+  group by config
+  union
+  select   config, count(*)
+                 , 'entropy faster'
+                 , avg(entropy)
+                 , avg(minimax)
+                 , max(minimax - entropy)
+  from     Code
+  where    entropy < minimax
+  group by config
+  order by config, faster_algo
+```
+
+The result is:
+
+| config | count(*) | faster_algo    | avg_ent          | avg_mm           | diff |
+| :----- | -------: | :------------- | :--------------- | :--------------- | ---: |
+| fr4    |    193   | entropy faster | 4.11917098445596 | 5.41450777202073 |    4 |
+| fr4    |    162   | minimax faster | 5.38888888888889 | 4.03703703703704 |    4 |
+| fr5    |    571   | entropy faster | 3.82136602451839 | 5.07005253940455 |    4 |
+| fr5    |    565   | minimax faster | 5.13805309734513 | 3.93274336283186 |    5 |
+| s4c6   |    223   | entropy faster | 3.94618834080717 | 5.0762331838565  |    3 |
+| s4c6   |    195   | minimax faster | 5.05641025641026 | 3.95384615384615 |    3 |
+| s4c7   |    439   | entropy faster | 4.29840546697039 | 5.46924829157175 |    3 |
+| s4c7   |    365   | minimax faster | 5.41917808219178 | 4.25479452054795 |    3 |
+| sgb-s  |   1853   | entropy faster | 4.5763626551538  | 5.88828926065839 |    8 |
+| sgb-s  |   1555   | minimax faster | 5.87652733118971 | 4.57170418006431 |    7 |
+
+As you can  see, for each Mastermind variant, there  are more possible
+solutions  which benefits  from entropy  than solutions  which benefit
+from minimax. I have included columns `avg_ent` and `avg_mm`, but they
+are not very useful.
+
+On the other  hand, column `diff` give  surprising results, especially
+for  Word Mastermind.  A given  possible solution  may require  a very
+different number of game turns,  depending on which algorithm is used,
+entropy or minimax.  The utmost example is `TEARS`  from _The Stanford
+GraphBase_, found  on the second game  turn when using entropy  and on
+the 10th game turn  when using minimax. There is a  big amount of luck
+in this example. During the first turn, when still using sampling, the
+proposition with the  best entropy is `TARES`, an  anagram of `TEARS`.
+So the program plays `TARES`.  The only possible solution with marking
+`XXOOO` is `TEARS`.  If playing with minimax, with  sampling, the best
+proposition  is  `RACES`. The  first  turn  result, `XOOO`,  gives  45
+possibilities, including a 11-word clique:
+
+```
+BEARS DEARS FEARS GEARS HEARS NEARS PEARS SEARS TEARS WEARS YEARS
+```
+
+and we still need 9 tries to reach the final answer `TEARS`.
+
+
+# ANNEXES
+
 ## Annex 1: Entropy or not Entropy?
 
 In _Science  of Discworld II the  Globe_, by T. Pratchett,  I. Stewart

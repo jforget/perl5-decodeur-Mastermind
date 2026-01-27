@@ -1108,6 +1108,134 @@ copyright et de licence.
 Également, il y a d'autres sites proposant des listes de mots, mais je
 n'ai pas poussé plus avant mes recherches.
 
+## Comparaison entre l'entropie et le minimax
+
+Le  sous-répertoire `exploration`  contient  quelques programmes  pour
+effectuer une  exploration exhaustive des deux  algorithmes pour telle
+ou telle  configuration. Pour  chaque solution possible,  le programme
+`explore.pl` lance une  partie avec l'algorithme de  l'entropie et une
+autre partie avec l'algorithme du minimax et compte le nombre de coups
+pour chacune. Le résultat est stocké dans une base de données SQLite.
+
+Il va de soi  que cela prend du temps. C'est  tout de même supportable
+pour  le Mastermind  standard  :  3 minutes  et  demie  pour les  1296
+solutions du  Mastermind à 4 trous  et 6 couleurs, 6  minutes et demie
+pour les  2401 solutions  du Mastermind  à 4 trous  et 7  couleurs. En
+revanche, c'est beaucoup  plus lent pour le Mastermind des  mots : une
+dizaine  de secondes  pour  _chacun_  des 930  mots  de  4 lettres  de
+`freelang.com`, presque  une minute pour  _chacun_ des 1939 mots  de 5
+lettres de `freelang.com`  ou _chacun_ des 5757 mots  de _The Stanford
+Graphbase_. C'est dû  au fait que pour chaque lancement  de partie, le
+programme  `decodeur-mm`  est obligé  de  lire  le fichier  séquentiel
+contenant   les  mots   autorisés.  J'aurais   peut-être  pu   adapter
+`decodeur-mm` pour permettre l'enchaînement  de plusieurs parties sans
+avoir besoin  de relire  le fichier dictionnaire.  Ce n'est  pas fait.
+Tant  pis.  Avec   un  peu  de  patience,  j'ai   les  résultats  pour
+`freelang.com` et pour _The Stanford Graphbase_.
+
+Pour  le  Mastermind des  mots,  l'exploration  a été  effectuée  sans
+utiliser les mots d'accélération permettant de scinder les cliques.
+
+La première requête SQL utilisée est :
+
+```
+  select config, max(entropy) as max_ent
+               , max(minimax) as max_mm
+               , avg(entropy) as avg_ent
+               , avg(minimax) as avg_mm
+  from Code
+  group by config
+```
+
+Le résultat est :
+
+| config | max_ent | max_mm | avg_ent          | avg_mm           |
+| :----- | ------: | -----: | :--------------- | :--------------- |
+| fr4    |      10 |     10 | 4.74838709677419 | 4.78172043010753 |
+| fr5    |       9 |      8 | 4.52294997421351 | 4.53945332645694 |
+| s4c6   |       7 |      6 | 4.49691358024691 | 4.52546296296296 |
+| s4c7   |       7 |      7 | 4.8350687213661  | 4.87213660974594 |
+| sgb-s  |      11 |     12 | 5.17960743442765 | 5.24943546986278 |
+
+Comme on peut le constater,  l'entropie donne en moyenne des résultats
+très légèrement meilleurs (c'est-à-dire  plus rapides) que le minimax.
+Cela va chercher  dans les centièmes de tours de  jeux. Même au niveau
+du dixième de  tour, les deux algorithmes sont  équivalents en moyenne.
+
+Le pire des cas pour les  deux algorithme est équivalent pour les mots
+français de 4 lettres  et pour le Mastermind à 4  trous et 7 couleurs.
+Pour les mots français de 5 lettres et pour le Mastermind à 4 trous et
+6 couleurs, le pire des cas donne l'avantage au minimax. Pour les mots
+anglais de 5 lettres (_Stanford Graphbase_ après tri), le pire des cas
+donne l'avantage à l'entropie.
+
+La deuxième requête sert à compter le nombre de solutions pour lesquel
+le temps de  recherche diffère entre les deux  algorithmes. La requête
+est :
+
+```
+  select   config, count(*)
+                 , 'minimax faster'       as 'faster_algo'
+                 , avg(entropy)           as avg_ent
+                 , avg(minimax)           as avg_mm
+                 , max(entropy - minimax) as diff
+  from     Code
+  where    entropy > minimax
+  group by config
+  union
+  select   config, count(*)
+                 , 'entropy faster'
+                 , avg(entropy)
+                 , avg(minimax)
+                 , max(minimax - entropy)
+  from     Code
+  where    entropy < minimax
+  group by config
+  order by config, faster_algo
+```
+
+Le résultat est :
+
+| config | count(*) | faster_algo    | avg_ent          | avg_mm           | diff |
+| :----- | -------: | :------------- | :--------------- | :--------------- | ---: |
+| fr4    |    193   | entropy faster | 4.11917098445596 | 5.41450777202073 |    4 |
+| fr4    |    162   | minimax faster | 5.38888888888889 | 4.03703703703704 |    4 |
+| fr5    |    571   | entropy faster | 3.82136602451839 | 5.07005253940455 |    4 |
+| fr5    |    565   | minimax faster | 5.13805309734513 | 3.93274336283186 |    5 |
+| s4c6   |    223   | entropy faster | 3.94618834080717 | 5.0762331838565  |    3 |
+| s4c6   |    195   | minimax faster | 5.05641025641026 | 3.95384615384615 |    3 |
+| s4c7   |    439   | entropy faster | 4.29840546697039 | 5.46924829157175 |    3 |
+| s4c7   |    365   | minimax faster | 5.41917808219178 | 4.25479452054795 |    3 |
+| sgb-s  |   1853   | entropy faster | 4.5763626551538  | 5.88828926065839 |    8 |
+| sgb-s  |   1555   | minimax faster | 5.87652733118971 | 4.57170418006431 |    7 |
+
+Ainsi que vous pouvez le voir,  pour chaque variante de Mastermind, le
+nombre de solutions indique que  l'avantage est à l'entropie. Les deux
+colonnes `avg_ent` et `avg_mm` ne donnent rien d'intéressant, en fait.
+
+En  revanche,  la  colonne  `diff` donne  des  résultats  surprenants,
+surtout pour le Mastermind des mots. Une même réponse peut donner lieu
+à un nombre de coups très  différent selon que l'on utilise l'entropie
+ou le  minimax. L'exemple  extrême est le  mot `TEARS`  (_The Stanford
+Graphbase_), trouvé dès le second coup avec l'entropie et requérant 10
+coups pour  une recherche avec  le minimax. Il y  a une bonne  part de
+chance dans  cet exemple. En  effet, au  premier tour, compte  tenu de
+l'échantillonnage,  la  proposition  avec la  meilleure  entropie  est
+`TARES`, un anagramme de `TEARS`.  Et comme le programme joue `TARES`,
+la seule  proposition avec une  note `XXOOO` est la  réponse cherchée,
+`TEARS`. En  revanche, compte tenu de  l'échantillonnage, la meilleure
+proposition pour  le minimax est  `RACES`. Dans  le cas de  la réponse
+`XOOO`, le premier  coup laisse 45 possibilités, dont la  clique de 11
+mots :
+
+```
+BEARS DEARS FEARS GEARS HEARS NEARS PEARS SEARS TEARS WEARS YEARS
+```
+
+et il faudra 9 essais pour trouver la réponse finale `TEARS`.
+
+# ANNEXES
+
 ## Annexe 1 : entropie ou pas ?
 
 Dans _la  Science du Disque-Monde  II le  Globe_, de T.  Pratchett, I.

@@ -169,9 +169,10 @@ the following SQL statements to compare entropy and minimax.
   group by config
 
   select   config, count(*)
-                 , 'minimax faster' as 'which is faster'
-                 , avg(entropy)     as avg_ent
-                 , avg(minimax)     as avg_mm
+                 , 'minimax faster'       as 'faster_algo'
+                 , avg(entropy)           as avg_ent
+                 , avg(minimax)           as avg_mm
+                 , max(entropy - minimax) as diff
   from     Code
   where    entropy > minimax
   group by config
@@ -180,6 +181,7 @@ the following SQL statements to compare entropy and minimax.
                  , 'entropy faster'
                  , avg(entropy)
                  , avg(minimax)
+                 , max(minimax - entropy)
   from     Code
   where    entropy < minimax
   group by config
