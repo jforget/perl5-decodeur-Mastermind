@@ -1374,6 +1374,27 @@ BEARS DEARS FEARS GEARS HEARS NEARS PEARS SEARS TEARS WEARS YEARS
 
 and we still need 9 tries to reach the final answer `TEARS`.
 
+In the  other direction, we have  `SALES`, which needs only  two turns
+when  using  minimax (first  turn  `RACES`)  and  9 turns  when  using
+entropy. Here again,  a clique is involved. After the  first two turns
+`TARES` and `DALES`, there are still  11 possible codes, with a 2-word
+clique, `DAMES` and `DAZES`, and a 9-word clique:
+
+```
+BALES GALES HALES KALES MALES PALES SALES VALES WALES
+```
+
+Using another SQL request:
+
+```
+select   config, entropy - minimax as diff, count(*)
+from     Code
+group by config, diff
+order by config, diff
+```
+
+we see that most differences have a magnitude of 1 in one direction or
+the other.
 
 # ANNEXES
 

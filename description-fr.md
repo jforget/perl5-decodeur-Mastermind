@@ -1234,6 +1234,29 @@ BEARS DEARS FEARS GEARS HEARS NEARS PEARS SEARS TEARS WEARS YEARS
 
 et il faudra 9 essais pour trouver la réponse finale `TEARS`.
 
+Dans l'autre  sens, nous avons `SALES`,  trouvé en deux tours  avec le
+minimax  (premier tour  `RACES`) et  en  9 tours  avec l'entropie.  Là
+encore,  le nombre  de  tours est  dû  à une  clique.  Après les  deux
+premiers tours utilisant l'entropie (`TARES`  et `DALES`), il reste 11
+possibilités,  avec une  clique de  deux, `DAMES`  et `DAZES`,  et une
+clique de 10 mots :
+
+```
+BALES GALES HALES KALES MALES PALES SALES VALES WALES
+```
+
+En prenant une autre requête,
+
+```
+select   config, entropy - minimax as diff, count(*)
+from     Code
+group by config, diff
+order by config, diff
+```
+
+on constate néanmoins  que la plupart du temps, l'écart  est d'un tour
+dans un sens ou dans l'autre.
+
 # ANNEXES
 
 ## Annexe 1 : entropie ou pas ?
