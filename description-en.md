@@ -1627,7 +1627,7 @@ is  wrong on  one aspect.  The  notes do  not partition  the plane  in
 several  angular sectors,  but in  several ring  areas centred  on the
 reference code.
 
-![cloud of points with rings centred on a central point](pic/sector-centre.png)
+![cloud of points with rings centred on a central point](pic/ring-centre.png)
 
 By choosing a  central point, we maximise the filling  of inner rings,
 which correspond to  higher notes (`XXX`, `XXOO` and  the like), while
@@ -1636,7 +1636,7 @@ emptying  the outer  rings  corresponding to  lower  notes (`X`,  `O`,
 populated with  the possible  codes, while the  green, yellow  and red
 rings are left empty.
 
-![cloud of points with rings centred on a peripheral point](pic/sector-side.png)
+![cloud of points with rings centred on a peripheral point](pic/ring-side.png)
 
 On the other hand,  if we choose a reference code  at the periphery of
 the cloud, all the rings, or nearly all, will be occupied.
