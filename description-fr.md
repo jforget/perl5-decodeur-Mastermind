@@ -1353,7 +1353,9 @@ Printemps  1984, en  cours  de transmission  de  données, je  découvre
 l'entropie de Shannon.
 
 Noël 1983, je  reçois en cadeau le livre de  Berloquin et Meirovitz et
-je découvre la formule $ - \sum p_i \times \log_2(p_i) $.
+je découvre la formule sans nom
+
+$$ - \sum p_i \times \log_2(p_i) $$
 
 Printemps 1983, pour un projet dans le cadre de mes études, j'apprends
 la  programmation en  Lisp ;  pour m'entraîner,  je tente  d'écrire un
@@ -1401,13 +1403,13 @@ Je considère  que choisir un code  et déterminer les notes  des autres
 codes  possibles  en  fonction  du  code choisi  se  traduit  dans  la
 métaphore par une partition du nuage de points en secteurs angulaires.
 
-![nuage de points avec secteurs centrés sur un point périphérique](sector-side.png)
+![nuage de points avec secteurs centrés sur un point périphérique](pic/sector-side.png)
 
 Si l'on choisit  le code de référence en périphérie  du nuage, on aura
 un ou deux secteurs angulaires très  peuplés et tous les autres seront
 quasiment déserts.
 
-![nuage de points avec secteurs centrés sur un point central](sector-centre.png)
+![nuage de points avec secteurs centrés sur un point central](pic/sector-centre.png)
 
 Si l'on choisit le code de  référence au voisinage du centre du nuage,
 la répartition des  codes possibles dans les  secteurs angulaires sera
@@ -1487,7 +1489,7 @@ cette erreur  est que  la métaphore  du nuage de  points pèche  sur un
 point. Les notes ne partitionnent pas le nuage en secteurs angulaires,
 mais en anneaux centrés sur le code de référence.
 
-![nuage de points avec anneaux centrés sur un point central](ring-centre.png)
+![nuage de points avec anneaux centrés sur un point central](pic/ring-centre.png)
 
 En choisissant  un code  de référence  proche du  centre du  nuage, on
 favorise le peuplement des anneaux internes associés aux notes élevées
@@ -1496,7 +1498,7 @@ notes  basses (`X`,  `O`, `(rien)`).  Dans le  dessin, cela  revient à
 peupler les anneaux magenta, bleu et cyan aux dépens des anneaux vert,
 jaune et rouge.
 
-![nuage de points avec anneaux centrés sur un point périphérique](ring-side.png)
+![nuage de points avec anneaux centrés sur un point périphérique](pic/ring-side.png)
 
 À l'inverse,  en choisissant un code  de référence à la  périphérie du
 nuage,  on s'arrange  pour  que  tous les  anneaux  ou presque  soient

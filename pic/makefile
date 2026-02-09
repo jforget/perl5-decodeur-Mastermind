@@ -28,11 +28,11 @@ sector-side.png: pic.pdf
 	mv sector-side-1.png sector-side.png
 
 cloud.png: pic.pdf
-	pdftoppm -png -f 1 -l 1 -x 350 -y 740 -W 250 -H 260 pic.pdf cloud
+	pdftoppm -png -f 1 -l 1 -x 350 -y 740 -W 250 -H 250 pic.pdf cloud
 	mv cloud-1.png cloud.png
 
 cloud-g.png: pic.pdf
-	pdftoppm -png -f 1 -l 1 -x 780 -y 740 -W 250 -H 260 pic.pdf cloud-g
+	pdftoppm -png -f 1 -l 1 -x 780 -y 740 -W 250 -H 250 pic.pdf cloud-g
 	mv cloud-g-1.png cloud-g.png
 
 ring-centre.png: pic.pdf

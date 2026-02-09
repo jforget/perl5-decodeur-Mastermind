@@ -1494,7 +1494,8 @@ entropy.
 
 Christmas  1983,  I  receive  Berloquin's and  Meirovitz'  book  as  a
 Christmas present and I discover the unnamed formula
-$ - \sum p_i \times \log_2(p_i) $.
+
+$$ - \sum p_i \times \log_2(p_i) $$
 
 Spring 1983,  a student project requires  learning Lisp programmation.
 To better learn Lisp, I try  to write a Mastermind codebreaker program
@@ -1540,13 +1541,13 @@ I posit that choosing a code as a reference and computing the notes of
 the other  possible codes is  equivalent to partitioning the  plane in
 several angular areas.
 
-![cloud of points with sectors originating from a peripheral point](sector-side.png)
+![cloud of points with sectors originating from a peripheral point](pic/sector-side.png)
 
 If we choose  the reference code in the peripheral  area of the cloud,
 we will obtain  one or two angular sectors with  a high population and
 all others will be nearly empty.
 
-![cloud of points with sectors originating from a central point](sector-centre.png)
+![cloud of points with sectors originating from a central point](pic/sector-centre.png)
 
 If we choose the reference code in  the centre of the cloud, the other
 possible  codes  will  be  more evenly  dispatched  into  the  angular
@@ -1626,7 +1627,7 @@ is  wrong on  one aspect.  The  notes do  not partition  the plane  in
 several  angular sectors,  but in  several ring  areas centred  on the
 reference code.
 
-![cloud of points with rings centred on a central point](sector-centre.png)
+![cloud of points with rings centred on a central point](pic/sector-centre.png)
 
 By choosing a  central point, we maximise the filling  of inner rings,
 which correspond to  higher notes (`XXX`, `XXOO` and  the like), while
@@ -1635,7 +1636,7 @@ emptying  the outer  rings  corresponding to  lower  notes (`X`,  `O`,
 populated with  the possible  codes, while the  green, yellow  and red
 rings are left empty.
 
-![cloud of points with rings centred on a peripheral point](sector-side.png)
+![cloud of points with rings centred on a peripheral point](pic/sector-side.png)
 
 On the other hand,  if we choose a reference code  at the periphery of
 the cloud, all the rings, or nearly all, will be occupied.
