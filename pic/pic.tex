@@ -1,0 +1,88 @@
+% -*- encoding: utf-8 -*-
+%
+%     Utility script for pictures in the documentation for thea Mastermind codebreaker
+%     Copyright (C) 2026 Jean Forget
+%
+%     This program is distributed under the same terms as Perl 5.16.3:
+%     GNU Public License version 1 or later and Perl Artistic License.
+%
+%    Here is the summary of GPL:
+%
+%    This program is free software; you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation; either version 1, or (at your option)
+%    any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program; if not, write to the Free Software Foundation,
+%    Inc., https://www.fsf.org/.
+%
+
+\documentclass[a4paper]{article}
+\usepackage{luamplib}
+\begin{document}
+\begin{mplibcode}
+beginfig(1);
+
+z1 = (  0,   0);
+z2 = (-12, -29);
+z3 = (-12,  32);
+z4 = ( 30, -34);
+z5 = ( 30,  32);
+z6 = 1/5 * (z1 + z2 + z3 + z4 + z5);
+
+def sectors(expr z, l) =
+  fill l * (0,0) -- l * ( 1  ,  0    ){dir  90} .. l * ( 0.5,  0.866) -- cycle shifted z withcolor (1  , 0.8, 0.8);
+  fill l * (0,0) -- l * ( 0.5,  0.866){dir 150} .. l * (-0.5,  0.866) -- cycle shifted z withcolor (1  , 1  , 0.8);
+  fill l * (0,0) -- l * (-0.5,  0.866){dir 210} .. l * (-1  ,  0    ) -- cycle shifted z withcolor (0.8, 1  , 0.8);
+  fill l * (0,0) -- l * (-1  ,  0    ){dir -90} .. l * (-0.5, -0.866) -- cycle shifted z withcolor (0.8, 1  , 1  );
+  fill l * (0,0) -- l * (-0.5, -0.866){dir -30} .. l * ( 0.5, -0.866) -- cycle shifted z withcolor (0.8, 0.8, 1  );
+  fill l * (0,0) -- l * ( 0.5, -0.866){dir  30} .. l * ( 1  ,  0    ) -- cycle shifted z withcolor (1  , 0.8, 1  );
+enddef;
+
+def rings(expr z, r) =
+  l := 1    * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (1  , 0.8, 0.8);
+  l := 0.83 * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (1  , 1  , 0.8);
+  l := 0.67 * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (0.8, 1  , 0.8);
+  l := 0.50 * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (0.8, 1  , 1  );
+  l := 0.33 * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (0.8, 0.8, 1  );
+  l := 0.16 * r; fill l * (1,0) .. l * (0,1) .. l * (-1, 0) .. l * (0, -1) .. cycle shifted z withcolor (1  , 0.8, 1  );
+enddef;
+
+def plot(expr zz) =
+  dotlabel.bot("A", zz + z1);
+  dotlabel.bot("B", zz + z2);
+  dotlabel.bot("C", zz + z3);
+  dotlabel.bot("D", zz + z4);
+  dotlabel.bot("E", zz + z5);
+enddef;
+
+def plotg(expr zz) =
+  plot(zz);
+  dotlabel.bot("G", zz + z6) withcolor(0, 0.4, 0);
+enddef;
+
+y = 350;
+sectors((0, y), 100);
+plotg(  (0, y));
+
+sectors((230, y), 100);
+plotg(  (230, y) - z4);
+
+plot( (  0, 170));
+plotg((200, 170));
+
+rings((0, 0), 100);
+plot( (0, 0));
+
+rings((230, 0), 100);
+plot( (230, 0) - z2);
+
+endfig;
+\end{mplibcode}
+\end{document}
