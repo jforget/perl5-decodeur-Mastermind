@@ -1485,6 +1485,161 @@ RACE, RADE, RAGE, RAIE, RALE, RAME, RAPE, RARE, RASE, RATE, RAVE, RAYE
 is  associated  with  regexp `/^RA[CDGILMPRSTVY]E$/`  or  more  simply
 `/^RA.E$/`.
 
+## Annex 3: The Importance of a Good Metaphor
+
+Here is a partial and backward history of the codebreaker program.
+
+Spring 1984, in a lesson about  data transmission, I learn the Shannon
+entropy.
+
+Christmas  1983,  I  receive  Berloquin's and  Meirovitz'  book  as  a
+Christmas present and I discover the unnamed formula
+$ - \sum p_i \times \log_2(p_i) $.
+
+Spring 1983,  a student project requires  learning Lisp programmation.
+To better learn Lisp, I try  to write a Mastermind codebreaker program
+in Lisp.
+
+The spring 1983 version was pretty similar to the later versions:
+
+1. Building the list of all possible codes.
+
+2. Choosing the most discriminating code.
+
+3. Interaction with the human codemaker.
+
+4. Filtering the list of possible code.
+
+5. Loop at step 2.
+
+Was there an overture? Maybe, maybe not,  I do not remember, and it is
+not important for the matter. What is important is that I did not know
+the Shannon entropy and I did not  know how you could apply minimax to
+Mastermind. I programmed step 2 with the wrong metaphor.
+
+Let us suppose that the list of possible codes is as follows.
+
+```
+ABAA
+BBCB
+CCCD
+ADDD
+ABCE
+```
+
+I know, this is a contrived  example. Yet, with only 5 possible codes,
+you  will  better  grasp  the   way  it  was  working,  without  being
+overwhelmed by a huge number of codes.
+
+Metaphorically, the list of possible codes is a cloud of points in the
+geometrical plane.
+
+![cloud of points](pic/cloud.png)
+
+I posit that choosing a code as a reference and computing the notes of
+the other  possible codes is  equivalent to partitioning the  plane in
+several angular areas.
+
+![cloud of points with sectors originating from a peripheral point](sector-side.png)
+
+If we choose  the reference code in the peripheral  area of the cloud,
+we will obtain  one or two angular sectors with  a high population and
+all others will be nearly empty.
+
+![cloud of points with sectors originating from a central point](sector-centre.png)
+
+If we choose the reference code in  the centre of the cloud, the other
+possible  codes  will  be  more evenly  dispatched  into  the  angular
+sectors, which is better.
+
+Choosing the code that will be played follows this procedure.
+
+For each column,  the program build an histogram of  the colours found
+in this column.
+
+```
+   1  2  3  4
+A  3  0  1  1
+B  1  3  0  1
+C  1  1  3  0
+D  0  1  1  2
+E  0  0  0  1
+```
+
+The four histograms  produce an "average" code, in  this case, "ABCD".
+With the geometric  metaphor, we compute the barycentre  of the cloud,
+called G in the picture.
+
+![cloud of points with barycentre](pic/cloud-g.png)
+
+Since this  average code is missing  from the list of  possible codes,
+the program  looks for  the actual  code which is  the closest  to the
+average code. In the example, it is "ABCE". In the geometric metaphor,
+that would be finding the point  with the lowest distance from "G", in
+this case, "A". This is the code that will be played.
+
+Now we  examine what a  brute force program  would have found  (with 5
+possible codes, this is not very brutal), and what would be the result
+of a minimax-based search or a entropy-based search.
+
+```
+  +----------+----------+------------------------+--------+---------+----------+
+  | Question |  Answers | Codes                  | Number | Maximum | Entropy  |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ABCE   |  XXXX    | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  XX      | ABAA, BBCB, CCCD, ADDD |    4   |    4    | 0,72 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ABAA   |  XXXX    | ABAA                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  XX      | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  X       | BBCB, ADDD             |    2   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  nothing | CCCD                   |    1   |    2    | 1,92 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   BBCB   |  XXXX    | BBCB                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  XX      | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  X       | ABAA, CCCD             |    2   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  nothing | ADDD                   |    1   |    2    | 1,92 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   CCCD   |  XXXX    | CCCD                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  X       | ABCE, BBCB, ADDD       |    3   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  nothing | ABAA                   |    1   |    3    | 1,37 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ADDD   |  XXXX    | ADDD                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  X       | ABCE, ABAA, CCCD       |    3   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |  nothing | BBCB                   |    1   |    3    | 1,37 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+```
+
+As  you can  see in  this  table, the  solution from  the spring  1983
+algorithm is the worst solution. The reason is that the cloud metaphor
+is  wrong on  one aspect.  The  notes do  not partition  the plane  in
+several  angular sectors,  but in  several ring  areas centred  on the
+reference code.
+
+![cloud of points with rings centred on a central point](sector-centre.png)
+
+By choosing a  central point, we maximise the filling  of inner rings,
+which correspond to  higher notes (`XXX`, `XXOO` and  the like), while
+emptying  the outer  rings  corresponding to  lower  notes (`X`,  `O`,
+`(nothing)`). In  the picture,  the magenta, blue  and cyan  rings are
+populated with  the possible  codes, while the  green, yellow  and red
+rings are left empty.
+
+![cloud of points with rings centred on a peripheral point](sector-side.png)
+
+On the other hand,  if we choose a reference code  at the periphery of
+the cloud, all the rings, or nearly all, will be occupied.
+
 # License and Copyright
 
 Copyright (c) Jean Forget, 2025, 2026, all rights reserved.

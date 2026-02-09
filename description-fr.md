@@ -1344,6 +1344,164 @@ RACE, RADE, RAGE, RAIE, RALE, RAME, RAPE, RARE, RASE, RATE, RAVE, RAYE
 est associée à l'expression régulière `/^RA[CDGILMPRSTVY]E$/` ou
 plus simplement `/^RA.E$/`.
 
+## Annexe 3 : de l'importance de choisir la bonne métaphore
+
+Reprenons un  historique partiel et  à rebrousse-poil du  programme de
+décodage.
+
+Printemps  1984, en  cours  de transmission  de  données, je  découvre
+l'entropie de Shannon.
+
+Noël 1983, je  reçois en cadeau le livre de  Berloquin et Meirovitz et
+je découvre la formule $ - \sum p_i \times \log_2(p_i) $.
+
+Printemps 1983, pour un projet dans le cadre de mes études, j'apprends
+la  programmation en  Lisp ;  pour m'entraîner,  je tente  d'écrire un
+programme de décodeur de Mastermind.
+
+La version  de 1983  comportait déjà les  grandes lignes  du programme
+abouti :
+
+1. constitution de la liste des codes possibles,
+
+2. choix du code le plus discriminant,
+
+3. interaction avec le joueur codeur,
+
+4. filtrage de la liste des codes possibles,
+
+5. boucler à l'étape 2.
+
+Y avait-il une étape d'ouverture  ? Peut-être, peut-être pas, cela n'a
+pas d'importance pour la suite. Ce qui a de l'importance, c'est que je
+ne connaissais pas  l'entropie de Shannon et je ne  connaissais pas le
+lien entre le minimax et le  Mastermind. J'ai programmé l'étape 2 avec
+un algorithme inefficace, basé sur une métaphore inadaptée.
+
+Supposons que la liste des codes possibles soit la suivante.
+
+```
+ABAA
+BBCB
+CCCD
+ADDD
+ABCE
+```
+
+Je sais, c'est tiré par les cheveux, mais avec un tout petit nombre de
+codes possibles, vous comprendrez mieux comment cela fonctionnait avec
+un nombre de possibilités plus grand.
+
+Métaphoriquement, ces codes possibles forment  un nuage de points dans
+le plan.
+
+![nuage de points](pic/cloud.png)
+
+Je considère  que choisir un code  et déterminer les notes  des autres
+codes  possibles  en  fonction  du  code choisi  se  traduit  dans  la
+métaphore par une partition du nuage de points en secteurs angulaires.
+
+![nuage de points avec secteurs centrés sur un point périphérique](sector-side.png)
+
+Si l'on choisit  le code de référence en périphérie  du nuage, on aura
+un ou deux secteurs angulaires très  peuplés et tous les autres seront
+quasiment déserts.
+
+![nuage de points avec secteurs centrés sur un point central](sector-centre.png)
+
+Si l'on choisit le code de  référence au voisinage du centre du nuage,
+la répartition des  codes possibles dans les  secteurs angulaires sera
+plus équilibrée.
+
+Le choix du code à jouer se fait donc ainsi.
+
+Le  programme  commence par  établir  un  histogramme des  différentes
+couleurs pour chaque position.
+
+```
+   1  2  3  4
+A  3  0  1  1
+B  1  3  0  1
+C  1  1  3  0
+D  0  1  1  2
+E  0  0  0  1
+```
+
+Les 4 histogrammes  obtenus permettent de calculer  le code « moyen »,
+dans  le cas  présent,  "ABCD'. Dans  la  métaphore géométrique,  cela
+consiste à calculer le barycentre G du nuage de points.
+
+![nuage de points avec barycentre](pic/cloud-g.png)
+
+Comme ce code  moyen ne figure pas dans la  liste des codes possibles,
+le programme cherche le code possible qui en soit le plus proche. Ici,
+c'est "ABCE". Dans  la métaphore géométrique, le  programme cherche le
+point  le plus  proche du  barycentre, qui  est le  point "A"  dans la
+figure. Et c'est ce code qui est joué.
+
+Maintenant, examinons ce qu'aurait donné  une recherche en force brute
+(avec 5 codes possibles,  ce n'est pas la mer à  boire), un choix basé
+sur l'entropie de Shannon et un choix basé sur le minimax de Knuth.
+
+```
+  +----------+----------+------------------------+--------+---------+----------+
+  | Question | Réponses | Codes                  | Nombre | Maximum | Entropie |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ABCE   |   XXXX   | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   XX     | ABAA, BBCB, CCCD, ADDD |    4   |    4    | 0,72 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ABAA   |   XXXX   | ABAA                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   XX     | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   X      | BBCB, ADDD             |    2   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   rien   | CCCD                   |    1   |    2    | 1,92 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   BBCB   |   XXXX   | BBCB                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   XX     | ABCE                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   X      | ABAA, CCCD             |    2   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   rien   | ADDD                   |    1   |    2    | 1,92 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   CCCD   |   XXXX   | CCCD                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   X      | ABCE, BBCB, ADDD       |    3   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   rien   | ABAA                   |    1   |    3    | 1,37 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+  |   ADDD   |   XXXX   | ADDD                   |    1   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   X      | ABCE, ABAA, CCCD       |    3   |         |          |
+  |          +----------+------------------------+--------+         |          |
+  |          |   rien   | BBCB                   |    1   |    3    | 1,37 bit |
+  +----------+----------+------------------------+--------+---------+----------+
+```
+
+Ainsi que  vous pouvez le  voir dans  ce tableau, la  solution choisie
+avec l'algorithme du printemps 1983 est la pire des cinq. La raison de
+cette erreur  est que  la métaphore  du nuage de  points pèche  sur un
+point. Les notes ne partitionnent pas le nuage en secteurs angulaires,
+mais en anneaux centrés sur le code de référence.
+
+![nuage de points avec anneaux centrés sur un point central](ring-centre.png)
+
+En choisissant  un code  de référence  proche du  centre du  nuage, on
+favorise le peuplement des anneaux internes associés aux notes élevées
+(`XXX`, `XXOO`) pour laisser vides les anneaux extérieurs associés aux
+notes  basses (`X`,  `O`, `(rien)`).  Dans le  dessin, cela  revient à
+peupler les anneaux magenta, bleu et cyan aux dépens des anneaux vert,
+jaune et rouge.
+
+![nuage de points avec anneaux centrés sur un point périphérique](ring-side.png)
+
+À l'inverse,  en choisissant un code  de référence à la  périphérie du
+nuage,  on s'arrange  pour  que  tous les  anneaux  ou presque  soient
+occupés.
+
 # LICENCE ET COPYRIGHT
 
 (C) Jean Forget, 2011, 2023, 2025, 2026, tous droits réservés.
