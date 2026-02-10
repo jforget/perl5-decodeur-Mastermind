@@ -1209,8 +1209,36 @@ Le résultat est :
 | sgb-s  |   1853   | entropy faster | 4.5763626551538  | 5.88828926065839 |    8 |
 | sgb-s  |   1555   | minimax faster | 5.87652733118971 | 4.57170418006431 |    7 |
 
+Variante,  moins élégante,  mais  regroupant sur  une  même ligne  les
+résultats d'une configuration.
+
+```
+select config
+     , "entropy faster"
+     , (select count(*)               from Code as B where B.config = A.config and B.entropy < B.minimax) as cnt_1
+     , (select avg(entropy)           from Code as B where B.config = A.config and B.entropy < B.minimax) as avg_ent_1
+     , (select avg(minimax)           from Code as B where B.config = A.config and B.entropy < B.minimax) as avg_mm_1
+     , (select max(minimax - entropy) from Code as B where B.config = A.config and B.entropy < B.minimax) as diff_1
+     , "minimax faster"
+     , (select count(*)               from Code as B where B.config = A.config and B.entropy > B.minimax) as cnt_2
+     , (select avg(entropy)           from Code as B where B.config = A.config and B.entropy > B.minimax) as avg_ent_2
+     , (select avg(minimax)           from Code as B where B.config = A.config and B.entropy > B.minimax) as avg_mm_2
+     , (select max(entropy - minimax) from Code as B where B.config = A.config and B.entropy > B.minimax) as diff_2
+from   (select distinct config from  Code) as A
+order by config
+```
+ce qui donne le résultat
+
+| config | entropy faster | cnt_1 | avg_ent_1        | avg_mm_1         | diff_1 | minimax faster | cnt_2 | avg_ent_2        | avg_mm_2         | diff_2 |
+| :----- | :------------- | ----: | :--------------- | :--------------- | -----: | :------------- | ----: | :--------------- | :--------------- | -----: |
+| fr4    | entropy faster |  193  | 4.11917098445596 | 5.41450777202073 |      4 | minimax faster |  162  | 5.38888888888889 | 4.03703703703704 |      4 |
+| fr5    | entropy faster |  571  | 3.82136602451839 | 5.07005253940455 |      4 | minimax faster |  565  | 5.13805309734513 | 3.93274336283186 |      5 |
+| s4c6   | entropy faster |  223  | 3.94618834080717 | 5.0762331838565  |      3 | minimax faster |  195  | 5.05641025641026 | 3.95384615384615 |      3 |
+| s4c7   | entropy faster |  439  | 4.29840546697039 | 5.46924829157175 |      3 | minimax faster |  365  | 5.41917808219178 | 4.25479452054795 |      3 |
+| sgb-s  | entropy faster | 1853  | 4.5763626551538  | 5.88828926065839 |      8 | minimax faster | 1555  | 5.87652733118971 | 4.57170418006431 |      7 |
+
 Ainsi que vous pouvez le voir,  pour chaque variante de Mastermind, le
-nombre de solutions indique que  l'avantage est à l'entropie. Les deux
+nombre  de solutions  indique  que l'avantage  est  à l'entropie.  Les
 colonnes `avg_ent` et `avg_mm` ne donnent rien d'intéressant, en fait.
 
 En  revanche,  la  colonne  `diff` donne  des  résultats  surprenants,
