@@ -1492,10 +1492,8 @@ Here is a partial and backward history of the codebreaker program.
 Spring 1984, in a lesson about  data transmission, I learn the Shannon
 entropy.
 
-Christmas  1983,  I  receive  Berloquin's and  Meirovitz'  book  as  a
-Christmas present and I discover the unnamed formula
-
-$$ - \sum p_i \times \log_2(p_i) $$
+Christmas 1983, I receive Tricot's  and Meirovitz' book as a Christmas
+present and I discover the unnamed formula $- \sum p_i \times \log_2(p_i)$
 
 Spring 1983,  a student project requires  learning Lisp programmation.
 To better learn Lisp, I try  to write a Mastermind codebreaker program

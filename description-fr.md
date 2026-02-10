@@ -1352,10 +1352,8 @@ décodage.
 Printemps  1984, en  cours  de transmission  de  données, je  découvre
 l'entropie de Shannon.
 
-Noël 1983, je  reçois en cadeau le livre de  Berloquin et Meirovitz et
-je découvre la formule sans nom
-
-$$ - \sum p_i \times \log_2(p_i) $$
+Noël 1983, je reçois  en cadeau le livre de Tricot  et Meirovitz et je
+découvre la formule sans nom $- \sum p_i \times \log_2(p_i)$
 
 Printemps 1983, pour un projet dans le cadre de mes études, j'apprends
 la  programmation en  Lisp ;  pour m'entraîner,  je tente  d'écrire un
